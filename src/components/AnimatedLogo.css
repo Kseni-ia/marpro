@@ -1,0 +1,241 @@
+.animated-logo-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 2em 0;
+}
+
+.replay-button {
+  background-color: transparent;
+  border: 0;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: transform 0.3s ease;
+}
+
+.replay-button:focus {
+  outline: transparent;
+}
+
+.replay-button:not(:disabled):hover {
+  transform: scale(1.05);
+}
+
+.replay-button:disabled {
+  cursor: default;
+}
+
+.logo {
+  width: 28em;
+  height: 5.6em;
+  max-width: 90vw;
+}
+
+.logo__letter {
+  animation-duration: 2.5s;
+  animation-timing-function: cubic-bezier(0.5, 0, 0.5, 1);
+  animation-fill-mode: forwards;
+  stroke: #000000;
+}
+
+/* Red shadow layer styles */
+.logo__letter--shadow {
+  stroke: #ff9999;
+  opacity: 0.3;
+  animation-duration: 2s; /* Faster than black layer */
+}
+
+/* Stroke dash arrays for each letter path - increased for larger paths */
+.logo__letter--M, .logo__letter--M-shadow { stroke-dasharray: 180 180; }
+.logo__letter--A1, .logo__letter--A1-shadow { stroke-dasharray: 120 120; }
+.logo__letter--A2, .logo__letter--A2-shadow { stroke-dasharray: 30 30; }
+.logo__letter--R1, .logo__letter--R1-shadow { stroke-dasharray: 150 150; }
+.logo__letter--R2, .logo__letter--R2-shadow { stroke-dasharray: 40 40; }
+.logo__letter--P1, .logo__letter--P1-shadow { stroke-dasharray: 120 120; }
+.logo__letter--R3, .logo__letter--R3-shadow { stroke-dasharray: 150 150; }
+.logo__letter--R4, .logo__letter--R4-shadow { stroke-dasharray: 40 40; }
+.logo__letter--O, .logo__letter--O-shadow { stroke-dasharray: 140 140; }
+
+/* Animation states */
+.logo--running .logo__letter--M {
+  animation-name: M;
+  stroke-dashoffset: 180;
+}
+
+.logo--running .logo__letter--A1 {
+  animation-name: A1;
+  stroke-dashoffset: 120;
+  animation-delay: 0.15s;
+}
+
+.logo--running .logo__letter--A2 {
+  animation-name: A2;
+  stroke-dashoffset: 30;
+  animation-delay: 0.3s;
+}
+
+.logo--running .logo__letter--R1 {
+  animation-name: R1;
+  stroke-dashoffset: 150;
+  animation-delay: 0.45s;
+}
+
+.logo--running .logo__letter--R2 {
+  animation-name: R2;
+  stroke-dashoffset: 40;
+  animation-delay: 0.6s;
+}
+
+.logo--running .logo__letter--P1 {
+  animation-name: P1;
+  stroke-dashoffset: 120;
+  animation-delay: 0.75s;
+}
+
+.logo--running .logo__letter--R3 {
+  animation-name: R3;
+  stroke-dashoffset: 150;
+  animation-delay: 0.9s;
+}
+
+.logo--running .logo__letter--R4 {
+  animation-name: R4;
+  stroke-dashoffset: 40;
+  animation-delay: 1.05s;
+}
+
+.logo--running .logo__letter--O {
+  animation-name: O;
+  stroke-dashoffset: 140;
+  animation-delay: 1.2s;
+}
+
+/* Red shadow layer animations - faster with no delay */
+.logo--running .logo__letter--M-shadow {
+  animation-name: M;
+  stroke-dashoffset: 180;
+}
+
+.logo--running .logo__letter--A1-shadow {
+  animation-name: A1;
+  stroke-dashoffset: 120;
+  animation-delay: 0.1s;
+}
+
+.logo--running .logo__letter--A2-shadow {
+  animation-name: A2;
+  stroke-dashoffset: 30;
+  animation-delay: 0.2s;
+}
+
+.logo--running .logo__letter--R1-shadow {
+  animation-name: R1;
+  stroke-dashoffset: 150;
+  animation-delay: 0.3s;
+}
+
+.logo--running .logo__letter--R2-shadow {
+  animation-name: R2;
+  stroke-dashoffset: 40;
+  animation-delay: 0.4s;
+}
+
+.logo--running .logo__letter--P1-shadow {
+  animation-name: P1;
+  stroke-dashoffset: 120;
+  animation-delay: 0.5s;
+}
+
+.logo--running .logo__letter--R3-shadow {
+  animation-name: R3;
+  stroke-dashoffset: 150;
+  animation-delay: 0.6s;
+}
+
+.logo--running .logo__letter--R4-shadow {
+  animation-name: R4;
+  stroke-dashoffset: 40;
+  animation-delay: 0.7s;
+}
+
+.logo--running .logo__letter--O-shadow {
+  animation-name: O;
+  stroke-dashoffset: 140;
+  animation-delay: 0.8s;
+}
+
+/* Keyframe animations */
+@keyframes M {
+  from { stroke-dashoffset: 180; opacity: 0; }
+  10% { opacity: 1; }
+  to { stroke-dashoffset: 0; opacity: 1; }
+}
+
+@keyframes A1 {
+  from { stroke-dashoffset: 120; opacity: 0; }
+  10% { opacity: 1; }
+  to { stroke-dashoffset: 0; opacity: 1; }
+}
+
+@keyframes A2 {
+  from { stroke-dashoffset: 30; opacity: 0; }
+  10% { opacity: 1; }
+  to { stroke-dashoffset: 0; opacity: 1; }
+}
+
+@keyframes R1 {
+  from { stroke-dashoffset: 150; opacity: 0; }
+  10% { opacity: 1; }
+  to { stroke-dashoffset: 0; opacity: 1; }
+}
+
+@keyframes R2 {
+  from { stroke-dashoffset: 40; opacity: 0; }
+  10% { opacity: 1; }
+  to { stroke-dashoffset: 0; opacity: 1; }
+}
+
+@keyframes P1 {
+  from { stroke-dashoffset: 120; opacity: 0; }
+  10% { opacity: 1; }
+  to { stroke-dashoffset: 0; opacity: 1; }
+}
+
+@keyframes R3 {
+  from { stroke-dashoffset: 150; opacity: 0; }
+  10% { opacity: 1; }
+  to { stroke-dashoffset: 0; opacity: 1; }
+}
+
+@keyframes R4 {
+  from { stroke-dashoffset: 40; opacity: 0; }
+  10% { opacity: 1; }
+  to { stroke-dashoffset: 0; opacity: 1; }
+}
+
+@keyframes O {
+  from { stroke-dashoffset: 140; opacity: 0; }
+  10% { opacity: 1; }
+  to { stroke-dashoffset: 0; opacity: 1; }
+}
+
+/* Hover effect for the logo */
+.replay-button:not(:disabled):hover .logo__letter {
+  stroke: #333333;
+  transition: stroke 0.3s ease;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .logo {
+    width: 22em;
+    height: 4.4em;
+  }
+}
+
+@media (max-width: 480px) {
+  .logo {
+    width: 18em;
+    height: 3.6em;
+  }
+}

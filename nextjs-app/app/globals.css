@@ -1,0 +1,47 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply text-gray-333;
+  }
+}
+
+@layer utilities {
+  /* Custom stroke dasharray classes for SVG animations */
+  .stroke-dash-180 { stroke-dasharray: 180 180; }
+  .stroke-dash-120 { stroke-dasharray: 120 120; }
+  .stroke-dash-30 { stroke-dasharray: 30 30; }
+  .stroke-dash-150 { stroke-dasharray: 150 150; }
+  .stroke-dash-40 { stroke-dasharray: 40 40; }
+  .stroke-dash-140 { stroke-dasharray: 140 140; }
+  
+  /* Custom stroke dashoffset classes for SVG animations */
+  .stroke-offset-180 { stroke-dashoffset: 180; }
+  .stroke-offset-120 { stroke-dashoffset: 120; }
+  .stroke-offset-30 { stroke-dashoffset: 30; }
+  .stroke-offset-150 { stroke-dashoffset: 150; }
+  .stroke-offset-40 { stroke-dashoffset: 40; }
+  .stroke-offset-140 { stroke-dashoffset: 140; }
+}
+
+/* Custom shine effect for cards */
+@layer components {
+  .card-shine::before {
+    content: '';
+    @apply absolute top-0 -left-full w-full h-full transition-all duration-500;
+    background: linear-gradient(90deg, transparent, rgba(200, 200, 200, 0.2), transparent);
+  }
+  
+  .card-shine:hover::before {
+    @apply left-full;
+  }
+  
+  /* Rotating background effect */
+  .rotating-bg::before {
+    content: '';
+    @apply absolute -top-1/2 -left-1/2 w-[200%] h-[200%] animate-rotate-slow;
+    background: radial-gradient(circle, rgba(200,200,200,0.1) 0%, transparent 70%);
+  }
+}

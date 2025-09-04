@@ -1,0 +1,109 @@
+.animated-text-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 20px;
+  transition: transform 0.3s ease;
+  display: inline-block;
+}
+
+.animated-text-button:hover {
+  transform: scale(1.05);
+}
+
+.animated-text-button:focus {
+  outline: none;
+}
+
+.animated-text-button .logo {
+  display: block;
+}
+
+/* Initial state - hide the main group */
+.animated-text-button .logo__group--main .logo__letter {
+  stroke-dasharray: 200;
+  stroke-dashoffset: 200;
+  fill: none;
+  animation: none;
+}
+
+/* When animate class is added, trigger the animation */
+.animated-text-button.animate .logo__group--main .logo__letter {
+  animation: drawLetter 1.5s ease-in-out forwards;
+}
+
+/* Stagger the animation for each letter */
+.animated-text-button.animate .logo__letter--M {
+  animation-delay: 0s;
+}
+
+.animated-text-button.animate .logo__letter--A {
+  animation-delay: 0.15s;
+}
+
+.animated-text-button.animate .logo__letter--R {
+  animation-delay: 0.3s;
+}
+
+.animated-text-button.animate .logo__letter--P {
+  animation-delay: 0.45s;
+}
+
+.animated-text-button.animate .logo__letter--R2 {
+  animation-delay: 0.6s;
+}
+
+.animated-text-button.animate .logo__letter--O {
+  animation-delay: 0.75s;
+}
+
+/* Draw animation */
+@keyframes drawLetter {
+  0% {
+    stroke-dashoffset: 200;
+    opacity: 0;
+  }
+  20% {
+    opacity: 1;
+  }
+  100% {
+    stroke-dashoffset: 0;
+    opacity: 1;
+  }
+}
+
+/* Shadow groups fade in effect */
+.logo__group {
+  transition: opacity 0.5s ease;
+}
+
+.animated-text-button:hover .logo__group {
+  opacity: 0.3 !important;
+}
+
+/* Pulse effect on hover for main group */
+.animated-text-button:hover .logo__group--main {
+  opacity: 1 !important;
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.02);
+  }
+}
+
+/* Mobile responsiveness */
+@media (max-width: 768px) {
+  .animated-text-button {
+    padding: 10px;
+  }
+  
+  .animated-text-button .logo {
+    width: 200px;
+    height: 36px;
+  }
+}
