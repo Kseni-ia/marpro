@@ -1,11 +1,12 @@
 # Marpro Website
+![CI](https://github.com/Kseni-ia/marpro/actions/workflows/ci.yml/badge.svg)
 
 A modern React TypeScript single-page application for Marpro, featuring three main service sections: Containers, Bagers, and Constructions.
 
 ## 🚀 Getting Started
 
 ### Prerequisites
-- Node.js (v14 or higher)
+- Node.js (v18 or higher)
 - npm or yarn
 
 ### Installation
@@ -22,6 +23,19 @@ The application will open at [http://localhost:3000](http://localhost:3000)
 ### Building for Production
 ```bash
 npm run build
+```
+
+## ▶️ Next.js app (`nextjs-app/`)
+
+This repository also contains a Next.js app. To work with it:
+
+```bash
+cd nextjs-app
+npm install
+npm run dev    # start Next.js dev server on http://localhost:3000
+npm run build  # build Next.js app
+npm start      # start Next.js production server
+npm run lint   # run Next.js linter
 ```
 
 ## 🎨 Design System
@@ -83,7 +97,7 @@ To add content to each section:
 ## 🛠️ Available Scripts
 
 - `npm start` - Runs the app in development mode
-- `npm build` - Builds the app for production
+- `npm run build` - Builds the app for production
 - `npm test` - Runs the test suite
 - `npm eject` - Ejects from Create React App (one-way operation)
 

@@ -1,0 +1,38 @@
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Use Node.js 18
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+          cache: 'npm'
+
+      - name: Install and build root CRA app
+        working-directory: .
+        run: |
+          npm ci
+          npm run build
+
+      - name: Install and build Next.js app
+        working-directory: nextjs-app
+        run: |
+          npm ci
+          npm run build
+
+      - name: Lint Next.js app
+        working-directory: nextjs-app
+        run: npm run lint --if-present
