@@ -68,7 +68,7 @@ export default function Home() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-main text-gray-333 relative">
+    <div className="min-h-screen bg-gradient-main text-red-700 relative">
       <div className="relative px-5 md:px-10 py-5">
         <Image 
           src="/logo.svg" 
