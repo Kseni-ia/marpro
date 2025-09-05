@@ -11,29 +11,29 @@ type ContainerCardProps = {
 
 const ContainerCard: React.FC<ContainerCardProps> = ({ volume, dims, description, price }) => {
   return (
-    <div className="bg-gradient-card border-2 border-gray-e0e rounded-[20px] p-7 transition-all duration-[400ms] shadow-[0_8px_25px_rgba(0,0,0,0.06)] relative overflow-hidden group hover:-translate-y-2 hover:scale-[1.03] hover:shadow-[0_15px_35px_rgba(0,0,0,0.1)] hover:bg-gradient-card-hover hover:border-gray-ccc card-shine">
+    <div className="bg-gradient-card border-2 border-gray-e0e rounded-[15px] sm:rounded-[20px] p-4 sm:p-5 md:p-7 transition-all duration-[400ms] shadow-[0_8px_25px_rgba(0,0,0,0.06)] relative overflow-hidden group hover:-translate-y-2 hover:scale-[1.03] hover:shadow-[0_15px_35px_rgba(0,0,0,0.1)] hover:bg-gradient-card-hover hover:border-gray-ccc card-shine">
       <div className="absolute -top-full -right-full w-[200%] h-[200%] bg-gradient-radial-hover transition-all duration-500 group-hover:-top-1/2 group-hover:-right-1/2"></div>
-      <div className="flex items-start justify-between">
+      <div className="flex items-start justify-between flex-col sm:flex-row gap-3 sm:gap-0">
         <div>
           <div className="flex items-baseline gap-1 leading-none">
-            <span className="text-5xl md:text-6xl font-extrabold text-gray-333">{volume}</span>
-            <span className="text-2xl md:text-3xl text-gray-555">m</span>
-            <sup className="text-lg md:text-xl -translate-y-1 inline-block text-gray-555">3</sup>
+            <span className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold text-gray-333">{volume}</span>
+            <span className="text-xl sm:text-2xl md:text-3xl text-gray-555">m</span>
+            <sup className="text-base sm:text-lg md:text-xl -translate-y-1 inline-block text-gray-555">3</sup>
           </div>
-          <span className="text-gray-666 mt-1 block tracking-wide">container</span>
+          <span className="text-gray-666 mt-1 block tracking-wide text-sm sm:text-base">container</span>
         </div>
-        <div className="text-right">
-          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/80 border border-gray-e0e text-sm text-gray-666 shadow-[0_2px_6px_rgba(0,0,0,0.05)]">
-            <span className="relative inline-block w-10 h-5 rounded-full bg-gray-eee">
-              <span className="absolute top-0.5 left-0.5 w-4 h-4 rounded-full bg-white border border-gray-e0e shadow-sm"></span>
+        <div className="text-left sm:text-right">
+          <div className="inline-flex items-center gap-2 px-2 sm:px-3 py-1 sm:py-1.5 rounded-full bg-white/80 border border-gray-e0e text-xs sm:text-sm text-gray-666 shadow-[0_2px_6px_rgba(0,0,0,0.05)]">
+            <span className="relative inline-block w-8 sm:w-10 h-4 sm:h-5 rounded-full bg-gray-eee">
+              <span className="absolute top-0.5 left-0.5 w-3 sm:w-4 h-3 sm:h-4 rounded-full bg-white border border-gray-e0e shadow-sm"></span>
             </span>
             <span className="whitespace-nowrap">Narrow variant</span>
           </div>
-          <div className="text-gray-555 text-sm mt-2">{dims}</div>
+          <div className="text-gray-555 text-xs sm:text-sm mt-2">{dims}</div>
         </div>
       </div>
-      <div className="my-6">
-        <svg viewBox="0 0 360 120" className="w-full h-[120px]" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Container truck illustration">
+      <div className="my-4 sm:my-6">
+        <svg viewBox="0 0 360 120" className="w-full h-[80px] sm:h-[100px] md:h-[120px]" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Container truck illustration">
           <rect x="150" y="50" width="160" height="30" rx="4" fill="#e8e8e8" stroke="#cccccc"/>
           <rect x="70" y="60" width="70" height="25" rx="4" fill="#666666"/>
           <rect x="70" y="55" width="25" height="15" rx="2" fill="#555555"/>
@@ -45,17 +45,17 @@ const ContainerCard: React.FC<ContainerCardProps> = ({ volume, dims, description
         </svg>
       </div>
       <div className="h-px w-full bg-gray-e8e my-4"></div>
-      <p className="text-gray-666 leading-relaxed">{description}</p>
-      <div className="mt-5 flex flex-wrap items-center gap-4">
-        <div className="px-4 py-2 rounded-xl border-2 border-gray-e0e bg-white text-gray-333 font-medium shadow-[0_2px_8px_rgba(0,0,0,0.05)]">
+      <p className="text-gray-666 leading-relaxed text-sm sm:text-base">{description}</p>
+      <div className="mt-4 sm:mt-5 flex flex-wrap items-center gap-3 sm:gap-4">
+        <div className="px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl border-2 border-gray-e0e bg-white text-gray-333 font-medium shadow-[0_2px_8px_rgba(0,0,0,0.05)] text-sm sm:text-base">
           {price}
         </div>
       </div>
-      <div className="mt-5 grid grid-cols-2 gap-4">
-        <button className="rounded-[14px] px-5 py-3 bg-gradient-button text-gray-333 font-semibold shadow-[0_4px_12px_rgba(0,0,0,0.08)] hover:shadow-[0_8px_16px_rgba(0,0,0,0.1)] transition-all">
+      <div className="mt-4 sm:mt-5 grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+        <button className="rounded-[14px] px-4 sm:px-5 py-2.5 sm:py-3 bg-gradient-button text-gray-333 font-semibold shadow-[0_4px_12px_rgba(0,0,0,0.08)] hover:shadow-[0_8px_16px_rgba(0,0,0,0.1)] transition-all text-sm sm:text-base">
           Select container
         </button>
-        <button className="rounded-[14px] px-5 py-3 bg-white border-2 border-gray-e0e text-gray-666 hover:border-gray-ccc transition-all">
+        <button className="rounded-[14px] px-4 sm:px-5 py-2.5 sm:py-3 bg-white border-2 border-gray-e0e text-gray-666 hover:border-gray-ccc transition-all text-sm sm:text-base">
           Details
         </button>
       </div>
@@ -65,15 +65,15 @@ const ContainerCard: React.FC<ContainerCardProps> = ({ volume, dims, description
 
 const Containers: React.FC = () => {
   return (
-    <div className="p-10 animate-fade-in min-h-[calc(100vh-100px)]">
-      <h1 className="text-6xl text-gray-333 text-center mb-12 pb-7 relative uppercase tracking-[3px] font-extrabold shadow-text">
+    <div className="p-4 sm:p-6 md:p-10 animate-fade-in min-h-[calc(100vh-100px)]">
+      <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl text-gray-333 text-center mb-6 sm:mb-8 md:mb-12 pb-4 sm:pb-5 md:pb-7 relative uppercase tracking-[1px] sm:tracking-[2px] md:tracking-[3px] font-extrabold shadow-text">
         Containers
-        <span className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-[100px] h-1 bg-gradient-to-r from-transparent via-gray-999 to-transparent animate-pulse-width"></span>
+        <span className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-[60px] sm:w-[80px] md:w-[100px] h-1 bg-gradient-to-r from-transparent via-gray-999 to-transparent animate-pulse-width"></span>
       </h1>
-      <p className="text-gray-666 text-center max-w-[760px] mx-auto mb-10">
+      <p className="text-gray-666 text-center max-w-[760px] mx-auto mb-6 sm:mb-8 md:mb-10 text-sm sm:text-base px-4">
         Choose from our most popular container sizes. Designed to match your project needs and delivered quickly.
       </p>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mt-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 md:gap-8 mt-4">
         <ContainerCard
           volume={3}
           dims="2 x 0.5 x 3.8 m"
