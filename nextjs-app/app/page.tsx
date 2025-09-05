@@ -78,7 +78,7 @@ export default function Home() {
           className="absolute left-10 top-5 h-[60px] w-auto cursor-pointer transition-all duration-300 z-10 hover:scale-105 hover:rotate-1"
           onClick={() => setActiveSection('home')}
         />
-        <nav className="flex justify-center items-center gap-0 bg-white/90 backdrop-blur-[10px] rounded-[50px] p-2 shadow-[0_2px_15px_rgba(0,0,0,0.08)] max-w-fit mx-auto">
+        <nav className="flex justify-center items-center gap-0 bg-white/90 backdrop-blur-[10px] rounded-[50px] p-2 shadow-[0_2px_15px_rgba(0,0,0,0.08)] max-w-fit mx-auto mt-16 md:mt-0 relative z-20">
           <button 
             className={`bg-transparent text-gray-666 border-none px-6 py-2.5 text-base cursor-pointer transition-all duration-300 rounded-[40px] font-medium capitalize tracking-[0.3px] relative hover:bg-gray-f0f/80 hover:text-gray-333 ${
               activeSection === 'containers' ? 'bg-gradient-button text-gray-333 font-semibold shadow-[0_2px_8px_rgba(0,0,0,0.08)]' : ''
