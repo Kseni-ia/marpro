@@ -29,7 +29,7 @@ const AnimatedLogo: React.FC = () => {
         aria-label="Replay animation"
       >
         <svg 
-          className={`w-[28rem] h-[5.6rem] max-w-[90vw] md:w-[22rem] md:h-[4.4rem] sm:w-[18rem] sm:h-[3.6rem] ${
+          className={`w-[40rem] h-[8rem] max-w-[90vw] md:w-[32rem] md:h-[6.4rem] sm:w-[24rem] sm:h-[4.8rem] ${
             isAnimating ? 'logo-running' : ''
           }`}
           viewBox="0 0 400 80"
@@ -37,7 +37,7 @@ const AnimatedLogo: React.FC = () => {
         >
           <style>{`
             .logo-letter {
-              stroke: #000000;
+              stroke: #ffffff;
               fill: none;
               stroke-width: 6;
               stroke-linecap: round;
@@ -45,8 +45,8 @@ const AnimatedLogo: React.FC = () => {
             }
             
             .logo-letter-shadow {
-              stroke: #ff9999;
-              opacity: 0.3;
+              stroke: #dc2626;
+              opacity: 0.5;
             }
             
             /* Stroke dash arrays */
@@ -209,7 +209,7 @@ const AnimatedLogo: React.FC = () => {
             
             /* Hover effect */
             button:not(:disabled):hover .logo-letter {
-              stroke: #333333;
+              stroke: #e0e0e0;
               transition: stroke 0.3s ease;
             }
           `}</style>
