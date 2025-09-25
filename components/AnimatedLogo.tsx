@@ -19,7 +19,7 @@ const AnimatedLogo: React.FC = () => {
   }
 
   return (
-    <div className="flex justify-center items-center py-8">
+    <div className="flex justify-center items-center py-2">
       <button 
         className={`bg-transparent border-0 cursor-pointer transition-transform duration-300 hover:scale-105 disabled:cursor-default ${
           isAnimating ? '' : 'hover:scale-105'

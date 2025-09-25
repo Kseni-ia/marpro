@@ -22,12 +22,12 @@ export default function Home() {
         return <Constructions />
       default:
         return (
-          <div className="text-center py-6 sm:py-8 md:py-10 px-4 sm:px-5">
+          <div className="text-center py-0 px-4 sm:px-5 ml-0 sm:ml-12 md:ml-16">
             <AnimatedLogo />
-            <p className="text-base sm:text-lg md:text-xl text-gray-dark-textSecondary mb-6 sm:mb-8 md:mb-10">Select a section to explore our services</p>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 md:gap-8 mt-6 sm:mt-8 md:mt-12">
+            <p className="text-base sm:text-lg md:text-xl text-gray-dark-textSecondary mb-4 mt-6 sm:mt-8">Select a section to explore our services</p>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-6 md:gap-6 lg:gap-8 justify-items-center max-w-full sm:max-w-5xl mx-auto px-2 sm:px-0">
               <div 
-                className="bg-gradient-card-dark border-2 border-gray-dark-border rounded-[15px] sm:rounded-[20px] p-6 sm:p-7 md:p-9 cursor-pointer transition-all duration-[400ms] shadow-[0_10px_30px_rgba(0,0,0,0.3)] relative overflow-hidden group hover:-translate-y-2.5 hover:scale-[1.02] hover:shadow-[0_20px_40px_rgba(0,0,0,0.12)] dark:hover:shadow-[0_20px_40px_rgba(0,0,0,0.4)] hover:bg-gradient-card-hover-dark hover:border-gray-dark-border"
+                className="w-full max-w-xs sm:max-w-sm bg-gradient-card-dark border-2 border-gray-dark-border rounded-[15px] sm:rounded-[20px] p-5 sm:p-7 md:p-8 cursor-pointer transition-all duration-[400ms] shadow-[0_10px_30px_rgba(0,0,0,0.3)] relative overflow-hidden group hover:-translate-y-2.5 hover:scale-[1.02] hover:shadow-[0_20px_40px_rgba(0,0,0,0.12)] dark:hover:shadow-[0_20px_40px_rgba(0,0,0,0.4)] hover:bg-gradient-card-hover-dark hover:border-gray-dark-border"
                 onClick={() => setActiveSection('containers')}
               >
                 <h3 className="text-gray-dark-text text-xl sm:text-2xl md:text-3xl mb-3 sm:mb-4 font-bold uppercase tracking-[1px] sm:tracking-[2px]">
@@ -39,7 +39,7 @@ export default function Home() {
               </div>
               
               <div 
-                className="bg-gradient-card-dark border-2 border-gray-dark-border rounded-[15px] sm:rounded-[20px] p-6 sm:p-7 md:p-9 cursor-pointer transition-all duration-[400ms] shadow-[0_10px_30px_rgba(0,0,0,0.3)] relative overflow-hidden group hover:-translate-y-2.5 hover:scale-[1.02] hover:shadow-[0_20px_40px_rgba(0,0,0,0.12)] dark:hover:shadow-[0_20px_40px_rgba(0,0,0,0.4)] hover:bg-gradient-card-hover-dark hover:border-gray-dark-border"
+                className="w-full max-w-xs sm:max-w-sm bg-gradient-card-dark border-2 border-gray-dark-border rounded-[15px] sm:rounded-[20px] p-5 sm:p-7 md:p-8 cursor-pointer transition-all duration-[400ms] shadow-[0_10px_30px_rgba(0,0,0,0.3)] relative overflow-hidden group hover:-translate-y-2.5 hover:scale-[1.02] hover:shadow-[0_20px_40px_rgba(0,0,0,0.12)] dark:hover:shadow-[0_20px_40px_rgba(0,0,0,0.4)] hover:bg-gradient-card-hover-dark hover:border-gray-dark-border"
                 onClick={() => setActiveSection('excavators')}
               >
                 <h3 className="text-gray-dark-text text-xl sm:text-2xl md:text-3xl mb-3 sm:mb-4 font-bold uppercase tracking-[1px] sm:tracking-[2px]">
@@ -51,7 +51,7 @@ export default function Home() {
               </div>
               
               <div 
-                className="bg-gradient-card-dark border-2 border-gray-dark-border rounded-[15px] sm:rounded-[20px] p-6 sm:p-7 md:p-9 cursor-pointer transition-all duration-[400ms] shadow-[0_10px_30px_rgba(0,0,0,0.3)] relative overflow-hidden group hover:-translate-y-2.5 hover:scale-[1.02] hover:shadow-[0_20px_40px_rgba(0,0,0,0.12)] dark:hover:shadow-[0_20px_40px_rgba(0,0,0,0.4)] hover:bg-gradient-card-hover-dark hover:border-gray-dark-border"
+                className="w-full max-w-xs sm:max-w-sm bg-gradient-card-dark border-2 border-gray-dark-border rounded-[15px] sm:rounded-[20px] p-5 sm:p-7 md:p-8 cursor-pointer transition-all duration-[400ms] shadow-[0_10px_30px_rgba(0,0,0,0.3)] relative overflow-hidden group hover:-translate-y-2.5 hover:scale-[1.02] hover:shadow-[0_20px_40px_rgba(0,0,0,0.12)] dark:hover:shadow-[0_20px_40px_rgba(0,0,0,0.4)] hover:bg-gradient-card-hover-dark hover:border-gray-dark-border"
                 onClick={() => setActiveSection('constructions')}
               >
                 <h3 className="text-gray-dark-text text-xl sm:text-2xl md:text-3xl mb-3 sm:mb-4 font-bold uppercase tracking-[1px] sm:tracking-[2px]">
@@ -69,6 +69,18 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-gradient-main-dark relative">
+      {/* Logo Container - Independent positioning */}
+      <div className="absolute top-0 left-0 sm:-top-14 sm:-left-12 z-30">
+        <Image 
+          src="/logo.svg" 
+          alt="MARPRO" 
+          width={250}
+          height={200}
+          className="h-[100px] sm:h-[120px] md:h-[150px] lg:h-[250px] w-auto cursor-pointer transition-all duration-300"
+          onClick={() => setActiveSection('home')}
+        />
+      </div>
+      
       {activeSection === 'home' && (
         <div className="fixed top-0 left-0 w-screen h-screen overflow-hidden z-0">
           <video
@@ -84,18 +96,10 @@ export default function Home() {
           <div className="absolute inset-0 bg-black/70 z-10 pointer-events-none"></div>
         </div>
       )}
-      <div className="relative min-h-screen z-10">
-        <div className="relative px-4 sm:px-5 py-4 sm:py-3 md:py-4">
-        <div className="flex items-center">
-          <Image 
-            src="/IMG_7273 light.svg" 
-            alt="MARPRO" 
-            width={200}
-            height={200}
-            className="h-[50px] sm:h-[60px] md:h-[70px] lg:h-[80px] w-auto cursor-pointer transition-all duration-300 z-10"
-            onClick={() => setActiveSection('home')}
-          />
-          <nav className="flex justify-center items-center gap-1 bg-gray-dark-card/90 backdrop-blur-[10px] rounded-[30px] sm:rounded-[40px] md:rounded-[50px] p-1.5 sm:p-1.5 md:p-2 shadow-[0_2px_15px_rgba(0,0,0,0.3)] md:absolute md:left-1/2 md:transform md:-translate-x-1/2 absolute top-16 sm:top-18 md:top-20 left-1/2 transform -translate-x-1/2 z-20">
+      <div className="relative min-h-screen z-10 ">
+        <div className="relative px-4 sm:px-5 pt-24 sm:pt-20 md:pt-28 pb-4 sm:pb-3">
+        <div className="flex items-center justify-center">
+          <nav className="flex justify-center items-center gap-1 bg-gray-dark-card/90 backdrop-blur-[10px] rounded-[30px] sm:rounded-[40px] md:rounded-[50px] p-1.5 sm:p-1.5 md:p-2 shadow-[0_2px_15px_rgba(0,0,0,0.3)] z-20">
             <button 
               className={`bg-transparent text-gray-dark-textSecondary border-none px-3 sm:px-4 md:px-6 py-2 sm:py-2 md:py-2.5 text-xs sm:text-sm md:text-base cursor-pointer transition-all duration-300 rounded-[25px] sm:rounded-[30px] md:rounded-[40px] font-medium capitalize tracking-[0.2px] sm:tracking-[0.3px] relative hover:bg-gray-f0f/80 dark:hover:bg-gray-dark-border/80 hover:text-gray-dark-text ${
                 activeSection === 'containers' ? 'bg-gradient-button-dark text-gray-dark-text font-semibold shadow-[0_2px_8px_rgba(0,0,0,0.3)]' : ''
@@ -123,7 +127,7 @@ export default function Home() {
           </nav>
         </div>
         </div>
-        <main className="px-4 sm:px-5 pt-16 sm:pt-20 md:pt-24 pb-8 sm:pb-10 max-w-[1200px] mx-auto">
+        <main className="px-4 sm:px-5 pt-4 sm:pt-10 md:pt-12 pb-20 sm:pb-10 max-w-[1200px] mx-auto">
           {renderSection()}
         </main>
       </div>
