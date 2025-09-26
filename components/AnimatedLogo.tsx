@@ -19,7 +19,7 @@ const AnimatedLogo: React.FC = () => {
   }
 
   return (
-    <div className="flex justify-center items-center py-2">
+    <div className="flex justify-center pl-9 w-full">
       <button 
         className={`bg-transparent border-0 cursor-pointer transition-transform duration-300 hover:scale-105 disabled:cursor-default ${
           isAnimating ? '' : 'hover:scale-105'
@@ -29,11 +29,11 @@ const AnimatedLogo: React.FC = () => {
         aria-label="Replay animation"
       >
         <svg 
-          className={`w-[40rem] h-[8rem] max-w-[90vw] md:w-[32rem] md:h-[6.4rem] sm:w-[24rem] sm:h-[4.8rem] ${
+          className={`w-[90vw] h-[18vw] sm:w-[24rem] sm:h-[4.8rem] md:w-[32rem] md:h-[6.4rem] lg:w-[40rem] lg:h-[8rem] max-w-[400px] ${
             isAnimating ? 'logo-running' : ''
           }`}
           viewBox="0 0 400 80"
-          xmlns="http://www.w3.org/2000/svg"
+          xmlns=""
         >
           <style>{`
             .logo-letter {
