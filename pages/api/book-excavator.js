@@ -1,0 +1,143 @@
+// pages/api/book-excavator.js - API endpoint for excavator bookings
+import { checkAvailability, createBooking } from '../../lib/calendar';
+import { createOrder } from '../../lib/orders';
+import { sendOrderConfirmationEmail, sendAdminNotificationEmail } from '../../lib/email';
+
+export default async function handler(req, res) {
+  if (req.method !== 'POST') {
+    return res.status(405).json({ error: 'Method not allowed' });
+  }
+
+  try {
+    const { customerData, dateTime, durationHours = 1 } = req.body;
+    
+    // Log the incoming data for debugging
+    console.log('Received excavator booking request:', {
+      customerData: customerData ? { ...customerData, message: customerData.message ? '...' : undefined } : null,
+      dateTime,
+      durationHours
+    });
+
+    // Validate required fields
+    if (!customerData?.firstName || !customerData?.lastName || !customerData?.email || !dateTime) {
+      return res.status(400).json({ 
+        error: 'Customer first name, last name, email, and date/time are required' 
+      });
+    }
+
+    // Ensure service type is set to excavators
+    customerData.serviceType = 'excavators';
+
+    // Check availability first
+    const isAvailable = await checkAvailability(dateTime, durationHours, 'excavators');
+    
+    if (!isAvailable) {
+      return res.status(409).json({ 
+        error: 'This time slot is already booked. Please choose another time.' 
+      });
+    }
+
+    // Create the calendar booking
+    let calendarBooking = null;
+    let calendarError = null;
+
+    try {
+      calendarBooking = await createBooking(customerData, dateTime, durationHours);
+    } catch (error) {
+      console.error('Calendar booking error:', error);
+      calendarError = error.message;
+      // Continue with order creation even if calendar fails
+    }
+
+    // Create the order in Firestore
+    let orderId = null;
+    try {
+      // Convert dateTime string to Date object for orderDate
+      const orderDate = new Date(dateTime);
+      const formattedCustomerData = {
+        ...customerData,
+        orderDate: orderDate,
+        calendarEventId: calendarBooking?.eventId,
+        calendarEventLink: calendarBooking?.eventLink
+      };
+      
+      console.log('Creating excavator order with data:', {
+        ...formattedCustomerData,
+        message: formattedCustomerData.message ? '...' : undefined
+      });
+
+      orderId = await createOrder(formattedCustomerData);
+    } catch (error) {
+      console.error('Excavator order creation error:', error);
+      console.error('Error details:', error.stack);
+      
+      // If order creation fails but calendar was created, try to delete the calendar event
+      if (calendarBooking?.eventId) {
+        try {
+          const { deleteBooking } = await import('../../lib/calendar');
+          await deleteBooking(calendarBooking.eventId, 'excavators');
+        } catch (deleteError) {
+          console.error('Failed to rollback calendar event:', deleteError);
+        }
+      }
+
+      return res.status(500).json({ 
+        error: 'Failed to create excavator order',
+        details: error.message 
+      });
+    }
+
+    // Send confirmation email to customer
+    const emailParams = {
+      customerEmail: customerData.email,
+      customerName: `${customerData.firstName} ${customerData.lastName}`,
+      firstName: customerData.firstName,
+      lastName: customerData.lastName,
+      serviceType: 'excavators',
+      orderDate: new Date(dateTime).toLocaleDateString('cs-CZ'),
+      startTime: customerData.startTime,
+      endTime: customerData.endTime,
+      excavatorType: customerData.excavatorType,
+      address: customerData.address,
+      city: customerData.city,
+      zipCode: customerData.zipCode,
+      message: customerData.message,
+    };
+
+    // Send emails with detailed logging
+    console.log('📧 Attempting to send emails...');
+    console.log('Customer email:', emailParams.customerEmail);
+    
+    const customerEmailResult = await sendOrderConfirmationEmail(emailParams);
+    if (customerEmailResult.success) {
+      console.log('✅ Customer confirmation email sent successfully');
+    } else {
+      console.error('❌ Failed to send customer email:', customerEmailResult.error);
+    }
+    
+    const adminEmailResult = await sendAdminNotificationEmail(emailParams);
+    if (adminEmailResult.success) {
+      console.log('✅ Admin notification email sent successfully');
+    } else {
+      console.error('❌ Failed to send admin email:', adminEmailResult.error);
+    }
+
+    // Return success response
+    res.status(200).json({
+      success: true,
+      message: 'Excavator booking created successfully!',
+      orderId: orderId,
+      booking: calendarBooking,
+      calendarWarning: calendarError ? `Order created but calendar sync failed: ${calendarError}` : null
+    });
+
+  } catch (error) {
+    console.error('Excavator booking API error:', error);
+    console.error('Error stack:', error.stack);
+    res.status(500).json({ 
+      error: 'Failed to process excavator booking',
+      details: error.message,
+      stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
+    });
+  }
+}

@@ -14,17 +14,23 @@ const calculateEndTime = (startTime: string, duration: number): string => {
   return `${endHours.toString().padStart(2, '0')}:${endMins.toString().padStart(2, '0')}`
 }
 
-// Helper function to check if two time ranges overlap
-const timeRangesOverlap = (start1: string, end1: string, start2: string, end2: string): boolean => {
+// Helper function to check if two time ranges overlap (including buffer times)
+const timeRangesOverlap = (start1: string, end1: string, start2: string, end2: string, includeBuffer: boolean = false): boolean => {
   const toMinutes = (time: string) => {
     const [hours, minutes] = time.split(':').map(Number)
     return hours * 60 + minutes
   }
   
-  const start1Min = toMinutes(start1)
-  const end1Min = toMinutes(end1)
+  let start1Min = toMinutes(start1)
+  let end1Min = toMinutes(end1)
   const start2Min = toMinutes(start2)
   const end2Min = toMinutes(end2)
+  
+  // If including buffer, add 1 hour before start and 30 minutes after end
+  if (includeBuffer) {
+    start1Min -= 60 // 1 hour buffer before the booking starts
+    end1Min += 30   // 30 minute buffer after the booking ends
+  }
   
   return start1Min < end2Min && start2Min < end1Min
 }
@@ -116,9 +122,11 @@ export async function checkEquipmentAvailability(
       return bookingDateStr === dateStr
     })
     
-    // Check for time conflicts in bookings
+    // Check for time conflicts in bookings (with buffer times)
     for (const booking of sameDateBookings) {
-      if (timeRangesOverlap(startTime, endTime, booking.startTime, booking.endTime)) {
+      // Check with buffer: 1 hour before and 30 minutes after
+      if (timeRangesOverlap(startTime, endTime, booking.startTime, booking.endTime, true)) {
+        console.log(`Equipment ${equipmentId} not available: conflicts with existing booking ${booking.startTime}-${booking.endTime} (including buffer times)`)
         return false // Time slot is not available
       }
     }
@@ -138,7 +146,8 @@ export async function checkEquipmentAvailability(
         ...data,
         orderDate: data.orderDate?.toDate ? data.orderDate.toDate() : new Date(data.orderDate),
         status: data.status as string,
-        time: data.time as string
+        time: data.time as string,
+        endTime: data.endTime as string | undefined
       }
     })
     
@@ -148,10 +157,12 @@ export async function checkEquipmentAvailability(
       return orderDateStr === dateStr && (order.status === 'pending' || order.status === 'in_progress')
     })
     
-    // Check for time conflicts in orders (assume 1 hour duration for existing orders)
+    // Check for time conflicts in orders (with buffer times)
     for (const order of activeOrders) {
-      const orderEndTime = calculateEndTime(order.time, 1) // Default 1 hour
-      if (timeRangesOverlap(startTime, endTime, order.time, orderEndTime)) {
+      const orderEndTime = order.endTime || calculateEndTime(order.time, 1) // Use endTime if available, otherwise default 1 hour
+      // Check with buffer: 1 hour before and 30 minutes after
+      if (timeRangesOverlap(startTime, endTime, order.time, orderEndTime, true)) {
+        console.log(`Equipment ${equipmentId} not available: conflicts with existing order ${order.time}-${orderEndTime} (including buffer times)`)
         return false // Time slot is not available
       }
     }
@@ -312,9 +323,10 @@ export async function getAvailableTimeSlots(
       const endTime = calculateEndTime(slot, 1) // Default 1 hour slots
       let isAvailable = true
       
-      // Check if this slot conflicts with any unavailable slots
+      // Check if this slot conflicts with any unavailable slots (with buffer times)
       for (const unavailableSlot of availability.unavailableSlots) {
-        if (timeRangesOverlap(slot, endTime, unavailableSlot.startTime, unavailableSlot.endTime)) {
+        // Check with buffer: 1 hour before and 30 minutes after
+        if (timeRangesOverlap(slot, endTime, unavailableSlot.startTime, unavailableSlot.endTime, true)) {
           isAvailable = false
           break
         }

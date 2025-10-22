@@ -3,6 +3,9 @@ import { Inter } from 'next/font/google'
 import './globals.css'
 import { AuthProvider } from '@/contexts/AuthContext'
 import ClientThemeProvider from '@/components/ClientThemeProvider'
+import { LanguageProvider } from '@/contexts/LanguageContext'
+import { ModalProvider } from '@/contexts/ModalContext'
+import ConditionalLanguageToggle from '@/components/ConditionalLanguageToggle'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -18,11 +21,16 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={inter.className}>
+      <body className={`${inter.className} bg-gray-dark-bg`}>
         <ClientThemeProvider>
-          <AuthProvider>
-            {children}
-          </AuthProvider>
+          <LanguageProvider>
+            <ModalProvider>
+              <AuthProvider>
+                <ConditionalLanguageToggle />
+                {children}
+              </AuthProvider>
+            </ModalProvider>
+          </LanguageProvider>
         </ClientThemeProvider>
       </body>
     </html>

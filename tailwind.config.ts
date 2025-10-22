@@ -10,6 +10,7 @@ const config: Config = {
     extend: {
       animation: {
         'fade-in': 'fadeIn 0.5s ease-in',
+        'fadeIn': 'fadeInUp 0.3s ease-out',
         'glow': 'glow 2s ease-in-out infinite alternate',
         'pulse-width': 'pulseWidth 2s infinite',
         'rotate-slow': 'rotate 10s linear infinite',
@@ -42,6 +43,16 @@ const config: Config = {
           'to': { 
             opacity: '1', 
             transform: 'translateY(0)' 
+          }
+        },
+        fadeInUp: {
+          'from': { 
+            opacity: '0', 
+            transform: 'translateY(10px) scale(0.98)' 
+          },
+          'to': { 
+            opacity: '1', 
+            transform: 'translateY(0) scale(1)' 
           }
         },
         glow: {
@@ -123,12 +134,16 @@ const config: Config = {
             border: '#404040',
             text: '#e0e0e0',
             textSecondary: '#b0b0b0',
-            textMuted: '#888888'
+            textMuted: '#888888',
+            accent: '#363636'
           }
         },
         red: {
           700: '#b91c1c'
         }
+      },
+      scale: {
+        '102': '1.02',
       }
     }
   },

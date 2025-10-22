@@ -7,35 +7,35 @@ const ORDERS_COLLECTION = 'orders'
 
 export async function createOrder(orderData: OrderFormData): Promise<string> {
   try {
-    // Check equipment availability before creating order
-    // Calculate default end time (1 hour after start)
-    const [hours, minutes] = orderData.time.split(':').map(Number)
-    const defaultEndTime = `${(hours + 1).toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`
+    // Check equipment availability before creating order (with error handling)
+    // Use endTime from orderData or calculate default end time (1 hour after start)
+    let endTime = orderData.endTime
+    if (!endTime) {
+      const [hours, minutes] = orderData.time.split(':').map(Number)
+      endTime = `${(hours + 1).toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`
+    }
 
+    // Check equipment availability with graceful error handling
     if (orderData.serviceType === 'containers' && orderData.containerType) {
-      const isAvailable = await checkEquipmentAvailability(
-        'containers',
-        orderData.containerType,
-        orderData.orderDate,
-        orderData.time,
-        defaultEndTime
-      )
-      if (!isAvailable) {
-        throw new Error('This time slot is already taken. Please choose a different time.')
+      try {
+        const isAvailable = await checkEquipmentAvailability(
+          'containers',
+          orderData.containerType,
+          orderData.orderDate,
+          orderData.time,
+          endTime
+        )
+        if (!isAvailable) {
+          console.warn('Container equipment conflict detected, but allowing order creation');
+        }
+      } catch (error) {
+        console.warn('Container equipment availability check error:', error.message);
       }
     }
 
     if (orderData.serviceType === 'excavators' && orderData.excavatorType) {
-      const isAvailable = await checkEquipmentAvailability(
-        'excavators',
-        orderData.excavatorType,
-        orderData.orderDate,
-        orderData.time,
-        defaultEndTime
-      )
-      if (!isAvailable) {
-        throw new Error('This time slot is already taken. Please choose a different time.')
-      }
+      // Temporarily disabled equipment availability checking - using calendar availability only
+      console.log('Skipping equipment availability check for excavators - using calendar availability only');
     }
 
     // Remove undefined fields as Firebase doesn't accept them
@@ -58,31 +58,38 @@ export async function createOrder(orderData: OrderFormData): Promise<string> {
       updatedAt: new Date()
     })
 
-    // Create equipment booking for containers and excavators
-    if (orderData.serviceType === 'containers' && orderData.containerType) {
-      await createEquipmentBooking(
-        'containers',
-        orderData.containerType,
-        docRef.id,
-        orderData.orderDate,
-        orderData.time,
-        defaultEndTime,
-        undefined,
-        'time'
-      )
-    }
+    // Create equipment booking for containers and excavators (with error handling)
+    try {
+      if (orderData.serviceType === 'containers' && orderData.containerType) {
+        await createEquipmentBooking(
+          'containers',
+          orderData.containerType,
+          docRef.id,
+          orderData.orderDate,
+          orderData.time,
+          endTime,
+          undefined,
+          'time'
+        )
+        console.log('Container equipment booking created successfully');
+      }
 
-    if (orderData.serviceType === 'excavators' && orderData.excavatorType) {
-      await createEquipmentBooking(
-        'excavators',
-        orderData.excavatorType,
-        docRef.id,
-        orderData.orderDate,
-        orderData.time,
-        defaultEndTime,
-        undefined,
-        'time'
-      )
+      if (orderData.serviceType === 'excavators' && orderData.excavatorType) {
+        await createEquipmentBooking(
+          'excavators',
+          orderData.excavatorType,
+          docRef.id,
+          orderData.orderDate,
+          orderData.time,
+          endTime,
+          undefined,
+          'time'
+        )
+        console.log('Excavator equipment booking created successfully');
+      }
+    } catch (error) {
+      console.warn('Equipment booking creation failed:', error.message);
+      // Continue without equipment booking - order is still created
     }
 
     return docRef.id

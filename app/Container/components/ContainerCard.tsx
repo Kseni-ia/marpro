@@ -1,7 +1,7 @@
 'use client'
 
-import React, { useState } from 'react'
-import OrderForm from './OrderForm'
+import React from 'react'
+import { useLanguage } from '@/contexts/LanguageContext'
 
 type ContainerCardProps = {
   volume: number
@@ -12,6 +12,7 @@ type ContainerCardProps = {
 }
 
 const ContainerCard: React.FC<ContainerCardProps> = ({ volume, dims, description, price, onOrder }) => {
+  const { t } = useLanguage()
   return (
     <div className="bg-gradient-card-dark border-2 border-gray-dark-border rounded-[15px] sm:rounded-[20px] p-4 sm:p-5 md:p-7 transition-all duration-[400ms] shadow-[0_8px_25px_rgba(0,0,0,0.3)] relative overflow-hidden group hover:-translate-y-2 hover:scale-[1.03] hover:shadow-[0_15px_35px_rgba(0,0,0,0.1)] dark:hover:shadow-[0_15px_35px_rgba(0,0,0,0.4)] hover:bg-gradient-card-hover-dark hover:border-gray-dark-border card-shine">
       <div className="absolute -top-full -right-full w-[200%] h-[200%] bg-gradient-radial-hover-dark transition-all duration-500 group-hover:-top-1/2 group-hover:-right-1/2 pointer-events-none"></div>
@@ -59,7 +60,7 @@ const ContainerCard: React.FC<ContainerCardProps> = ({ volume, dims, description
           className="rounded-[14px] px-4 sm:px-5 py-2.5 sm:py-3 bg-gradient-button-dark text-gray-dark-text font-semibold shadow-[0_4px_12px_rgba(0,0,0,0.3)] hover:shadow-[0_8px_16px_rgba(0,0,0,0.1)] dark:hover:shadow-[0_8px_16px_rgba(0,0,0,0.4)] transition-all text-sm sm:text-base cursor-pointer"
           type="button"
         >
-          Order container
+          {t('containers.order')}
         </button>
         <button className="rounded-[14px] px-4 sm:px-5 py-2.5 sm:py-3 bg-gray-dark-card border-2 border-gray-dark-border text-gray-dark-textSecondary hover:border-gray-dark-border transition-all text-sm sm:text-base">
           Details
@@ -69,70 +70,4 @@ const ContainerCard: React.FC<ContainerCardProps> = ({ volume, dims, description
   )
 }
 
-const Containers: React.FC = () => {
-  const [showOrderForm, setShowOrderForm] = useState(false)
-
-  const handleOrder = () => {
-    setShowOrderForm(true)
-  }
-
-  return (
-    <>
-      {/* Full Screen Video Background - Outside all containers */}
-      <div className="fixed top-0 left-0 w-screen h-screen overflow-hidden z-0">
-        <video
-          autoPlay
-          loop
-          muted
-          playsInline
-          className="absolute inset-0 w-full h-full object-cover z-0"
-        >
-          <source src="/containers_F.mp4" type="video/mp4" />
-          Your browser does not support the video tag.
-        </video>
-        {/* Overlay to ensure content readability */}
-        <div className="absolute inset-0 bg-black/70 z-10 pointer-events-none"></div>
-      </div>
-      
-      <div className="relative min-h-screen z-10">
-      
-      {/* Content Container */}
-      <div className="relative z-10 p-4 sm:p-6 md:p-10 animate-fade-in min-h-[calc(100vh-100px)]">
-      <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl text-gray-dark-text text-center mb-3 sm:mb-4 md:mb-5 pb-3 sm:pb-4 md:pb-5 relative uppercase tracking-[1px] sm:tracking-[2px] md:tracking-[3px] font-extrabold shadow-text">
-        Containers
-        <span className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-[60px] sm:w-[80px] md:w-[100px] h-1 bg-gradient-to-r from-transparent via-gray-dark-textMuted to-transparent animate-pulse-width"></span>
-      </h1>
-      <p className="text-gray-dark-textSecondary text-center max-w-[760px] mx-auto mb-4 sm:mb-5 md:mb-6 text-sm sm:text-base px-4">
-        Choose from our most popular container sizes. Designed to match your project needs and delivered quickly.
-      </p>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 md:gap-8">
-        <ContainerCard
-          volume={3}
-          dims="2 x 0.5 x 3.8 m"
-          description="Compact container suitable for light waste, wood, small rubble, soil and similar materials."
-          price="Price from 3 090 CZK excl. VAT"
-          onOrder={handleOrder}
-        />
-        <ContainerCard
-          volume={5}
-          dims="2 x 0.7 x 3.8 m"
-          description="Spacious option for larger loads of light waste, wood, rubble and mixed materials."
-          price="Price from 3 150 CZK excl. VAT"
-          onOrder={handleOrder}
-        />
-      </div>
-      
-      {showOrderForm && (
-        <OrderForm
-          serviceType="containers"
-          onClose={() => setShowOrderForm(false)}
-        />
-      )}
-      </div>
-      </div>
-    </>
-  )
-}
-
-export default Containers
-
+export default ContainerCard

@@ -45,6 +45,7 @@ export interface OrderFormData {
   constructionType?: string
   orderDate: Date
   time: string
+  endTime?: string
   message?: string
 }
 

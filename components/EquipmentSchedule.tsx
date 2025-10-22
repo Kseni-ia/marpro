@@ -51,39 +51,39 @@ export default function EquipmentSchedule({ onClose }: EquipmentScheduleProps) {
 
   const getStatusColor = (status: EquipmentBooking['status']) => {
     switch (status) {
-      case 'active': return 'bg-blue-100 text-blue-800 border-blue-300'
-      case 'completed': return 'bg-green-100 text-green-800 border-green-300'
-      case 'cancelled': return 'bg-red-100 text-red-800 border-red-300'
-      default: return 'bg-gray-100 text-gray-800 border-gray-300'
+      case 'active': return 'bg-blue-900/20 text-blue-400 border-blue-400/30'
+      case 'completed': return 'bg-green-900/20 text-green-400 border-green-400/30'
+      case 'cancelled': return 'bg-red-900/20 text-red-400 border-red-400/30'
+      default: return 'bg-gray-800/20 text-gray-400 border-gray-400/30'
     }
   }
 
   return (
-    <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 z-50">
-      <div className="bg-white rounded-[20px] max-w-6xl w-full max-h-[90vh] overflow-y-auto">
+    <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+      <div className="bg-gradient-card-dark border-2 border-gray-dark-border rounded-[20px] max-w-6xl w-full max-h-[90vh] overflow-y-auto shadow-[0_25px_50px_rgba(0,0,0,0.4)]">
         <div className="p-6">
           {/* Header */}
           <div className="flex justify-between items-center mb-6">
-            <h2 className="text-2xl font-bold text-gray-800">Equipment Schedule Management</h2>
+            <h2 className="text-2xl font-bold text-gray-dark-text uppercase tracking-wider">Equipment Schedule Management</h2>
             <button
               onClick={onClose}
-              className="text-gray-400 hover:text-gray-600 text-2xl"
+              className="text-gray-dark-textSecondary hover:text-gray-dark-text text-2xl font-bold transition-colors duration-300 hover:scale-110 transform"
             >
               ×
             </button>
           </div>
 
           {/* Filters */}
-          <div className="bg-gray-50 rounded-lg p-4 mb-6">
+          <div className="bg-gray-dark-bg/70 rounded-lg p-4 mb-6 border border-gray-dark-border backdrop-blur-sm">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-gray-dark-textSecondary mb-2 uppercase tracking-wider">
                   Equipment Type
                 </label>
                 <select
                   value={filter}
                   onChange={(e) => setFilter(e.target.value as any)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent"
+                  className="w-full px-3 py-2 bg-gray-dark-bg border border-gray-dark-border rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 text-gray-dark-text"
                 >
                   <option value="all">All Equipment</option>
                   <option value="containers">Containers</option>
@@ -91,14 +91,14 @@ export default function EquipmentSchedule({ onClose }: EquipmentScheduleProps) {
                 </select>
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-gray-dark-textSecondary mb-2 uppercase tracking-wider">
                   Date
                 </label>
                 <input
                   type="date"
                   value={selectedDate}
                   onChange={(e) => setSelectedDate(e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent"
+                  className="w-full px-3 py-2 bg-gray-dark-bg border border-gray-dark-border rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 text-gray-dark-text"
                 />
               </div>
             </div>
@@ -107,37 +107,38 @@ export default function EquipmentSchedule({ onClose }: EquipmentScheduleProps) {
           {/* Bookings List */}
           {loading ? (
             <div className="text-center py-8">
-              <div className="text-gray-500">Loading bookings...</div>
+              <div className="text-gray-dark-textSecondary">Loading bookings...</div>
             </div>
           ) : bookings.length === 0 ? (
             <div className="text-center py-8">
-              <div className="text-gray-500">No bookings found for the selected filters.</div>
+              <div className="text-gray-dark-textSecondary">No bookings found for the selected filters.</div>
             </div>
           ) : (
             <div className="space-y-4">
               {bookings.map((booking) => (
-                <div key={booking.id} className="bg-gradient-card border-2 border-gray-200 rounded-[15px] p-4">
-                  <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 items-center">
+                <div key={booking.id} className="bg-gradient-card-dark border-2 border-gray-dark-border rounded-[15px] p-4 relative overflow-hidden group hover:bg-gradient-card-hover-dark transition-all duration-[400ms] shadow-[0_10px_30px_rgba(0,0,0,0.3)]">
+                  <div className="absolute top-0 -left-full w-full h-full transition-all duration-500 pointer-events-none group-hover:left-full bg-gradient-shine-dark"></div>
+                  <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 items-center relative z-10">
                     {/* Equipment Info */}
                     <div>
-                      <div className="font-semibold text-gray-800 capitalize">
+                      <div className="font-semibold text-gray-dark-text uppercase tracking-wider">
                         {booking.equipmentType}: {booking.equipmentId}
                       </div>
-                      <div className="text-sm text-gray-600">
+                      <div className="text-sm text-gray-dark-textSecondary">
                         Order ID: {booking.orderId.slice(-8)}
                       </div>
                     </div>
 
                     {/* Time Info */}
                     <div>
-                      <div className="font-medium text-gray-700">
+                      <div className="font-medium text-gray-dark-text">
                         {formatTime(booking.startTime)} - {formatTime(booking.endTime)}
                       </div>
                     </div>
 
                     {/* Status */}
                     <div>
-                      <span className={`inline-flex px-2 py-1 text-xs font-bold rounded-full border ${getStatusColor(booking.status)}`}>
+                      <span className={`inline-flex px-2 py-1 text-xs font-bold rounded-full border ${getStatusColor(booking.status)} backdrop-blur-sm`}>
                         {booking.status.toUpperCase()}
                       </span>
                     </div>
@@ -148,20 +149,20 @@ export default function EquipmentSchedule({ onClose }: EquipmentScheduleProps) {
                         <>
                           <button
                             onClick={() => handleStatusUpdate(booking.id, 'completed')}
-                            className="bg-green-600 text-white px-3 py-1 rounded text-xs hover:bg-green-700"
+                            className="bg-gradient-to-r from-green-600 to-green-700 text-white px-3 py-1 rounded text-xs hover:from-green-700 hover:to-green-800 shadow-lg hover:shadow-xl transition-all"
                           >
                             Complete
                           </button>
                           <button
                             onClick={() => handleStatusUpdate(booking.id, 'cancelled')}
-                            className="bg-red-600 text-white px-3 py-1 rounded text-xs hover:bg-red-700"
+                            className="bg-gradient-to-r from-red-600 to-red-700 text-white px-3 py-1 rounded text-xs hover:from-red-700 hover:to-red-800 shadow-lg hover:shadow-xl transition-all"
                           >
                             Cancel
                           </button>
                         </>
                       )}
                       {booking.status !== 'active' && (
-                        <span className="text-sm text-gray-500">
+                        <span className="text-sm text-gray-dark-textSecondary">
                           {booking.status === 'completed' ? 'Completed' : 'Cancelled'}
                         </span>
                       )}
@@ -169,8 +170,8 @@ export default function EquipmentSchedule({ onClose }: EquipmentScheduleProps) {
                   </div>
 
                   {booking.notes && (
-                    <div className="mt-3 pt-3 border-t border-gray-200">
-                      <div className="text-sm text-gray-600">
+                    <div className="mt-3 pt-3 border-t border-gray-dark-border/50 relative z-10">
+                      <div className="text-sm text-gray-dark-textSecondary">
                         <strong>Notes:</strong> {booking.notes}
                       </div>
                     </div>
@@ -181,9 +182,9 @@ export default function EquipmentSchedule({ onClose }: EquipmentScheduleProps) {
           )}
 
           {/* Info Box */}
-          <div className="mt-6 bg-blue-50 border border-blue-200 rounded-lg p-4">
-            <h3 className="font-semibold text-blue-800 mb-2">Equipment Schedule Management</h3>
-            <ul className="text-sm text-blue-700 space-y-1">
+          <div className="mt-6 bg-blue-900/20 border border-blue-400/30 rounded-lg p-4 backdrop-blur-sm">
+            <h3 className="font-semibold text-blue-400 mb-2 uppercase tracking-wider">Equipment Schedule Management</h3>
+            <ul className="text-sm text-blue-300 space-y-1">
               <li>• Equipment is booked with specific start and end times</li>
               <li>• Completed or cancelled bookings free up the time slot for new orders</li>
               <li>• Changes take effect immediately and update customer availability</li>
