@@ -1,13 +1,25 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import OrderForm from '@/components/OrderForm'
 import ExcavatorCard from './components/ExcavatorCard'
 import { useLanguage } from '@/contexts/LanguageContext'
+import { getActiveExcavators, Excavator } from '@/lib/excavators'
 
 const Excavators: React.FC = () => {
   const [showOrderForm, setShowOrderForm] = useState(false)
   const { t, language } = useLanguage()
+  const [excavators, setExcavators] = useState<Excavator[]>([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    const fetchExcavators = async () => {
+      const data = await getActiveExcavators()
+      setExcavators(data)
+      setLoading(false)
+    }
+    fetchExcavators()
+  }, [])
 
   const handleOrder = () => {
     console.log('Order button clicked - opening form')
@@ -43,86 +55,30 @@ const Excavators: React.FC = () => {
       <p className="text-gray-dark-textSecondary text-center max-w-[760px] mx-auto mb-4 sm:mb-5 md:mb-6 text-sm sm:text-base px-4">
         {t('excavators.subtitle')}
       </p>
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6 md:gap-8">
-        <ExcavatorCard
-          model="TB145"
-          type={t('excavators.mini')}
-          description={t('excavators.tb145.desc')}
-          price={`${t('containers.price')} 2 500 CZK/${t('excavators.price.day')} ${t('containers.vat')}`}
-          svgPath="/TB145.svg"
-          specs={{
-            weight: "1.5t",
-            bucketCapacity: "0.04m³",
-            maxReach: "3.8m"
-          }}
-          onOrder={handleOrder}
-        />
-        <ExcavatorCard
-          model="TB157"
-          type={t('excavators.mini')}
-          description={t('excavators.tb157.desc')}
-          price={`${t('containers.price')} 2 800 CZK/${t('excavators.price.day')} ${t('containers.vat')}`}
-          svgPath="/TB157.svg"
-          specs={{
-            weight: "1.7t",
-            bucketCapacity: "0.04m³",
-            maxReach: "3.9m"
-          }}
-          onOrder={handleOrder}
-        />
-        <ExcavatorCard
-          model="TB260"
-          type={t('excavators.standard')}
-          description={t('excavators.tb260.desc')}
-          price={`${t('containers.price')} 3 500 CZK/${t('excavators.price.day')} ${t('containers.vat')}`}
-          svgPath="/TB260.svg"
-          specs={{
-            weight: "2.6t",
-            bucketCapacity: "0.08m³",
-            maxReach: "4.8m"
-          }}
-          onOrder={handleOrder}
-        />
-        <ExcavatorCard
-          model="TB285"
-          type={t('excavators.standard')}
-          description={t('excavators.tb285.desc')}
-          price={`${t('containers.price')} 3 800 CZK/${t('excavators.price.day')} ${t('containers.vat')}`}
-          svgPath="/TB285.svg.svg"
-          specs={{
-            weight: "2.8t",
-            bucketCapacity: "0.09m³",
-            maxReach: "5.2m"
-          }}
-          onOrder={handleOrder}
-        />
-        <ExcavatorCard
-          model="TB2150"
-          type={t('excavators.large')}
-          description={t('excavators.tb2150.desc')}
-          price={`${t('containers.price')} 4 500 CZK/${t('excavators.price.day')} ${t('containers.vat')}`}
-          svgPath="/TB290-2.svg.svg"
-          specs={{
-            weight: "2.9t",
-            bucketCapacity: "0.11m³",
-            maxReach: "5.5m"
-          }}
-          onOrder={handleOrder}
-        />
-        <ExcavatorCard
-          model="TB2150R"
-          type={t('excavators.large')}
-          description={t('excavators.tb2150r.desc')}
-          price={`${t('containers.price')} 5 000 CZK/${t('excavators.price.day')} ${t('containers.vat')}`}
-          svgPath="/TB290-2.svg.svg"
-          specs={{
-            weight: "3.5t",
-            bucketCapacity: "0.14m³",
-            maxReach: "6.2m"
-          }}
-          onOrder={handleOrder}
-        />
-      </div>
+      {loading ? (
+        <div className="flex items-center justify-center py-12">
+          <div className="text-gray-dark-textSecondary">Loading excavators...</div>
+        </div>
+      ) : excavators.length === 0 ? (
+        <div className="flex items-center justify-center py-12">
+          <div className="text-gray-dark-textSecondary">No excavators available at the moment.</div>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6 md:gap-8">
+          {excavators.map((excavator) => (
+            <ExcavatorCard
+              key={excavator.id}
+              model={excavator.model}
+              type={excavator.type}
+              description={excavator.description[language]}
+              price={`${t('containers.price')} ${excavator.price.toLocaleString('cs-CZ')} CZK/${t('excavators.price.day')} ${t('containers.vat')}`}
+              svgPath={excavator.svgPath || '/TB145.svg'}
+              specs={excavator.specs}
+              onOrder={handleOrder}
+            />
+          ))}
+        </div>
+      )}
       
       {showOrderForm && (
         <OrderForm

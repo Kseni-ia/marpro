@@ -1,13 +1,25 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import OrderForm from '@/components/OrderForm'
 import ContainerCard from './components/ContainerCard'
 import { useLanguage } from '@/contexts/LanguageContext'
+import { getActiveContainers, Container } from '@/lib/containers'
 
 const Containers: React.FC = () => {
   const [showOrderForm, setShowOrderForm] = useState(false)
-  const { t } = useLanguage()
+  const { t, language } = useLanguage()
+  const [containers, setContainers] = useState<Container[]>([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    const fetchContainers = async () => {
+      const data = await getActiveContainers()
+      setContainers(data)
+      setLoading(false)
+    }
+    fetchContainers()
+  }, [])
 
   const handleOrder = () => {
     setShowOrderForm(true)
@@ -42,36 +54,28 @@ const Containers: React.FC = () => {
       <p className="text-gray-dark-textSecondary text-center max-w-[760px] mx-auto mb-4 sm:mb-5 md:mb-6 text-sm sm:text-base px-4">
         {t('containers.subtitle')}
       </p>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 md:gap-8">
-        <ContainerCard
-          volume={3}
-          dims="2 x 0.5 x 3.8 m"
-          description={t('containers.3m3.desc')}
-          price={`${t('containers.price')} 3 090 CZK ${t('containers.vat')}`}
-          onOrder={handleOrder}
-        />
-        <ContainerCard
-          volume={5}
-          dims="3 x 1.5 x 2 m"
-          description={t('containers.5m3.desc')}
-          price={`${t('containers.price')} 3 630 CZK ${t('containers.vat')}`}
-          onOrder={handleOrder}
-        />
-        <ContainerCard
-          volume={7}
-          dims="3.5 x 1.5 x 2 m"
-          description={t('containers.7m3.desc')}
-          price={`${t('containers.price')} 4 330 CZK ${t('containers.vat')}`}
-          onOrder={handleOrder}
-        />
-        <ContainerCard
-          volume={9}
-          dims="3.5 x 1.8 x 2.2 m"
-          description={t('containers.9m3.desc')}
-          price={`${t('containers.price')} 6 000 CZK ${t('containers.vat')}`}
-          onOrder={handleOrder}
-        />
-      </div>
+      {loading ? (
+        <div className="flex items-center justify-center py-12">
+          <div className="text-gray-dark-textSecondary">Loading containers...</div>
+        </div>
+      ) : containers.length === 0 ? (
+        <div className="flex items-center justify-center py-12">
+          <div className="text-gray-dark-textSecondary">No containers available at the moment.</div>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 md:gap-8">
+          {containers.map((container) => (
+            <ContainerCard
+              key={container.id}
+              volume={container.volume}
+              dims={container.dims}
+              description={container.description[language]}
+              price={`${t('containers.price')} ${container.price.toLocaleString('cs-CZ')} CZK ${t('containers.vat')}`}
+              onOrder={handleOrder}
+            />
+          ))}
+        </div>
+      )}
       
       {showOrderForm && (
         <OrderForm

@@ -5,7 +5,6 @@ import { AuthProvider } from '@/contexts/AuthContext'
 import ClientThemeProvider from '@/components/ClientThemeProvider'
 import { LanguageProvider } from '@/contexts/LanguageContext'
 import { ModalProvider } from '@/contexts/ModalContext'
-import ConditionalLanguageToggle from '@/components/ConditionalLanguageToggle'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -26,7 +25,6 @@ export default function RootLayout({
           <LanguageProvider>
             <ModalProvider>
               <AuthProvider>
-                <ConditionalLanguageToggle />
                 {children}
               </AuthProvider>
             </ModalProvider>

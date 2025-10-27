@@ -96,7 +96,7 @@ const Demolishing: React.FC = () => {
           
           {/* Back Button */}
           <button
-            onClick={() => router.push('/Construction')}
+            onClick={() => router.back()}
             className="mb-6 flex items-center gap-2 text-gray-dark-textSecondary hover:text-gray-dark-text transition-colors"
           >
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
