@@ -1,9 +1,10 @@
-// pages/api/book-excavator.js - API endpoint for excavator bookings
+// pages/api/book-container.ts - API endpoint for container bookings
+import { NextApiRequest, NextApiResponse } from 'next';
 import { checkAvailability, createBooking } from '../../lib/calendar';
 import { createOrder } from '../../lib/orders';
 import { sendOrderConfirmationEmail, sendAdminNotificationEmail } from '../../lib/email';
 
-export default async function handler(req, res) {
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
@@ -12,7 +13,7 @@ export default async function handler(req, res) {
     const { customerData, dateTime, durationHours = 1 } = req.body;
     
     // Log the incoming data for debugging
-    console.log('Received excavator booking request:', {
+    console.log('Received container booking request:', {
       customerData: customerData ? { ...customerData, message: customerData.message ? '...' : undefined } : null,
       dateTime,
       durationHours
@@ -25,11 +26,11 @@ export default async function handler(req, res) {
       });
     }
 
-    // Ensure service type is set to excavators
-    customerData.serviceType = 'excavators';
+    // Ensure service type is set to containers
+    customerData.serviceType = 'containers';
 
     // Check availability first
-    const isAvailable = await checkAvailability(dateTime, durationHours, 'excavators');
+    const isAvailable = await checkAvailability(dateTime, durationHours, 'containers');
     
     if (!isAvailable) {
       return res.status(409).json({ 
@@ -38,19 +39,19 @@ export default async function handler(req, res) {
     }
 
     // Create the calendar booking
-    let calendarBooking = null;
-    let calendarError = null;
+    let calendarBooking: any = null;
+    let calendarError: string | null = null;
 
     try {
       calendarBooking = await createBooking(customerData, dateTime, durationHours);
-    } catch (error) {
+    } catch (error: any) {
       console.error('Calendar booking error:', error);
       calendarError = error.message;
       // Continue with order creation even if calendar fails
     }
 
     // Create the order in Firestore
-    let orderId = null;
+    let orderId: string | null = null;
     try {
       // Convert dateTime string to Date object for orderDate
       const orderDate = new Date(dateTime);
@@ -61,28 +62,28 @@ export default async function handler(req, res) {
         calendarEventLink: calendarBooking?.eventLink
       };
       
-      console.log('Creating excavator order with data:', {
+      console.log('Creating container order with data:', {
         ...formattedCustomerData,
         message: formattedCustomerData.message ? '...' : undefined
       });
 
       orderId = await createOrder(formattedCustomerData);
-    } catch (error) {
-      console.error('Excavator order creation error:', error);
+    } catch (error: any) {
+      console.error('Container order creation error:', error);
       console.error('Error details:', error.stack);
       
       // If order creation fails but calendar was created, try to delete the calendar event
       if (calendarBooking?.eventId) {
         try {
           const { deleteBooking } = await import('../../lib/calendar');
-          await deleteBooking(calendarBooking.eventId, 'excavators');
-        } catch (deleteError) {
+          await deleteBooking(calendarBooking.eventId, 'containers');
+        } catch (deleteError: any) {
           console.error('Failed to rollback calendar event:', deleteError);
         }
       }
 
       return res.status(500).json({ 
-        error: 'Failed to create excavator order',
+        error: 'Failed to create container order',
         details: error.message 
       });
     }
@@ -93,11 +94,11 @@ export default async function handler(req, res) {
       customerName: `${customerData.firstName} ${customerData.lastName}`,
       firstName: customerData.firstName,
       lastName: customerData.lastName,
-      serviceType: 'excavators',
+      serviceType: 'containers',
       orderDate: new Date(dateTime).toLocaleDateString('cs-CZ'),
       startTime: customerData.startTime,
       endTime: customerData.endTime,
-      excavatorType: customerData.excavatorType,
+      containerSize: customerData.containerSize,
       address: customerData.address,
       city: customerData.city,
       zipCode: customerData.zipCode,
@@ -125,17 +126,17 @@ export default async function handler(req, res) {
     // Return success response
     res.status(200).json({
       success: true,
-      message: 'Excavator booking created successfully!',
+      message: 'Container booking created successfully!',
       orderId: orderId,
       booking: calendarBooking,
       calendarWarning: calendarError ? `Order created but calendar sync failed: ${calendarError}` : null
     });
 
-  } catch (error) {
-    console.error('Excavator booking API error:', error);
+  } catch (error: any) {
+    console.error('Container booking API error:', error);
     console.error('Error stack:', error.stack);
     res.status(500).json({ 
-      error: 'Failed to process excavator booking',
+      error: 'Failed to process container booking',
       details: error.message,
       stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
     });

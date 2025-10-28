@@ -11,10 +11,10 @@ export default function Footer() {
           <div className="flex items-center gap-3 text-gray-dark-text hover:text-red-400 transition-colors duration-300">
             <span className="text-red-500 text-lg">✉</span>
             <a 
-              href="mailto:info@marpro.cz" 
+              href="mailto:marprostav@outlook.cz" 
               className="text-sm sm:text-base font-medium tracking-wide hover:underline"
             >
-              info@marpro.cz
+              marprostav@outlook.cz
             </a>
           </div>
           
@@ -22,10 +22,10 @@ export default function Footer() {
           <div className="flex items-center gap-3 text-gray-dark-text hover:text-red-400 transition-colors duration-300">
             <span className="text-red-500 text-lg">📞</span>
             <a 
-              href="tel:+420123456789" 
+              href="tel:+420607428667" 
               className="text-sm sm:text-base font-medium tracking-wide hover:underline"
             >
-              +420 123 456 789
+              +420 607 428 667
             </a>
           </div>
         </div>

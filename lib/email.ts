@@ -90,7 +90,7 @@ export async function sendOrderConfirmationEmail(params: SendOrderConfirmationPa
  */
 export async function sendAdminNotificationEmail(params: SendOrderConfirmationParams) {
   try {
-    const adminEmail = process.env.ADMIN_EMAIL || 'sergeevnakseniia9@gmail.com';
+    const adminEmail = process.env.ADMIN_EMAIL || 'marprostav@outlook.cz';
 
     const htmlContent = `
       <!DOCTYPE html>

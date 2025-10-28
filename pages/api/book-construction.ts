@@ -1,9 +1,10 @@
-// pages/api/book-construction.js - API endpoint for construction bookings
+// pages/api/book-construction.ts - API endpoint for construction bookings
+import { NextApiRequest, NextApiResponse } from 'next';
 import { checkAvailability, createBooking } from '../../lib/calendar';
 import { createOrder } from '../../lib/orders';
 import { sendOrderConfirmationEmail, sendAdminNotificationEmail } from '../../lib/email';
 
-export default async function handler(req, res) {
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
@@ -38,19 +39,19 @@ export default async function handler(req, res) {
     }
 
     // Create the calendar booking
-    let calendarBooking = null;
-    let calendarError = null;
+    let calendarBooking: any = null;
+    let calendarError: string | null = null;
 
     try {
       calendarBooking = await createBooking(customerData, dateTime, durationHours);
-    } catch (error) {
+    } catch (error: any) {
       console.error('Calendar booking error:', error);
       calendarError = error.message;
       // Continue with order creation even if calendar fails
     }
 
     // Create the order in Firestore
-    let orderId = null;
+    let orderId: string | null = null;
     try {
       // Convert dateTime string to Date object for orderDate
       const orderDate = new Date(dateTime);
@@ -67,7 +68,7 @@ export default async function handler(req, res) {
       });
 
       orderId = await createOrder(formattedCustomerData);
-    } catch (error) {
+    } catch (error: any) {
       console.error('Construction order creation error:', error);
       console.error('Error details:', error.stack);
       
@@ -76,7 +77,7 @@ export default async function handler(req, res) {
         try {
           const { deleteBooking } = await import('../../lib/calendar');
           await deleteBooking(calendarBooking.eventId, 'constructions');
-        } catch (deleteError) {
+        } catch (deleteError: any) {
           console.error('Failed to rollback calendar event:', deleteError);
         }
       }
@@ -131,7 +132,7 @@ export default async function handler(req, res) {
       calendarWarning: calendarError ? `Order created but calendar sync failed: ${calendarError}` : null
     });
 
-  } catch (error) {
+  } catch (error: any) {
     console.error('Construction booking API error:', error);
     console.error('Error stack:', error.stack);
     res.status(500).json({ 
