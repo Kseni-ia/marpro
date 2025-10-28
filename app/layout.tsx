@@ -5,6 +5,7 @@ import { AuthProvider } from '@/contexts/AuthContext'
 import ClientThemeProvider from '@/components/ClientThemeProvider'
 import { LanguageProvider } from '@/contexts/LanguageContext'
 import { ModalProvider } from '@/contexts/ModalContext'
+import GoogleAnalytics from '@/components/GoogleAnalytics'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -21,6 +22,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${inter.className} bg-gray-dark-bg`}>
+        <GoogleAnalytics gaId="G-7ZSNC2QFYH" />
         <ClientThemeProvider>
           <LanguageProvider>
             <ModalProvider>

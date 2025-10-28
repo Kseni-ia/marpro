@@ -51,8 +51,10 @@ const translations = {
     'constructions.view': 'View our construction projects',
     'constructions.demolishing': 'Demolishing',
     'constructions.demolishing.desc': 'Professional demolition and dismantling services',
-    'constructions.building': 'Building',
-    'constructions.building.desc': 'Construction and building services',
+    'constructions.installations': 'Installations',
+    'constructions.installations.desc': 'Professional installation services',
+    'constructions.plumbing': 'Plumbing & Heating',
+    'constructions.plumbing.desc': 'Expert plumbing and heating solutions',
     'constructions.order': 'Order construction',
     
     // Demolishing page
@@ -80,11 +82,18 @@ const translations = {
     'demolishing.equipment.desc': 'Latest demolition machinery and tools',
     'demolishing.order': 'Request Demolition Quote',
     
-    // Building page
-    'building.title': 'Building & Construction',
-    'building.coming': 'Coming Soon',
-    'building.desc': 'We are currently developing our building and construction services.',
-    'building.check': 'Please check back soon for more information.',
+    // Installations page
+    'installations.title': 'Installations',
+    'installations.subtitle': 'Professional installation services for your property',
+    'installations.plumbing': 'Plumbing & Heating',
+    'installations.plumbing.desc': 'Complete plumbing and heating installation services',
+    'installations.order': 'Request Installation Quote',
+    
+    // Plumbing page
+    'plumbing.title': 'Plumbing & Heating',
+    'plumbing.coming': 'Coming Soon',
+    'plumbing.desc': 'We are currently developing our plumbing and heating installation services.',
+    'plumbing.check': 'Please check back soon for more information.',
     
     // Common
     'common.back': 'Back',
@@ -201,8 +210,10 @@ const translations = {
     'constructions.view': 'Zobrazit naše stavební projekty',
     'constructions.demolishing': 'Demolice',
     'constructions.demolishing.desc': 'Profesionální demoliční a bouracích práce',
-    'constructions.building': 'Výstavba',
-    'constructions.building.desc': 'Stavební a konstrukční služby',
+    'constructions.installations': 'Instalace',
+    'constructions.installations.desc': 'Profesionální instalační služby',
+    'constructions.plumbing': 'Instalatérství a topení',
+    'constructions.plumbing.desc': 'Odborné instalatérské a topné řešení',
     'constructions.order': 'Objednat stavbu',
     
     // Demolishing page
@@ -230,11 +241,18 @@ const translations = {
     'demolishing.equipment.desc': 'Nejnovější demoliční stroje a nástroje',
     'demolishing.order': 'Požádat o cenovou nabídku demolice',
     
-    // Building page
-    'building.title': 'Výstavba a konstrukce',
-    'building.coming': 'Připravujeme',
-    'building.desc': 'Momentálně pracujeme na našich stavebních a konstrukčních službách.',
-    'building.check': 'Brzy zde najdete více informací.',
+    // Installations page
+    'installations.title': 'Instalace',
+    'installations.subtitle': 'Profesionální instalační služby pro vaši nemovitost',
+    'installations.plumbing': 'Instalatérství a topení',
+    'installations.plumbing.desc': 'Kompletní instalatérské a topné služby',
+    'installations.order': 'Požádat o cenovou nabídku instalace',
+    
+    // Plumbing page
+    'plumbing.title': 'Instalatérství a topení',
+    'plumbing.coming': 'Připravujeme',
+    'plumbing.desc': 'Momentálně pracujeme na našich instalatérských a topných službách.',
+    'plumbing.check': 'Brzy zde najdete více informací.',
     
     // Common
     'common.back': 'Zpět',
@@ -351,8 +369,10 @@ const translations = {
     'constructions.view': 'Посмотреть наши строительные проекты',
     'constructions.demolishing': 'Снос',
     'constructions.demolishing.desc': 'Профессиональные услуги по сносу и демонтажу',
-    'constructions.building': 'Строительство',
-    'constructions.building.desc': 'Строительные и конструкционные услуги',
+    'constructions.installations': 'Установки',
+    'constructions.installations.desc': 'Профессиональные установочные услуги',
+    'constructions.plumbing': 'Сантехника и отопление',
+    'constructions.plumbing.desc': 'Экспертные решения по сантехнике и отоплению',
     'constructions.order': 'Заказать строительство',
     
     // Demolishing page
@@ -380,11 +400,18 @@ const translations = {
     'demolishing.equipment.desc': 'Новейшие машины и инструменты для сноса',
     'demolishing.order': 'Запросить расценки на снос',
     
-    // Building page
-    'building.title': 'Строительство и конструкции',
-    'building.coming': 'Скоро',
-    'building.desc': 'В настоящее время мы разрабатываем наши строительные и конструкционные услуги.',
-    'building.check': 'Пожалуйста, вернитесь позже для получения дополнительной информации.',
+    // Installations page
+    'installations.title': 'Установки',
+    'installations.subtitle': 'Профессиональные установочные услуги для вашей собственности',
+    'installations.plumbing': 'Сантехника и отопление',
+    'installations.plumbing.desc': 'Полный комплекс услуг по установке сантехники и отопления',
+    'installations.order': 'Запросить расценки на установку',
+    
+    // Plumbing page
+    'plumbing.title': 'Сантехника и отопление',
+    'plumbing.coming': 'Скоро',
+    'plumbing.desc': 'В настоящее время мы разрабатываем наши услуги по установке сантехники и отопления.',
+    'plumbing.check': 'Пожалуйста, вернитесь позже для получения дополнительной информации.',
     
     // Common
     'common.back': 'Назад',

@@ -6,7 +6,7 @@ import Image from 'next/image'
 import { useLanguage } from '@/contexts/LanguageContext'
 import OrderForm from '@/components/OrderForm'
 
-const Building: React.FC = () => {
+const Plumbing: React.FC = () => {
   const [showOrderForm, setShowOrderForm] = useState(false)
   const router = useRouter()
   const { t } = useLanguage()
@@ -57,38 +57,38 @@ const Building: React.FC = () => {
           {/* Coming Soon Card */}
           <div className="bg-gradient-maintenance-dark border-2 border-gray-dark-border rounded-[16px] sm:rounded-[20px] p-6 sm:p-8 md:p-10 text-center shadow-[0_10px_30px_rgba(0,0,0,0.3)] relative overflow-hidden rotating-bg">
             
-            {/* Building Icon */}
+            {/* Plumbing Icon */}
             <div className="flex items-center justify-center mb-4">
-              <svg className="w-16 h-16 sm:w-20 sm:h-20 text-green-500 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+              <svg className="w-16 h-16 sm:w-20 sm:h-20 text-blue-500 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z" />
               </svg>
             </div>
 
             {/* Title */}
             <h1 className="text-2xl sm:text-3xl md:text-4xl text-gray-dark-text mb-3 relative uppercase tracking-[1px] sm:tracking-[2px] font-bold shadow-text">
-              {t('building.title')}
+              {t('plumbing.title')}
             </h1>
 
             {/* Coming Soon Badge */}
             <div className="inline-block mb-4">
-              <span className="bg-green-500/20 text-green-500 px-4 py-1.5 rounded-full text-xs sm:text-sm font-semibold uppercase tracking-wider border border-green-500/30">
-                {t('building.coming')}
+              <span className="bg-blue-500/20 text-blue-500 px-4 py-1.5 rounded-full text-xs sm:text-sm font-semibold uppercase tracking-wider border border-blue-500/30">
+                {t('plumbing.coming')}
               </span>
             </div>
 
             {/* Description */}
             <p className="text-gray-dark-textSecondary text-sm sm:text-base md:text-lg mb-2">
-              {t('building.desc')}
+              {t('plumbing.desc')}
             </p>
             <p className="text-gray-dark-textSecondary text-sm sm:text-base">
-              {t('building.check')}
+              {t('plumbing.check')}
             </p>
 
             {/* Decorative Elements */}
             <div className="mt-6 flex justify-center gap-3">
-              <div className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse"></div>
-              <div className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse" style={{ animationDelay: '0.2s' }}></div>
-              <div className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse" style={{ animationDelay: '0.4s' }}></div>
+              <div className="w-1.5 h-1.5 bg-blue-500 rounded-full animate-pulse"></div>
+              <div className="w-1.5 h-1.5 bg-blue-500 rounded-full animate-pulse" style={{ animationDelay: '0.2s' }}></div>
+              <div className="w-1.5 h-1.5 bg-blue-500 rounded-full animate-pulse" style={{ animationDelay: '0.4s' }}></div>
             </div>
           </div>
 
@@ -98,7 +98,7 @@ const Building: React.FC = () => {
               onClick={() => setShowOrderForm(true)}
               className="rounded-[14px] px-6 sm:px-8 py-3 sm:py-4 bg-gradient-button-dark text-gray-dark-text font-semibold shadow-[0_4px_12px_rgba(0,0,0,0.3)] hover:shadow-[0_8px_16px_rgba(0,0,0,0.4)] transition-all text-base sm:text-lg hover:scale-105"
             >
-              {t('constructions.order')}
+              {t('installations.order')}
             </button>
           </div>
 
@@ -114,4 +114,4 @@ const Building: React.FC = () => {
   )
 }
 
-export default Building
+export default Plumbing
