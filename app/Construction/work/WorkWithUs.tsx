@@ -52,9 +52,15 @@ export default function WorkWithUs() {
     try {
       // Save application to Firestore
       await addDoc(collection(db, 'workApplications'), {
-        ...formData,
-        submittedAt: serverTimestamp(),
-        status: 'pending'
+        firstName: formData.firstName,
+        lastName: formData.lastName,
+        email: formData.email,
+        phone: formData.phone,
+        serviceType: 'constructions',
+        message: formData.message,
+        status: 'new',
+        createdAt: serverTimestamp(),
+        notes: ''
       });
 
       setFormStatus({ type: 'success', message: t('work.success') });

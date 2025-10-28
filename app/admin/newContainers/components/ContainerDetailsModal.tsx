@@ -3,6 +3,7 @@
 import React, { useState } from 'react'
 import { X, Edit2 } from 'lucide-react'
 import { Container, updateContainer } from '@/lib/containers'
+import { CONTAINER_PRESET_DESCRIPTIONS } from '@/lib/containerPresets'
 
 interface ContainerDetailsModalProps {
   container: Container
@@ -21,10 +22,13 @@ const CONTAINER_IMAGES = [
 export default function ContainerDetailsModal({ container, onClose, onUpdate }: ContainerDetailsModalProps) {
   const [editingField, setEditingField] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
+  const initialPresetIndex = CONTAINER_PRESET_DESCRIPTIONS.indexOf(container.description || '')
+  const [descriptionMode, setDescriptionMode] = useState<'preset' | 'custom'>(initialPresetIndex >= 0 ? 'preset' : 'custom')
+  const [selectedPreset, setSelectedPreset] = useState<number>(initialPresetIndex >= 0 ? initialPresetIndex : 0)
   const [formData, setFormData] = useState({
     volume: container.volume,
     dims: container.dims,
-    description: container.description.en || '',
+    description: container.description || '',
     price: container.price,
     isActive: container.isActive,
     image: container.image || 'container-1'
@@ -44,19 +48,13 @@ export default function ContainerDetailsModal({ container, onClose, onUpdate }: 
       if (field === 'dims') updateData.dims = formData.dims
       if (field === 'price') updateData.price = Number(formData.price)
       if (field === 'image') updateData.image = formData.image
-      if (field === 'description') {
-        updateData.description = {
-          en: formData.description,
-          cs: formData.description,
-          ru: formData.description
-        }
-      }
+      if (field === 'description') updateData.description = formData.description
       
       await updateContainer(container.id, updateData)
       
       // Update local container object immediately
       Object.assign(container, updateData)
-      if (updateData.description) {
+      if (typeof updateData.description === 'string') {
         container.description = updateData.description
       }
       
@@ -74,7 +72,7 @@ export default function ContainerDetailsModal({ container, onClose, onUpdate }: 
     setFormData({
       volume: container.volume,
       dims: container.dims,
-      description: container.description.en || '',
+      description: container.description || '',
       price: container.price,
       isActive: container.isActive,
       image: container.image || 'container-1'
@@ -291,7 +289,7 @@ export default function ContainerDetailsModal({ container, onClose, onUpdate }: 
             )}
           </div>
 
-          {/* Description - Optional */}
+          {/* Description - Optional with Presets */}
           <div 
             className="group relative bg-gradient-to-br from-gray-800/60 to-gray-900/60 backdrop-blur-sm p-5 rounded-xl cursor-pointer hover:from-gray-800/80 hover:to-gray-900/80 transition-all duration-300 border border-gray-700/30 hover:border-red-500/50 shadow-lg hover:shadow-red-900/20"
             onClick={() => editingField !== 'description' && setEditingField('description')}
@@ -304,13 +302,44 @@ export default function ContainerDetailsModal({ container, onClose, onUpdate }: 
             </label>
             {editingField === 'description' ? (
               <div className="space-y-3" onClick={(e) => e.stopPropagation()}>
+                <div className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={() => { setDescriptionMode('preset'); setFormData(prev => ({ ...prev, description: CONTAINER_PRESET_DESCRIPTIONS[selectedPreset] || '' })) }}
+                    className={`px-2 py-1 rounded border text-xs ${descriptionMode === 'preset' ? 'bg-red-900/40 border-red-700 text-white' : 'bg-gray-800/40 border-gray-700 text-gray-300'}`}
+                  >
+                    Preset
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setDescriptionMode('custom')}
+                    className={`px-2 py-1 rounded border text-xs ${descriptionMode === 'custom' ? 'bg-red-900/40 border-red-700 text-white' : 'bg-gray-800/40 border-gray-700 text-gray-300'}`}
+                  >
+                    Custom
+                  </button>
+                </div>
+                {descriptionMode === 'preset' && (
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                    {CONTAINER_PRESET_DESCRIPTIONS.map((text, idx) => (
+                      <button
+                        key={idx}
+                        type="button"
+                        onClick={() => { setSelectedPreset(idx); setFormData(prev => ({ ...prev, description: text })) }}
+                        className={`text-left px-3 py-2 rounded-lg border text-xs ${selectedPreset === idx ? 'border-red-600 bg-red-950/30 text-white' : 'border-gray-700 bg-gray-800/40 text-gray-300 hover:border-gray-600'}`}
+                      >
+                        {text}
+                      </button>
+                    ))}
+                  </div>
+                )}
                 <textarea
                   name="description"
                   value={formData.description}
                   onChange={handleChange}
                   rows={3}
                   placeholder="Add an optional description for this container..."
-                  className="w-full px-4 py-3 bg-gray-900/80 border border-gray-600 rounded-lg text-white text-sm focus:outline-none focus:border-red-500 focus:ring-2 focus:ring-red-500/20 placeholder-gray-500"
+                  disabled={descriptionMode === 'preset'}
+                  className={`w-full px-4 py-3 bg-gray-900/80 border border-gray-600 rounded-lg text-white text-sm focus:outline-none focus:border-red-500 focus:ring-2 focus:ring-red-500/20 placeholder-gray-500 ${descriptionMode === 'preset' ? 'opacity-60 cursor-not-allowed' : ''}`}
                 />
                 <div className="flex gap-2">
                   <button
@@ -329,7 +358,7 @@ export default function ContainerDetailsModal({ container, onClose, onUpdate }: 
               </div>
             ) : (
               <p className="text-sm text-gray-300 leading-relaxed">
-                {container.description.en || <span className="text-gray-500 italic">No description added</span>}
+                {container.description || <span className="text-gray-500 italic">No description added</span>}
               </p>
             )}
           </div>

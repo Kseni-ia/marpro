@@ -3,6 +3,7 @@
 import React, { useState } from 'react'
 import { X } from 'lucide-react'
 import { addContainer } from '@/lib/containers'
+import { CONTAINER_PRESET_DESCRIPTIONS } from '@/lib/containerPresets'
 
 interface AddContainerModalProps {
   onClose: () => void
@@ -14,12 +15,12 @@ export default function AddContainerModal({ onClose, onSuccess }: AddContainerMo
   const [formData, setFormData] = useState({
     volume: '',
     dims: '',
-    descriptionEn: '',
-    descriptionCs: '',
-    descriptionRu: '',
+    description: CONTAINER_PRESET_DESCRIPTIONS[0] || '',
     price: '',
     isActive: true
   })
+  const [descriptionMode, setDescriptionMode] = useState<'preset' | 'custom'>('preset')
+  const [selectedPreset, setSelectedPreset] = useState<number>(0)
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -29,11 +30,7 @@ export default function AddContainerModal({ onClose, onSuccess }: AddContainerMo
       await addContainer({
         volume: Number(formData.volume),
         dims: formData.dims,
-        description: {
-          en: formData.descriptionEn,
-          cs: formData.descriptionCs,
-          ru: formData.descriptionRu
-        },
+        description: formData.description,
         price: Number(formData.price),
         isActive: formData.isActive
       })
@@ -119,51 +116,49 @@ export default function AddContainerModal({ onClose, onSuccess }: AddContainerMo
             />
           </div>
 
-          {/* Description English */}
           <div>
             <label className="block text-xs font-medium text-gray-dark-text mb-1">
-              Description (English) *
+              Description *
             </label>
+            <div className="flex items-center gap-2 mb-2 text-xs">
+              <button
+                type="button"
+                onClick={() => { setDescriptionMode('preset'); setFormData(prev => ({ ...prev, description: CONTAINER_PRESET_DESCRIPTIONS[selectedPreset] || '' })) }}
+                className={`px-2 py-1 rounded border ${descriptionMode === 'preset' ? 'bg-red-900/40 border-red-700 text-white' : 'bg-gray-800/40 border-gray-700 text-gray-300'}`}
+              >
+                Preset
+              </button>
+              <button
+                type="button"
+                onClick={() => setDescriptionMode('custom')}
+                className={`px-2 py-1 rounded border ${descriptionMode === 'custom' ? 'bg-red-900/40 border-red-700 text-white' : 'bg-gray-800/40 border-gray-700 text-gray-300'}`}
+              >
+                Custom
+              </button>
+            </div>
+            {descriptionMode === 'preset' && (
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 mb-2">
+                {CONTAINER_PRESET_DESCRIPTIONS.map((text, idx) => (
+                  <button
+                    key={idx}
+                    type="button"
+                    onClick={() => { setSelectedPreset(idx); setFormData(prev => ({ ...prev, description: text })) }}
+                    className={`text-left px-3 py-2 rounded-lg border text-xs ${selectedPreset === idx ? 'border-red-600 bg-red-950/30 text-white' : 'border-gray-700 bg-gray-800/40 text-gray-300 hover:border-gray-600'}`}
+                  >
+                    {text}
+                  </button>
+                ))}
+              </div>
+            )}
             <textarea
-              name="descriptionEn"
-              value={formData.descriptionEn}
+              name="description"
+              value={formData.description}
               onChange={handleChange}
               required
               rows={2}
-              className="w-full px-3 py-2 bg-gray-dark-card border border-gray-dark-border rounded-lg text-gray-dark-text text-sm focus:outline-none focus:border-red-500"
+              disabled={descriptionMode === 'preset'}
+              className={`w-full px-3 py-2 bg-gray-dark-card border border-gray-dark-border rounded-lg text-gray-dark-text text-sm focus:outline-none focus:border-red-500 ${descriptionMode === 'preset' ? 'opacity-60 cursor-not-allowed' : ''}`}
               placeholder="Perfect for small renovations and household waste"
-            />
-          </div>
-
-          {/* Description Czech */}
-          <div>
-            <label className="block text-xs font-medium text-gray-dark-text mb-1">
-              Description (Czech) *
-            </label>
-            <textarea
-              name="descriptionCs"
-              value={formData.descriptionCs}
-              onChange={handleChange}
-              required
-              rows={2}
-              className="w-full px-3 py-2 bg-gray-dark-card border border-gray-dark-border rounded-lg text-gray-dark-text text-sm focus:outline-none focus:border-red-500"
-              placeholder="Ideální pro malé rekonstrukce a domovní odpad"
-            />
-          </div>
-
-          {/* Description Russian */}
-          <div>
-            <label className="block text-xs font-medium text-gray-dark-text mb-1">
-              Description (Russian) *
-            </label>
-            <textarea
-              name="descriptionRu"
-              value={formData.descriptionRu}
-              onChange={handleChange}
-              required
-              rows={2}
-              className="w-full px-3 py-2 bg-gray-dark-card border border-gray-dark-border rounded-lg text-gray-dark-text text-sm focus:outline-none focus:border-red-500"
-              placeholder="Идеально подходит для небольших ремонтов и бытовых отходов"
             />
           </div>
 

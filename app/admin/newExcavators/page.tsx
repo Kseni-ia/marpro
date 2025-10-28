@@ -52,9 +52,9 @@ export default function AddRemoveExcavator() {
       
       {/* Main Content Area */}
       <div className="relative md:ml-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 pt-24 sm:pt-20 md:pt-28 pb-24 md:pb-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 pt-16 sm:pt-12 md:pt-16 pb-24 md:pb-8">
           {/* Header */}
-          <div className="mb-8">
+          <div className="mb-8 text-center">
             <h1 className="text-2xl sm:text-3xl font-bold text-gray-dark-text uppercase tracking-wider mb-2">
               Excavator Management
             </h1>

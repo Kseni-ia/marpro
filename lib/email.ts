@@ -61,7 +61,7 @@ export async function sendOrderConfirmationEmail(params: SendOrderConfirmationPa
     console.log(`Sending confirmation email to: ${params.customerEmail}`);
 
     const result = await resend.emails.send({
-      from: 'Marpro <onboarding@resend.dev>',
+      from: 'Marpro <noreply@marpro-stav.cz>',
       to: params.customerEmail,
       subject: subject,
       html: htmlContent,
@@ -127,7 +127,7 @@ export async function sendAdminNotificationEmail(params: SendOrderConfirmationPa
     `;
 
     const result = await resend.emails.send({
-      from: 'Marpro Orders <onboarding@resend.dev>',
+      from: 'Marpro Orders <orders@marpro-stav.cz>',
       to: adminEmail,
       subject: `Nová objednávka - ${params.serviceType}`,
       html: htmlContent,
@@ -179,7 +179,7 @@ export async function sendOrderCompletionEmail(params: SendOrderConfirmationPara
     console.log(`Sending completion email to: ${params.customerEmail}`);
 
     const result = await resend.emails.send({
-      from: 'Marpro <onboarding@resend.dev>',
+      from: 'Marpro <noreply@marpro-stav.cz>',
       to: params.customerEmail,
       subject: subject,
       html: htmlContent,

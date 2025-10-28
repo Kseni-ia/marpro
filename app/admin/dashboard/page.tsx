@@ -14,7 +14,7 @@ export default function AdminDashboard() {
   const router = useRouter()
   const [orders, setOrders] = useState<Order[]>([])
   const [loading, setLoading] = useState(true)
-  const [filter, setFilter] = useState<'all' | Order['status']>('all')
+  const [filter, setFilter] = useState<'all' | Order['status']>('pending')
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null)
   const [showEquipmentSchedule, setShowEquipmentSchedule] = useState(false)
   const [processingOrder, setProcessingOrder] = useState<Order | null>(null)
@@ -213,7 +213,7 @@ export default function AdminDashboard() {
       {/* Header */}
       <div className="relative md:ml-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="py-3 sm:py-4 pt-24 sm:pt-20 md:pt-28">
+          <div className="py-3 sm:py-4 pt-16 sm:pt-12 md:pt-16">
             {/* Title centered */}
             <div className="flex justify-center items-center">
               <h1 
@@ -247,28 +247,28 @@ export default function AdminDashboard() {
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 pb-24 md:pb-8 md:ml-16">
         {/* Stats */}
-        <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 lg:gap-6 mb-6 sm:mb-8">
-          <div className="bg-gradient-card-dark border-2 border-gray-dark-border rounded-lg p-3 sm:p-4 lg:p-6 shadow-[0_10px_30px_rgba(0,0,0,0.3)]">
-            <h3 className="text-xs sm:text-sm font-medium text-gray-dark-textSecondary uppercase tracking-wider">Total Orders</h3>
-            <p className="text-xl sm:text-2xl font-bold text-gray-dark-text">{orders.length}</p>
-          </div>
-          <div className="bg-gradient-card-dark border-2 border-gray-dark-border rounded-lg p-3 sm:p-4 lg:p-6 shadow-[0_10px_30px_rgba(0,0,0,0.3)]">
-            <h3 className="text-xs sm:text-sm font-medium text-gray-dark-textSecondary uppercase tracking-wider">Pending</h3>
-            <p className="text-xl sm:text-2xl font-bold text-yellow-400">
-              {orders.filter(o => o.status === 'pending').length}
-            </p>
-          </div>
-          <div className="bg-gradient-card-dark border-2 border-gray-dark-border rounded-lg p-3 sm:p-4 lg:p-6 shadow-[0_10px_30px_rgba(0,0,0,0.3)]">
-            <h3 className="text-xs sm:text-sm font-medium text-gray-dark-textSecondary uppercase tracking-wider">In Progress</h3>
-            <p className="text-xl sm:text-2xl font-bold text-blue-400">
+        <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-2 sm:gap-3 mb-4 sm:mb-6">
+          <div className="bg-gradient-card-dark border-2 border-gray-dark-border rounded-lg p-2 sm:p-3 shadow-[0_10px_30px_rgba(0,0,0,0.3)] text-center">
+            <h3 className="text-[10px] sm:text-xs font-medium text-gray-dark-textSecondary uppercase tracking-wider">In Progress</h3>
+            <p className="text-lg sm:text-xl font-bold text-blue-400">
               {orders.filter(o => o.status === 'in_progress').length}
             </p>
           </div>
-          <div className="bg-gradient-card-dark border-2 border-gray-dark-border rounded-lg p-3 sm:p-4 lg:p-6 shadow-[0_10px_30px_rgba(0,0,0,0.3)]">
-            <h3 className="text-xs sm:text-sm font-medium text-gray-dark-textSecondary uppercase tracking-wider">Completed</h3>
-            <p className="text-xl sm:text-2xl font-bold text-green-400">
+          <div className="bg-gradient-card-dark border-2 border-gray-dark-border rounded-lg p-2 sm:p-3 shadow-[0_10px_30px_rgba(0,0,0,0.3)] text-center">
+            <h3 className="text-[10px] sm:text-xs font-medium text-gray-dark-textSecondary uppercase tracking-wider">Pending</h3>
+            <p className="text-lg sm:text-xl font-bold text-yellow-400">
+              {orders.filter(o => o.status === 'pending').length}
+            </p>
+          </div>
+          <div className="bg-gradient-card-dark border-2 border-gray-dark-border rounded-lg p-2 sm:p-3 shadow-[0_10px_30px_rgba(0,0,0,0.3)] text-center">
+            <h3 className="text-[10px] sm:text-xs font-medium text-gray-dark-textSecondary uppercase tracking-wider">Completed</h3>
+            <p className="text-lg sm:text-xl font-bold text-green-400">
               {orders.filter(o => o.status === 'completed').length}
             </p>
+          </div>
+          <div className="bg-gradient-card-dark border-2 border-gray-dark-border rounded-lg p-2 sm:p-3 shadow-[0_10px_30px_rgba(0,0,0,0.3)] text-center">
+            <h3 className="text-[10px] sm:text-xs font-medium text-gray-dark-textSecondary uppercase tracking-wider">Total Orders</h3>
+            <p className="text-lg sm:text-xl font-bold text-gray-dark-text">{orders.length}</p>
           </div>
         </div>
 
@@ -276,16 +276,6 @@ export default function AdminDashboard() {
         {/* Filters */}
         <div className="bg-gradient-card-dark border-2 border-gray-dark-border rounded-lg p-3 sm:p-4 mb-4 sm:mb-6 shadow-[0_10px_30px_rgba(0,0,0,0.3)]">
           <div className="grid grid-cols-3 sm:flex sm:flex-wrap gap-2">
-            <button
-              onClick={() => setFilter('all')}
-              className={`px-2 sm:px-4 py-1.5 sm:py-2 rounded-lg text-xs sm:text-sm font-medium transition-all ${
-                filter === 'all'
-                  ? 'bg-gradient-to-r from-red-600 to-red-700 text-white shadow-lg'
-                  : 'bg-gray-dark-bg text-gray-dark-textSecondary hover:bg-gray-dark-accent border border-gray-dark-border'
-              }`}
-            >
-              All
-            </button>
             <button
               onClick={() => setFilter('pending')}
               className={`px-2 sm:px-4 py-1.5 sm:py-2 rounded-lg text-xs sm:text-sm font-medium transition-all ${
@@ -318,13 +308,23 @@ export default function AdminDashboard() {
             </button>
             <button
               onClick={() => setFilter('cancelled')}
-              className={`px-2 sm:px-4 py-1.5 sm:py-2 rounded-lg text-xs sm:text-sm font-medium transition-all col-span-2 sm:col-auto ${
+              className={`px-2 sm:px-4 py-1.5 sm:py-2 rounded-lg text-xs sm:text-sm font-medium transition-all ${
                 filter === 'cancelled'
                   ? 'bg-gradient-to-r from-red-600 to-red-700 text-white shadow-lg'
                   : 'bg-gray-dark-bg text-gray-dark-textSecondary hover:bg-gray-dark-accent border border-gray-dark-border'
               }`}
             >
               Cancelled
+            </button>
+            <button
+              onClick={() => setFilter('all')}
+              className={`px-2 sm:px-4 py-1.5 sm:py-2 rounded-lg text-xs sm:text-sm font-medium transition-all col-span-2 sm:col-auto ${
+                filter === 'all'
+                  ? 'bg-gradient-to-r from-red-600 to-red-700 text-white shadow-lg'
+                  : 'bg-gray-dark-bg text-gray-dark-textSecondary hover:bg-gray-dark-accent border border-gray-dark-border'
+              }`}
+            >
+              All
             </button>
           </div>
         </div>

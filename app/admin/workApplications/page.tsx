@@ -1,13 +1,13 @@
 'use client'
 
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useAuth } from '@/contexts/AuthContext'
 import { useRouter } from 'next/navigation'
 import Image from 'next/image'
 import NavigationBar from '@/app/admin/NavigationBar'
-import ContainersList from './components/ContainersList'
+import ApplicationsList from './components/ApplicationsList'
 
-export default function AddRemoveContainer() {
+export default function WorkApplicationsPage() {
   const { isAuthenticated, logout, loading: authLoading } = useAuth()
   const router = useRouter()
 
@@ -32,7 +32,7 @@ export default function AddRemoveContainer() {
 
   return (
     <div className="min-h-screen bg-gradient-main-dark relative">
-      {/* Logo Container - Same as main page */}
+      {/* Logo Container */}
       <div className="absolute top-0 left-0 sm:-top-8 sm:-left-5 z-10 pointer-events-none">
         <Image 
           src="/logo.svg" 
@@ -56,15 +56,15 @@ export default function AddRemoveContainer() {
           {/* Header */}
           <div className="mb-8 text-center">
             <h1 className="text-2xl sm:text-3xl font-bold text-gray-dark-text uppercase tracking-wider mb-2">
-              Container Management
+              Work Applications
             </h1>
             <p className="text-gray-dark-textSecondary text-sm sm:text-base">
-              Manage containers displayed on the main website
+              Manage all form submissions from customers
             </p>
           </div>
 
-          {/* Containers List */}
-          <ContainersList />
+          {/* Applications List */}
+          <ApplicationsList />
         </div>
       </div>
     </div>

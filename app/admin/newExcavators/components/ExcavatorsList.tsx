@@ -55,20 +55,6 @@ export default function ExcavatorsList() {
 
   return (
     <>
-      {/* Add New Excavator Button - Moved to top */}
-      <button 
-        onClick={() => setShowAddModal(true)}
-        className="w-full bg-gradient-to-br from-gray-800/40 to-gray-900/40 backdrop-blur-sm border-2 border-dashed border-gray-600/50 hover:border-red-500/70 rounded-xl p-4 transition-all duration-300 flex items-center justify-center gap-3 text-gray-400 hover:text-white group mb-6 shadow-lg hover:shadow-red-900/20 hover:scale-[1.01]"
-      >
-        <div className="w-12 h-12 bg-gradient-to-br from-red-950/50 to-red-900/30 rounded-xl flex items-center justify-center group-hover:from-red-900/70 group-hover:to-red-800/50 transition-all duration-300 shadow-lg">
-          <Plus className="w-6 h-6 text-red-400 group-hover:text-red-300" />
-        </div>
-        <div className="text-left">
-          <span className="text-sm font-semibold block">Add New Excavator</span>
-          <span className="text-xs text-gray-500 group-hover:text-gray-400">Create a new excavator option</span>
-        </div>
-      </button>
-
       {showAddModal && (
         <AddExcavatorModal
           onClose={() => setShowAddModal(false)}
@@ -87,7 +73,7 @@ export default function ExcavatorsList() {
       )}
 
       {/* Grid Layout - Modern Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 mb-6">
         {excavators.map((excavator) => (
           <div
             key={excavator.id}
@@ -201,6 +187,20 @@ export default function ExcavatorsList() {
           </div>
         ))}
       </div>
+
+      {/* Add New Excavator Button - Moved to bottom */}
+      <button 
+        onClick={() => setShowAddModal(true)}
+        className="w-full bg-gradient-to-br from-gray-800/40 to-gray-900/40 backdrop-blur-sm border-2 border-dashed border-gray-600/50 hover:border-red-500/70 rounded-xl p-4 transition-all duration-300 flex items-center justify-center gap-3 text-gray-400 hover:text-white group shadow-lg hover:shadow-red-900/20 hover:scale-[1.01]"
+      >
+        <div className="w-12 h-12 bg-gradient-to-br from-red-950/50 to-red-900/30 rounded-xl flex items-center justify-center group-hover:from-red-900/70 group-hover:to-red-800/50 transition-all duration-300 shadow-lg">
+          <Plus className="w-6 h-6 text-red-400 group-hover:text-red-300" />
+        </div>
+        <div className="text-left">
+          <span className="text-sm font-semibold block">Add New Excavator</span>
+          <span className="text-xs text-gray-500 group-hover:text-gray-400">Create a new excavator option</span>
+        </div>
+      </button>
     </>
   )
 }

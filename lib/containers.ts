@@ -5,11 +5,7 @@ export interface Container {
   id: string
   volume: number
   dims: string
-  description: {
-    en: string
-    cs: string
-    ru: string
-  }
+  description: string
   price: number // in CZK
   isActive: boolean
   image?: string // container image ID
@@ -25,11 +21,22 @@ export const getAllContainers = async (): Promise<Container[]> => {
     const containers: Container[] = []
     
     querySnapshot.forEach((doc) => {
-      containers.push({
+      const data: any = doc.data()
+      const normalizedDescription = typeof data.description === 'string'
+        ? data.description
+        : (data.description?.en || data.description?.cs || data.description?.ru || '')
+
+      const item: Container = {
         id: doc.id,
-        ...doc.data(),
-        createdAt: doc.data().createdAt?.toDate() || new Date()
-      } as Container)
+        volume: data.volume,
+        dims: data.dims,
+        description: normalizedDescription,
+        price: data.price,
+        isActive: data.isActive,
+        image: data.image,
+        createdAt: data.createdAt?.toDate() || new Date()
+      }
+      containers.push(item)
     })
     
     return containers.sort((a, b) => a.volume - b.volume)

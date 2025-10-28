@@ -23,15 +23,8 @@ const ContainerCard: React.FC<ContainerCardProps> = ({ volume, dims, description
             <span className="text-xl sm:text-2xl md:text-3xl text-gray-dark-textSecondary">m</span>
             <sup className="text-base sm:text-lg md:text-xl -translate-y-1 inline-block text-gray-dark-textSecondary">3</sup>
           </div>
-          <span className="text-gray-dark-textSecondary mt-1 block tracking-wide text-sm sm:text-base">container</span>
         </div>
         <div className="text-left sm:text-right">
-          <div className="inline-flex items-center gap-2 px-2 sm:px-3 py-1 sm:py-1.5 rounded-full bg-gray-dark-card/80 border border-gray-dark-border text-xs sm:text-sm text-gray-dark-textSecondary shadow-[0_2px_6px_rgba(0,0,0,0.2)]">
-            <span className="relative inline-block w-8 sm:w-10 h-4 sm:h-5 rounded-full bg-gray-dark-border">
-              <span className="absolute top-0.5 left-0.5 w-3 sm:w-4 h-3 sm:h-4 rounded-full bg-gray-dark-card border border-gray-dark-border shadow-sm"></span>
-            </span>
-            <span className="whitespace-nowrap">Narrow variant</span>
-          </div>
           <div className="text-gray-dark-textSecondary text-xs sm:text-sm mt-2">{dims}</div>
         </div>
       </div>
@@ -49,7 +42,7 @@ const ContainerCard: React.FC<ContainerCardProps> = ({ volume, dims, description
       </div>
       <div className="h-px w-full bg-gray-e8e dark:bg-gray-dark-border my-4"></div>
       <p className="text-gray-dark-textSecondary leading-relaxed text-sm sm:text-base relative z-10">{description}</p>
-      <div className="mt-4 sm:mt-5 flex flex-wrap items-center gap-3 sm:gap-4 relative z-10">
+      <div className="mt-4 sm:mt-5 flex flex-wrap items-center justify-center gap-3 sm:gap-4 relative z-10">
         <div className="px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl border-2 border-gray-dark-border bg-gray-dark-card text-gray-dark-text font-medium shadow-[0_2px_8px_rgba(0,0,0,0.2)] text-sm sm:text-base">
           {price}
         </div>
