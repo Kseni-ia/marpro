@@ -138,6 +138,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     res.status(500).json({ 
       error: 'Failed to process excavator booking',
       details: error.message,
+      hint: error.message.includes('Missing required environment variables') 
+        ? 'Google Calendar credentials are not configured. Please add GOOGLE_SERVICE_ACCOUNT_EMAIL and GOOGLE_PRIVATE_KEY in Netlify Site configuration > Environment variables.'
+        : 'Check server logs for more details.',
       stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
     });
   }

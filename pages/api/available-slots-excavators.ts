@@ -24,11 +24,15 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       availableSlots
     });
 
-  } catch (error) {
+  } catch (error: any) {
     console.error('Error fetching excavator available slots:', error);
+    console.error('Error stack:', error.stack);
     res.status(500).json({ 
       error: 'Failed to fetch available slots',
-      details: error.message 
+      details: error.message,
+      hint: error.message.includes('Missing required environment variables') 
+        ? 'Environment variables are not configured in Netlify. Please add them in Site configuration > Environment variables.'
+        : 'Check server logs for more details.'
     });
   }
 }
