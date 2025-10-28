@@ -75,7 +75,7 @@ Value: Europe/Prague
 #### Email Configuration (Resend API)
 ```
 Variable name: RESEND_API_KEY
-Value: re_46PRBge3_DQGe4A8Bevh2EBkXMA89hosY
+Value: [Your Resend API key from https://resend.com/api-keys]
 ```
 
 ```
