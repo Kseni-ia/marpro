@@ -42,17 +42,6 @@ const Installations: React.FC = () => {
 
       <div className="relative min-h-screen z-10">
         <div className="relative z-10 p-4 sm:p-6 md:p-10 animate-fade-in min-h-screen">
-          
-          {/* Back Button */}
-          <button
-            onClick={() => router.back()}
-            className="mb-4 sm:mb-6 flex items-center gap-2 text-gray-dark-textSecondary hover:text-gray-dark-text transition-colors"
-          >
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-            </svg>
-            {t('common.back')}
-          </button>
 
           {/* Page Title */}
           <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl text-gray-dark-text text-center mb-4 sm:mb-6 pb-3 sm:pb-4 relative uppercase tracking-[1px] sm:tracking-[2px] md:tracking-[3px] font-extrabold shadow-text">
@@ -60,17 +49,30 @@ const Installations: React.FC = () => {
             <span className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-[60px] sm:w-[80px] md:w-[100px] h-1 bg-gradient-to-r from-transparent via-blue-500 to-transparent animate-pulse-width"></span>
           </h1>
 
-          <p className="text-gray-dark-textSecondary text-center text-base sm:text-lg md:text-xl mb-8 sm:mb-10 md:mb-12 max-w-3xl mx-auto">
+          <p className="text-gray-dark-textSecondary text-center text-base sm:text-lg md:text-xl mb-3 max-w-3xl mx-auto">
             {t('installations.subtitle')}
           </p>
 
           {/* Installation Services Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8 max-w-5xl mx-auto mb-10">
             
+            {/* Back Button */}
+            <div className="md:col-span-2 mb-2">
+              <button
+                onClick={() => router.back()}
+                className="flex items-center gap-2 text-gray-dark-textSecondary hover:text-gray-dark-text transition-colors"
+              >
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                </svg>
+                {t('common.back')}
+              </button>
+            </div>
+            
             {/* Plumbing & Heating Card */}
             <div 
               className="bg-gradient-card-dark border-2 border-gray-dark-border rounded-[20px] sm:rounded-[25px] p-6 sm:p-8 md:p-10 transition-all duration-[400ms] shadow-[0_10px_30px_rgba(0,0,0,0.3)] relative overflow-hidden group hover:-translate-y-2 hover:scale-[1.02] hover:shadow-[0_20px_40px_rgba(0,0,0,0.4)] hover:bg-gradient-card-hover-dark cursor-pointer card-shine"
-              onClick={() => router.push('/Construction/installations/plumbing')}
+              onClick={() => setShowOrderForm(true)}
             >
               <div className="absolute -top-full -right-full w-[200%] h-[200%] bg-gradient-radial-hover-dark transition-all duration-500 group-hover:-top-1/2 group-hover:-right-1/2"></div>
               <div className="relative z-10">
@@ -87,30 +89,86 @@ const Installations: React.FC = () => {
                 </p>
                 <div className="mt-6 text-center">
                   <span className="text-blue-500 font-semibold text-sm uppercase tracking-wider group-hover:underline">
-                    {t('common.more')} →
+                    {t('common.order')} →
                   </span>
                 </div>
               </div>
             </div>
 
-            {/* Placeholder for future installation services */}
-            <div className="bg-gradient-card-dark border-2 border-gray-dark-border rounded-[20px] sm:rounded-[25px] p-6 sm:p-8 md:p-10 transition-all duration-[400ms] shadow-[0_10px_30px_rgba(0,0,0,0.3)] relative overflow-hidden opacity-50">
+            {/* Electrical Installation Card */}
+            <div 
+              className="bg-gradient-card-dark border-2 border-gray-dark-border rounded-[20px] sm:rounded-[25px] p-6 sm:p-8 md:p-10 transition-all duration-[400ms] shadow-[0_10px_30px_rgba(0,0,0,0.3)] relative overflow-hidden group hover:-translate-y-2 hover:scale-[1.02] hover:shadow-[0_20px_40px_rgba(0,0,0,0.4)] hover:bg-gradient-card-hover-dark cursor-pointer card-shine"
+              onClick={() => setShowOrderForm(true)}
+            >
+              <div className="absolute -top-full -right-full w-[200%] h-[200%] bg-gradient-radial-hover-dark transition-all duration-500 group-hover:-top-1/2 group-hover:-right-1/2"></div>
               <div className="relative z-10">
                 <div className="flex items-center justify-center mb-4">
-                  <svg className="w-16 h-16 sm:w-20 sm:h-20 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                  <svg className="w-16 h-16 sm:w-20 sm:h-20 text-yellow-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
                   </svg>
                 </div>
                 <h2 className="text-2xl sm:text-3xl md:text-4xl text-gray-dark-text text-center mb-3 font-bold uppercase tracking-wide">
-                  More Services
+                  Electrical
                 </h2>
                 <p className="text-gray-dark-textSecondary text-center text-sm sm:text-base md:text-lg">
-                  Additional installation services coming soon
+                  Professional electrical installation and wiring services
                 </p>
-                <div className="mt-6 flex justify-center gap-2">
-                  <div className="w-1.5 h-1.5 bg-gray-500 rounded-full animate-pulse"></div>
-                  <div className="w-1.5 h-1.5 bg-gray-500 rounded-full animate-pulse" style={{ animationDelay: '0.2s' }}></div>
-                  <div className="w-1.5 h-1.5 bg-gray-500 rounded-full animate-pulse" style={{ animationDelay: '0.4s' }}></div>
+                <div className="mt-6 text-center">
+                  <span className="text-yellow-500 font-semibold text-sm uppercase tracking-wider group-hover:underline">
+                    {t('common.order')} →
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            {/* HVAC Installation Card */}
+            <div 
+              className="bg-gradient-card-dark border-2 border-gray-dark-border rounded-[20px] sm:rounded-[25px] p-6 sm:p-8 md:p-10 transition-all duration-[400ms] shadow-[0_10px_30px_rgba(0,0,0,0.3)] relative overflow-hidden group hover:-translate-y-2 hover:scale-[1.02] hover:shadow-[0_20px_40px_rgba(0,0,0,0.4)] hover:bg-gradient-card-hover-dark cursor-pointer card-shine"
+              onClick={() => setShowOrderForm(true)}
+            >
+              <div className="absolute -top-full -right-full w-[200%] h-[200%] bg-gradient-radial-hover-dark transition-all duration-500 group-hover:-top-1/2 group-hover:-right-1/2"></div>
+              <div className="relative z-10">
+                <div className="flex items-center justify-center mb-4">
+                  <svg className="w-16 h-16 sm:w-20 sm:h-20 text-cyan-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z" />
+                  </svg>
+                </div>
+                <h2 className="text-2xl sm:text-3xl md:text-4xl text-gray-dark-text text-center mb-3 font-bold uppercase tracking-wide">
+                  HVAC Systems
+                </h2>
+                <p className="text-gray-dark-textSecondary text-center text-sm sm:text-base md:text-lg">
+                  Heating, ventilation, and air conditioning installation
+                </p>
+                <div className="mt-6 text-center">
+                  <span className="text-cyan-500 font-semibold text-sm uppercase tracking-wider group-hover:underline">
+                    {t('common.order')} →
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            {/* Solar Panel Installation Card */}
+            <div 
+              className="bg-gradient-card-dark border-2 border-gray-dark-border rounded-[20px] sm:rounded-[25px] p-6 sm:p-8 md:p-10 transition-all duration-[400ms] shadow-[0_10px_30px_rgba(0,0,0,0.3)] relative overflow-hidden group hover:-translate-y-2 hover:scale-[1.02] hover:shadow-[0_20px_40px_rgba(0,0,0,0.4)] hover:bg-gradient-card-hover-dark cursor-pointer card-shine"
+              onClick={() => setShowOrderForm(true)}
+            >
+              <div className="absolute -top-full -right-full w-[200%] h-[200%] bg-gradient-radial-hover-dark transition-all duration-500 group-hover:-top-1/2 group-hover:-right-1/2"></div>
+              <div className="relative z-10">
+                <div className="flex items-center justify-center mb-4">
+                  <svg className="w-16 h-16 sm:w-20 sm:h-20 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+                  </svg>
+                </div>
+                <h2 className="text-2xl sm:text-3xl md:text-4xl text-gray-dark-text text-center mb-3 font-bold uppercase tracking-wide">
+                  Solar Panels
+                </h2>
+                <p className="text-gray-dark-textSecondary text-center text-sm sm:text-base md:text-lg">
+                  Renewable energy solar panel installation services
+                </p>
+                <div className="mt-6 text-center">
+                  <span className="text-orange-500 font-semibold text-sm uppercase tracking-wider group-hover:underline">
+                    {t('common.order')} →
+                  </span>
                 </div>
               </div>
             </div>

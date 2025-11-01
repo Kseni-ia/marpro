@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { X, Edit2 } from 'lucide-react'
 import { Container, updateContainer } from '@/lib/containers'
 import { CONTAINER_PRESET_DESCRIPTIONS } from '@/lib/containerPresets'
@@ -25,9 +25,28 @@ export default function ContainerDetailsModal({ container, onClose, onUpdate }: 
   const initialPresetIndex = CONTAINER_PRESET_DESCRIPTIONS.indexOf(container.description || '')
   const [descriptionMode, setDescriptionMode] = useState<'preset' | 'custom'>(initialPresetIndex >= 0 ? 'preset' : 'custom')
   const [selectedPreset, setSelectedPreset] = useState<number>(initialPresetIndex >= 0 ? initialPresetIndex : 0)
+  
+  // Parse existing dimensions when component mounts
+  const parseDimensions = (dims: string) => {
+    // Parse format like "2 × 0.5 × 3.8 m" to extract numbers
+    const match = dims.match(/([\d.]+)\s*[x×]\s*([\d.]+)\s*[x×]\s*([\d.]+)/)
+    if (match) {
+      return {
+        length: match[1],
+        width: match[2],
+        height: match[3]
+      }
+    }
+    return { length: '', width: '', height: '' }
+  }
+  
+  const parsedDims = parseDimensions(container.dims)
+  
   const [formData, setFormData] = useState({
     volume: container.volume,
-    dims: container.dims,
+    length: parsedDims.length,
+    width: parsedDims.width,
+    height: parsedDims.height,
     description: container.description || '',
     price: container.price,
     isActive: container.isActive,
@@ -45,7 +64,16 @@ export default function ContainerDetailsModal({ container, onClose, onUpdate }: 
       const updateData: any = {}
       
       if (field === 'volume') updateData.volume = Number(formData.volume)
-      if (field === 'dims') updateData.dims = formData.dims
+      if (field === 'dims') {
+        // Validate that all dimension fields are filled
+        if (!formData.length || !formData.width || !formData.height) {
+          alert('Please fill in all dimension fields (length, width, height)')
+          setLoading(false)
+          return
+        }
+        // Construct dimensions string from separate fields
+        updateData.dims = `${formData.length} × ${formData.width} × ${formData.height} m`
+      }
       if (field === 'price') updateData.price = Number(formData.price)
       if (field === 'image') updateData.image = formData.image
       if (field === 'description') updateData.description = formData.description
@@ -69,9 +97,12 @@ export default function ContainerDetailsModal({ container, onClose, onUpdate }: 
   }
 
   const handleCancelEdit = () => {
+    const parsedDims = parseDimensions(container.dims)
     setFormData({
       volume: container.volume,
-      dims: container.dims,
+      length: parsedDims.length,
+      width: parsedDims.width,
+      height: parsedDims.height,
       description: container.description || '',
       price: container.price,
       isActive: container.isActive,
@@ -157,18 +188,45 @@ export default function ContainerDetailsModal({ container, onClose, onUpdate }: 
                 <Edit2 className="w-3 h-3 text-red-400" />
               </div>
               <label className="block text-xs font-semibold text-gray-400 mb-2">
-                Dimensions
+                Dimensions (m)
               </label>
               {editingField === 'dims' ? (
-                <div className="space-y-2">
-                  <input
-                    type="text"
-                    name="dims"
-                    value={formData.dims}
-                    onChange={handleChange}
-                    onClick={(e) => e.stopPropagation()}
-                    className="w-full px-3 py-2 bg-gray-900/80 border border-gray-600 rounded-lg text-white text-sm focus:outline-none focus:border-red-500 focus:ring-2 focus:ring-red-500/20"
-                  />
+                <div className="space-y-2" onClick={(e) => e.stopPropagation()}>
+                  <div className="flex items-center gap-2">
+                    <input
+                      type="number"
+                      name="length"
+                      value={formData.length}
+                      onChange={handleChange}
+                      min="0.1"
+                      step="0.1"
+                      className="w-16 px-2 py-1.5 bg-gray-900/80 border border-gray-600 rounded-lg text-white text-sm focus:outline-none focus:border-red-500 focus:ring-2 focus:ring-red-500/20 text-center"
+                      placeholder="2"
+                    />
+                    <span className="text-white text-lg font-medium">×</span>
+                    <input
+                      type="number"
+                      name="width"
+                      value={formData.width}
+                      onChange={handleChange}
+                      min="0.1"
+                      step="0.1"
+                      className="w-16 px-2 py-1.5 bg-gray-900/80 border border-gray-600 rounded-lg text-white text-sm focus:outline-none focus:border-red-500 focus:ring-2 focus:ring-red-500/20 text-center"
+                      placeholder="0.5"
+                    />
+                    <span className="text-white text-lg font-medium">×</span>
+                    <input
+                      type="number"
+                      name="height"
+                      value={formData.height}
+                      onChange={handleChange}
+                      min="0.1"
+                      step="0.1"
+                      className="w-16 px-2 py-1.5 bg-gray-900/80 border border-gray-600 rounded-lg text-white text-sm focus:outline-none focus:border-red-500 focus:ring-2 focus:ring-red-500/20 text-center"
+                      placeholder="3.8"
+                    />
+                    <span className="text-white text-sm font-medium ml-1">m</span>
+                  </div>
                   <div className="flex gap-2">
                     <button
                       onClick={(e) => { e.stopPropagation(); handleSaveField('dims'); }}

@@ -14,7 +14,9 @@ export default function AddContainerModal({ onClose, onSuccess }: AddContainerMo
   const [loading, setLoading] = useState(false)
   const [formData, setFormData] = useState({
     volume: '',
-    dims: '',
+    length: '',
+    width: '',
+    height: '',
     description: CONTAINER_PRESET_DESCRIPTIONS[0] || '',
     price: '',
     isActive: true
@@ -27,9 +29,19 @@ export default function AddContainerModal({ onClose, onSuccess }: AddContainerMo
     setLoading(true)
 
     try {
+      // Validate that all dimension fields are filled
+      if (!formData.length || !formData.width || !formData.height) {
+        alert('Please fill in all dimension fields (length, width, height)')
+        setLoading(false)
+        return
+      }
+
+      // Construct dimensions string from separate fields
+      const dims = `${formData.length} × ${formData.width} × ${formData.height} m`
+      
       await addContainer({
         volume: Number(formData.volume),
-        dims: formData.dims,
+        dims: dims,
         description: formData.description,
         price: Number(formData.price),
         isActive: formData.isActive
@@ -67,7 +79,7 @@ export default function AddContainerModal({ onClose, onSuccess }: AddContainerMo
         {/* Form */}
         <form onSubmit={handleSubmit} className="p-4 space-y-4">
           {/* Volume and Dimensions */}
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-2 gap-4">
             <div>
               <label className="block text-xs font-medium text-gray-dark-text mb-1">
                 Volume (m³) *
@@ -83,38 +95,68 @@ export default function AddContainerModal({ onClose, onSuccess }: AddContainerMo
                 placeholder="e.g., 3"
               />
             </div>
+
+            {/* Price */}
             <div>
               <label className="block text-xs font-medium text-gray-dark-text mb-1">
-                Dimensions *
+                Price (CZK) *
               </label>
               <input
-                type="text"
-                name="dims"
-                value={formData.dims}
+                type="number"
+                name="price"
+                value={formData.price}
                 onChange={handleChange}
                 required
+                min="0"
                 className="w-full px-3 py-2 bg-gray-dark-card border border-gray-dark-border rounded-lg text-gray-dark-text text-sm focus:outline-none focus:border-red-500"
-                placeholder="e.g., 2 x 0.5 x 3.8 m"
+                placeholder="e.g., 1500"
               />
             </div>
           </div>
-
-          {/* Price */}
-          <div>
-            <label className="block text-xs font-medium text-gray-dark-text mb-1">
-              Price (CZK) *
-            </label>
-            <input
-              type="number"
-              name="price"
-              value={formData.price}
-              onChange={handleChange}
-              required
-              min="0"
-              className="w-full px-3 py-2 bg-gray-dark-card border border-gray-dark-border rounded-lg text-gray-dark-text text-sm focus:outline-none focus:border-red-500"
-              placeholder="e.g., 3090"
-            />
-          </div>
+            
+            <div>
+              <label className="block text-xs font-medium text-gray-dark-text mb-1">
+                Dimensions (m) *
+              </label>
+              <div className="flex items-center gap-2">
+                <input
+                  type="number"
+                  name="length"
+                  value={formData.length}
+                  onChange={handleChange}
+                  required
+                  min="0.1"
+                  step="0.1"
+                  className="w-20 px-3 py-2 bg-gray-dark-card border border-gray-dark-border rounded-lg text-gray-dark-text text-sm focus:outline-none focus:border-red-500 text-center"
+                  placeholder="2"
+                />
+                <span className="text-gray-dark-text text-lg font-medium">×</span>
+                <input
+                  type="number"
+                  name="width"
+                  value={formData.width}
+                  onChange={handleChange}
+                  required
+                  min="0.1"
+                  step="0.1"
+                  className="w-20 px-3 py-2 bg-gray-dark-card border border-gray-dark-border rounded-lg text-gray-dark-text text-sm focus:outline-none focus:border-red-500 text-center"
+                  placeholder="0.5"
+                />
+                <span className="text-gray-dark-text text-lg font-medium">×</span>
+                <input
+                  type="number"
+                  name="height"
+                  value={formData.height}
+                  onChange={handleChange}
+                  required
+                  min="0.1"
+                  step="0.1"
+                  className="w-20 px-3 py-2 bg-gray-dark-card border border-gray-dark-border rounded-lg text-gray-dark-text text-sm focus:outline-none focus:border-red-500 text-center"
+                  placeholder="3.8"
+                />
+                <span className="text-gray-dark-text text-sm font-medium ml-1">m</span>
+              </div>
+            </div>
 
           <div>
             <label className="block text-xs font-medium text-gray-dark-text mb-1">
