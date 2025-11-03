@@ -3,12 +3,14 @@
 import React, { useEffect, useState } from 'react'
 import { useAuth } from '@/contexts/AuthContext'
 import { useRouter } from 'next/navigation'
+import { useLanguage } from '@/contexts/LanguageContext'
 import Image from 'next/image'
 import NavigationBar from '@/app/admin/NavigationBar'
 import ApplicationsList from './components/ApplicationsList'
 
 export default function WorkApplicationsPage() {
   const { isAuthenticated, logout, loading: authLoading } = useAuth()
+  const { t } = useLanguage()
   const router = useRouter()
 
   useEffect(() => {
@@ -25,7 +27,7 @@ export default function WorkApplicationsPage() {
   if (authLoading || !isAuthenticated) {
     return (
       <div className="min-h-screen bg-gradient-main-dark flex items-center justify-center">
-        <div className="text-gray-dark-text text-xl">Loading...</div>
+        <div className="text-gray-dark-text text-xl">{t('admin.loading')}</div>
       </div>
     )
   }
@@ -56,10 +58,10 @@ export default function WorkApplicationsPage() {
           {/* Header */}
           <div className="mb-8 text-center">
             <h1 className="text-2xl sm:text-3xl font-bold text-gray-dark-text uppercase tracking-wider mb-2">
-              Work Applications
+              {t('admin.workApplicationsTitle')}
             </h1>
             <p className="text-gray-dark-textSecondary text-sm sm:text-base">
-              Manage all form submissions from customers
+              {t('admin.workApplicationsDesc')}
             </p>
           </div>
 

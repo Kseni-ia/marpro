@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react'
 import { X } from 'lucide-react'
+import { useLanguage } from '@/contexts/LanguageContext'
 import { addContainer } from '@/lib/containers'
 import { CONTAINER_PRESET_DESCRIPTIONS } from '@/lib/containerPresets'
 
@@ -11,6 +12,7 @@ interface AddContainerModalProps {
 }
 
 export default function AddContainerModal({ onClose, onSuccess }: AddContainerModalProps) {
+  const { t } = useLanguage()
   const [loading, setLoading] = useState(false)
   const [formData, setFormData] = useState({
     volume: '',
@@ -31,7 +33,7 @@ export default function AddContainerModal({ onClose, onSuccess }: AddContainerMo
     try {
       // Validate that all dimension fields are filled
       if (!formData.length || !formData.width || !formData.height) {
-        alert('Please fill in all dimension fields (length, width, height)')
+        alert(t('admin.fillAllDimensions'))
         setLoading(false)
         return
       }
@@ -51,7 +53,7 @@ export default function AddContainerModal({ onClose, onSuccess }: AddContainerMo
       onClose()
     } catch (error) {
       console.error('Error adding container:', error)
-      alert('Failed to add container. Please try again.')
+      alert(t('admin.failedAdd'))
     } finally {
       setLoading(false)
     }
@@ -67,7 +69,7 @@ export default function AddContainerModal({ onClose, onSuccess }: AddContainerMo
       <div className="bg-gradient-card-dark border-2 border-gray-dark-border rounded-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
         {/* Header */}
         <div className="sticky top-0 bg-gradient-card-dark border-b border-gray-dark-border p-4 flex items-center justify-between">
-          <h2 className="text-xl font-bold text-gray-dark-text">Add New Container</h2>
+          <h2 className="text-xl font-bold text-gray-dark-text">{t('admin.addNewContainer')}</h2>
           <button
             onClick={onClose}
             className="w-8 h-8 rounded-lg bg-red-950/40 text-white hover:bg-red-900/60 flex items-center justify-center transition-all duration-300"
@@ -82,7 +84,7 @@ export default function AddContainerModal({ onClose, onSuccess }: AddContainerMo
           <div className="grid grid-cols-2 gap-4">
             <div>
               <label className="block text-xs font-medium text-gray-dark-text mb-1">
-                Volume (m³) *
+                {t('admin.volume')} *
               </label>
               <input
                 type="number"
@@ -99,7 +101,7 @@ export default function AddContainerModal({ onClose, onSuccess }: AddContainerMo
             {/* Price */}
             <div>
               <label className="block text-xs font-medium text-gray-dark-text mb-1">
-                Price (CZK) *
+                {t('admin.price')} *
               </label>
               <input
                 type="number"
@@ -116,7 +118,7 @@ export default function AddContainerModal({ onClose, onSuccess }: AddContainerMo
             
             <div>
               <label className="block text-xs font-medium text-gray-dark-text mb-1">
-                Dimensions (m) *
+                {t('admin.dimensions')} *
               </label>
               <div className="flex items-center gap-2">
                 <input
@@ -160,7 +162,7 @@ export default function AddContainerModal({ onClose, onSuccess }: AddContainerMo
 
           <div>
             <label className="block text-xs font-medium text-gray-dark-text mb-1">
-              Description *
+              {t('admin.description')} *
             </label>
             <div className="flex items-center gap-2 mb-2 text-xs">
               <button
@@ -168,14 +170,14 @@ export default function AddContainerModal({ onClose, onSuccess }: AddContainerMo
                 onClick={() => { setDescriptionMode('preset'); setFormData(prev => ({ ...prev, description: CONTAINER_PRESET_DESCRIPTIONS[selectedPreset] || '' })) }}
                 className={`px-2 py-1 rounded border ${descriptionMode === 'preset' ? 'bg-red-900/40 border-red-700 text-white' : 'bg-gray-800/40 border-gray-700 text-gray-300'}`}
               >
-                Preset
+                {t('admin.preset')}
               </button>
               <button
                 type="button"
                 onClick={() => setDescriptionMode('custom')}
                 className={`px-2 py-1 rounded border ${descriptionMode === 'custom' ? 'bg-red-900/40 border-red-700 text-white' : 'bg-gray-800/40 border-gray-700 text-gray-300'}`}
               >
-                Custom
+                {t('admin.custom')}
               </button>
             </div>
             {descriptionMode === 'preset' && (
@@ -214,7 +216,7 @@ export default function AddContainerModal({ onClose, onSuccess }: AddContainerMo
               className="w-4 h-4 rounded border-gray-dark-border bg-gray-dark-card text-red-600 focus:ring-red-500"
             />
             <label htmlFor="isActive" className="text-sm text-gray-dark-text">
-              Make visible on website immediately
+              {t('admin.makeVisible')}
             </label>
           </div>
 
@@ -225,14 +227,14 @@ export default function AddContainerModal({ onClose, onSuccess }: AddContainerMo
               onClick={onClose}
               className="flex-1 px-4 py-2 bg-gray-800/40 text-gray-400 hover:bg-gray-700/60 border border-gray-700/50 hover:border-gray-600 rounded-lg transition-all duration-300 text-sm font-medium"
             >
-              Cancel
+              {t('admin.cancel')}
             </button>
             <button
               type="submit"
               disabled={loading}
               className="flex-1 px-4 py-2 bg-red-950/40 text-white hover:bg-red-900/60 border border-red-900/50 hover:border-red-600 rounded-lg transition-all duration-300 text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {loading ? 'Adding...' : 'Add Container'}
+              {loading ? t('admin.adding') : t('admin.addContainer')}
             </button>
           </div>
         </form>
