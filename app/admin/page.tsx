@@ -4,6 +4,7 @@ import React, { useState } from 'react'
 import { useAuth } from '@/contexts/AuthContext'
 import { useRouter } from 'next/navigation'
 import Image from 'next/image'
+import { useLanguage } from '@/contexts/LanguageContext'
 
 export default function AdminLogin() {
   const [password, setPassword] = useState('')
@@ -11,6 +12,7 @@ export default function AdminLogin() {
   const [loading, setLoading] = useState(false)
   const { login } = useAuth()
   const router = useRouter()
+  const { t } = useLanguage()
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -21,7 +23,7 @@ export default function AdminLogin() {
       await login(password)
       router.push('/admin/dashboard')
     } catch (error: any) {
-      setError('Invalid password')
+      setError(t('admin.invalidPassword'))
     } finally {
       setLoading(false)
     }
@@ -48,14 +50,14 @@ export default function AdminLogin() {
         <div className="absolute top-0 -left-full w-full h-full transition-all duration-500 pointer-events-none group-hover:left-full bg-gradient-shine-dark"></div>
         
         <div className="text-center mb-4">
-          <h1 className="text-3xl font-bold text-gray-dark-text mb-1 uppercase tracking-wider">Admin Login</h1>
-          <p className="text-gray-dark-textSecondary">Access your admin dashboard</p>
+          <h1 className="text-3xl font-bold text-gray-dark-text mb-1 uppercase tracking-wider">{t('admin.login')}</h1>
+          <p className="text-gray-dark-textSecondary">{t('admin.subtitle')}</p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-3">
           <div>
             <label htmlFor="password" className="block text-sm font-medium text-gray-dark-textSecondary mb-2 uppercase tracking-wider">
-              Admin Password
+              {t('admin.password')}
             </label>
             <input
               type="password"
@@ -79,7 +81,7 @@ export default function AdminLogin() {
             disabled={loading}
             className="w-full bg-gradient-to-r from-red-600 to-red-700 text-white py-3 px-4 rounded-lg font-medium hover:from-red-700 hover:to-red-800 focus:ring-2 focus:ring-red-500 focus:ring-offset-2 focus:ring-offset-gray-dark-bg disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 transform hover:scale-[1.02] shadow-lg hover:shadow-xl uppercase tracking-wider"
           >
-            {loading ? 'Signing in...' : 'Sign In'}
+            {loading ? t('admin.signingIn') : t('admin.signIn')}
           </button>
         </form>
 
@@ -89,7 +91,7 @@ export default function AdminLogin() {
             className="text-gray-dark-textSecondary hover:text-gray-dark-text text-sm transition-colors duration-300 inline-flex items-center gap-2 group"
           >
             <span className="transition-transform duration-300 group-hover:-translate-x-1">←</span>
-            <span className="uppercase tracking-wider">Back to Website</span>
+            <span className="uppercase tracking-wider">{t('admin.backToWebsite')}</span>
           </button>
         </div>
       </div>

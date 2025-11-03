@@ -47,16 +47,13 @@ const ContainerCard: React.FC<ContainerCardProps> = ({ volume, dims, description
           {price}
         </div>
       </div>
-      <div className="mt-4 sm:mt-5 grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 relative z-10">
+      <div className="mt-4 sm:mt-5 flex items-center justify-center relative z-10">
         <button 
           onClick={onOrder}
-          className="rounded-[14px] px-4 sm:px-5 py-2.5 sm:py-3 bg-gradient-button-dark text-gray-dark-text font-semibold shadow-[0_4px_12px_rgba(0,0,0,0.3)] hover:shadow-[0_8px_16px_rgba(0,0,0,0.1)] dark:hover:shadow-[0_8px_16px_rgba(0,0,0,0.4)] transition-all text-sm sm:text-base cursor-pointer"
+          className="rounded-[14px] px-6 sm:px-8 py-2.5 sm:py-3 bg-gradient-button-dark text-gray-dark-text font-semibold shadow-[0_4px_12px_rgba(0,0,0,0.3)] hover:shadow-[0_8px_16px_rgba(0,0,0,0.1)] dark:hover:shadow-[0_8px_16px_rgba(0,0,0,0.4)] transition-all text-sm sm:text-base cursor-pointer"
           type="button"
         >
           {t('containers.order')}
-        </button>
-        <button className="rounded-[14px] px-4 sm:px-5 py-2.5 sm:py-3 bg-gray-dark-card border-2 border-gray-dark-border text-gray-dark-textSecondary hover:border-gray-dark-border transition-all text-sm sm:text-base">
-          Details
         </button>
       </div>
     </div>

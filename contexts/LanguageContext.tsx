@@ -28,6 +28,8 @@ const translations = {
     'containers.7m3.desc': 'Medium container ideal for general construction waste, renovation materials and bulk debris.',
     'containers.9m3.desc': 'Large container perfect for extensive cleanup, demolition projects and high-volume waste.',
     'containers.price': 'Price from',
+    'containers.loading': 'Loading containers...',
+    'containers.noAvailable': 'No containers available at the moment.',
     'containers.vat': 'excl. VAT',
     
     // Excavators
@@ -45,6 +47,8 @@ const translations = {
     'excavators.tb2150.desc': 'Heavy-duty excavator designed for large-scale projects, quarrying, and major earthmoving operations.',
     'excavators.tb2150r.desc': 'Large demolition excavator with enhanced reach and power for demanding industrial applications.',
     'excavators.price.day': 'day',
+    'excavators.loading': 'Loading excavators...',
+    'excavators.noAvailable': 'No excavators available at the moment.',
     
     // Constructions
     'constructions.title': 'Constructions',
@@ -118,12 +122,60 @@ const translations = {
     'order.endTime': 'End Time',
     'order.additionalInfo': 'Additional Information (Optional)',
     'order.additionalInfoPlaceholder': 'Please provide any additional details about your order, special requirements, or delivery instructions...',
+    'order.addressPlaceholder': 'Enter your full address',
     'order.endTimeError': '⚠ End time must be after start time',
     'order.cancel': 'Cancel',
     'order.submit': 'Submit Order',
     'order.submitting': 'Submitting...',
     'order.success': 'Order submitted successfully!',
+    'order.successMessage': 'We\'ll contact you soon to discuss your requirements.',
     'order.error': 'Failed to submit order. Please try again.',
+    
+    // Admin
+    'admin.login': 'admin',
+    'admin.subtitle': 'Access your admin dashboard',
+    'admin.password': 'admin',
+    'admin.signIn': 'Sign In',
+    'admin.signingIn': 'Signing in...',
+    'admin.invalidPassword': 'Invalid password',
+    'admin.backToWebsite': 'Back to Website',
+    'admin.dashboard': 'Admin',
+    'admin.orders': 'Orders',
+    'admin.schedule': 'Schedule',
+    'admin.logout': 'Logout',
+    'admin.status': 'Status',
+    'admin.total': 'Total',
+    'admin.pending': 'Pending',
+    'admin.inProgress': 'In Progress',
+    'admin.completed': 'Completed',
+    'admin.cancelled': 'Cancelled',
+    'admin.updateStatus': 'Update Status',
+    'admin.viewDetails': 'View Details',
+    'admin.delete': 'Delete',
+    'admin.noOrdersFound': 'No orders found with the selected filter.',
+    'admin.loading': 'Loading...',
+    'admin.error': 'Error',
+    'admin.calendar': 'Calendar',
+    'admin.connected': 'Connected',
+    'admin.disconnected': 'Disconnected',
+    'admin.scheduled': 'Scheduled',
+    'admin.all': 'All',
+    'admin.home': 'Home',
+    'admin.newContainers': 'New Containers',
+    'admin.newExcavators': 'New Excavators',
+    'admin.workApplications': 'Work Applications',
+    
+    // Error messages
+    'error.timeSlotBooked': 'This time slot is already booked. Please choose another time.',
+    'error.failedOrder': 'Failed to create order',
+    'error.failedBooking': 'Failed to process booking',
+    'error.failedFetchSlots': 'Failed to fetch available slots',
+    'error.failedUpdateStatus': 'Failed to update status',
+    'error.failedDelete': 'Failed to delete',
+    'error.failedAdd': 'Failed to add',
+    'error.failedSave': 'Failed to save',
+    'error.requiredFields': 'Please fill in all required fields',
+    'error.somethingWrong': 'Something went wrong. Please try again.',
     
     // Container options
     'order.container.3m3': '3m³ Container (2 x 0.5 x 3.8 m)',
@@ -187,6 +239,8 @@ const translations = {
     'containers.7m3.desc': 'Střední kontejner ideální pro stavební odpad, renovační materiály a objemný odpad.',
     'containers.9m3.desc': 'Velký kontejner perfektní pro rozsáhlý úklid, demoliční projekty a velkoobjemový odpad.',
     'containers.price': 'Cena od',
+    'containers.loading': 'Načítání kontejnerů...',
+    'containers.noAvailable': 'Momentálně nejsou k dispozici žádné kontejnery.',
     'containers.vat': 'bez DPH',
     
     // Excavators
@@ -204,6 +258,8 @@ const translations = {
     'excavators.tb2150.desc': 'Těžký bagr určený pro velké projekty, těžbu a rozsáhlé zemní práce.',
     'excavators.tb2150r.desc': 'Velký demoliční bagr se zvýšeným dosahem a výkonem pro náročné průmyslové aplikace.',
     'excavators.price.day': 'den',
+    'excavators.loading': 'Načítání bagrů...',
+    'excavators.noAvailable': 'Momentálně nejsou k dispozici žádné bagry.',
     
     // Constructions
     'constructions.title': 'Stavby',
@@ -277,12 +333,60 @@ const translations = {
     'order.endTime': 'Čas konce',
     'order.additionalInfo': 'Dodatečné informace (volitelné)',
     'order.additionalInfoPlaceholder': 'Uveďte prosím jakékoli další podrobnosti o vaší objednávce, speciální požadavky nebo pokyny pro doručení...',
+    'order.addressPlaceholder': 'Zadejte vaši úplnou adresu',
     'order.endTimeError': '⚠ Čas konce musí být po času začátku',
     'order.cancel': 'Zrušit',
     'order.submit': 'Odeslat objednávku',
     'order.submitting': 'Odesílání...',
     'order.success': 'Objednávka byla úspěšně odeslána!',
+    'order.successMessage': 'Brzy vás kontaktujeme ohledně vašich požadavků.',
     'order.error': 'Nepodařilo se odeslat objednávku. Zkuste to prosím znovu.',
+    
+    // Admin
+    'admin.login': 'admin',
+    'admin.subtitle': 'Přístup k administrátorskému panelu',
+    'admin.password': 'admin',
+    'admin.signIn': 'Přihlásit se',
+    'admin.signingIn': 'Přihlašování...',
+    'admin.invalidPassword': 'Neplatné heslo',
+    'admin.backToWebsite': 'Zpět na web',
+    'admin.dashboard': 'admin',
+    'admin.orders': 'Objednávky',
+    'admin.schedule': 'Harmonogram',
+    'admin.logout': 'Odhlásit se',
+    'admin.status': 'Stav',
+    'admin.total': 'Celkem',
+    'admin.pending': 'Čeká',
+    'admin.inProgress': 'V procesu',
+    'admin.completed': 'Dokončeno',
+    'admin.cancelled': 'Zrušeno',
+    'admin.updateStatus': 'Aktualizovat stav',
+    'admin.viewDetails': 'Zobrazit detaily',
+    'admin.delete': 'Smazat',
+    'admin.noOrdersFound': 'Nebyly nalezeny žádné objednávky s vybraným filtrem.',
+    'admin.loading': 'Načítání...',
+    'admin.error': 'Chyba',
+    'admin.calendar': 'Kalendář',
+    'admin.connected': 'Připojeno',
+    'admin.disconnected': 'Odpojeno',
+    'admin.scheduled': 'Naplánováno',
+    'admin.all': 'Vše',
+    'admin.home': 'Domů',
+    'admin.newContainers': 'Nové kontejnery',
+    'admin.newExcavators': 'Nové bagry',
+    'admin.workApplications': 'Pracovní žádosti',
+    
+    // Error messages
+    'error.timeSlotBooked': 'Tento časový slot je již obsazen. Prosím vyberte jiný čas.',
+    'error.failedOrder': 'Nepodařilo se vytvořit objednávku',
+    'error.failedBooking': 'Nepodařilo se zpracovat rezervaci',
+    'error.failedFetchSlots': 'Nepodařilo se načíst dostupné termíny',
+    'error.failedUpdateStatus': 'Nepodařilo se aktualizovat stav',
+    'error.failedDelete': 'Nepodařilo se smazat',
+    'error.failedAdd': 'Nepodařilo se přidat',
+    'error.failedSave': 'Nepodařilo se uložit',
+    'error.requiredFields': 'Prosím vyplňte všechna povinná pole',
+    'error.somethingWrong': 'Něco se pokazilo. Zkuste to prosím znovu.',
     
     // Container options
     'order.container.3m3': '3m³ kontejner (2 x 0,5 x 3,8 m)',
@@ -346,6 +450,8 @@ const translations = {
     'containers.7m3.desc': 'Средний контейнер, идеальный для общих строительных отходов, материалов для ремонта и объемного мусора.',
     'containers.9m3.desc': 'Большой контейнер, идеальный для обширной уборки, проектов сноса и больших объемов отходов.',
     'containers.price': 'Цена от',
+    'containers.loading': 'Загрузка контейнеров...',
+    'containers.noAvailable': 'В настоящее время контейнеры недоступны.',
     'containers.vat': 'без НДС',
     
     // Excavators
@@ -363,6 +469,8 @@ const translations = {
     'excavators.tb2150.desc': 'Тяжелый экскаватор, предназначенный для крупномасштабных проектов, карьерных работ и крупных земляных работ.',
     'excavators.tb2150r.desc': 'Большой демонтажный экскаватор с увеличенным радиусом действия и мощностью для требовательных промышленных применений.',
     'excavators.price.day': 'день',
+    'excavators.loading': 'Загрузка экскаваторов...',
+    'excavators.noAvailable': 'В настоящее время экскаваторы недоступны.',
     
     // Constructions
     'constructions.title': 'Строительство',
@@ -436,12 +544,60 @@ const translations = {
     'order.endTime': 'Время окончания',
     'order.additionalInfo': 'Дополнительная информация (необязательно)',
     'order.additionalInfoPlaceholder': 'Пожалуйста, предоставьте любые дополнительные детали о вашем заказе, особые требования или инструкции по доставке...',
+    'order.addressPlaceholder': 'Введите ваш полный адрес',
     'order.endTimeError': '⚠ Время окончания должно быть после времени начала',
     'order.cancel': 'Отмена',
     'order.submit': 'Отправить заказ',
     'order.submitting': 'Отправка...',
     'order.success': 'Заказ успешно отправлен!',
+    'order.successMessage': 'Мы скоро свяжемся с вами для обсуждения ваших требований.',
     'order.error': 'Не удалось отправить заказ. Пожалуйста, попробуйте еще раз.',
+    
+    // Admin
+    'admin.login': 'admin',
+    'admin.subtitle': 'Доступ к панели администратора',
+    'admin.password': 'admin',
+    'admin.signIn': 'Войти',
+    'admin.signingIn': 'Вход в систему...',
+    'admin.invalidPassword': 'Неверный пароль',
+    'admin.backToWebsite': 'Вернуться на сайт',
+    'admin.dashboard': 'admin',
+    'admin.orders': 'Заказы',
+    'admin.schedule': 'Расписание',
+    'admin.logout': 'Выйти',
+    'admin.status': 'Статус',
+    'admin.total': 'Всего',
+    'admin.pending': 'Ожидает',
+    'admin.inProgress': 'В процессе',
+    'admin.completed': 'Завершено',
+    'admin.cancelled': 'Отменено',
+    'admin.updateStatus': 'Обновить статус',
+    'admin.viewDetails': 'Просмотр деталей',
+    'admin.delete': 'Удалить',
+    'admin.noOrdersFound': 'Заказы с выбранным фильтром не найдены.',
+    'admin.loading': 'Загрузка...',
+    'admin.error': 'Ошибка',
+    'admin.calendar': 'Календарь',
+    'admin.connected': 'Подключено',
+    'admin.disconnected': 'Отключено',
+    'admin.scheduled': 'Запланировано',
+    'admin.all': 'Все',
+    'admin.home': 'Главная',
+    'admin.newContainers': 'Новые контейнеры',
+    'admin.newExcavators': 'Новые экскаваторы',
+    'admin.workApplications': 'Рабочие заявки',
+    
+    // Error messages
+    'error.timeSlotBooked': 'Этот временной слот уже забронирован. Пожалуйста, выберите другое время.',
+    'error.failedOrder': 'Не удалось создать заказ',
+    'error.failedBooking': 'Не удалось обработать бронирование',
+    'error.failedFetchSlots': 'Не удалось получить доступные слоты',
+    'error.failedUpdateStatus': 'Не удалось обновить статус',
+    'error.failedDelete': 'Не удалось удалить',
+    'error.failedAdd': 'Не удалось добавить',
+    'error.failedSave': 'Не удалось сохранить',
+    'error.requiredFields': 'Пожалуйста, заполните все обязательные поля',
+    'error.somethingWrong': 'Что-то пошло не так. Пожалуйста, попробуйте еще раз.',
     
     // Container options
     'order.container.3m3': '3м³ контейнер (2 x 0,5 x 3,8 м)',
@@ -493,21 +649,16 @@ const translations = {
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined)
 
 export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [language, setLanguageState] = useState<Language>('en')
+  const [language, setLanguageState] = useState<Language>('cs')
 
   useEffect(() => {
-    // Load saved language or detect from browser
+    // Load saved language or default to Czech
     const savedLang = localStorage.getItem('language') as Language
     if (savedLang) {
       setLanguageState(savedLang)
     } else {
-      // Detect browser language
-      const browserLang = navigator.language.toLowerCase()
-      if (browserLang.startsWith('cs')) {
-        setLanguageState('cs')
-      } else if (browserLang.startsWith('ru')) {
-        setLanguageState('ru')
-      }
+      // Default to Czech language
+      setLanguageState('cs')
     }
   }, [])
 

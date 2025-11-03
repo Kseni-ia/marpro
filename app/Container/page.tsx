@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react'
 import OrderForm from '@/components/OrderForm'
+import BlurUpBackground from '@/components/BlurUpBackground'
 import ContainerCard from './components/ContainerCard'
 import { useLanguage } from '@/contexts/LanguageContext'
 import { getActiveContainers, Container } from '@/lib/containers'
@@ -27,21 +28,13 @@ const Containers: React.FC = () => {
 
   return (
     <>
-      {/* Full Screen Video Background - Outside all containers */}
-      <div className="fixed top-0 left-0 w-screen h-screen overflow-hidden z-0">
-        <video
-          autoPlay
-          loop
-          muted
-          playsInline
-          className="absolute inset-0 w-full h-full object-cover z-0"
-        >
-          <source src="/containers_F.mp4" type="video/mp4" />
-          Your browser does not support the video tag.
-        </video>
-        {/* Overlay to ensure content readability */}
-        <div className="absolute inset-0 bg-black/70 z-10 pointer-events-none"></div>
-      </div>
+      {/* Full Screen Blur-Up Background */}
+      <BlurUpBackground
+        placeholderSrc="/loadK Small.jpeg"
+        fullSrc="/containers_F.mp4"
+        overlayOpacity="bg-black/70"
+        isVideo={true}
+      />
       
       <div className="relative min-h-screen z-10">
       
@@ -56,11 +49,11 @@ const Containers: React.FC = () => {
       </p>
       {loading ? (
         <div className="flex items-center justify-center py-12">
-          <div className="text-gray-dark-textSecondary">Loading containers...</div>
+          <div className="text-gray-dark-textSecondary">{t('containers.loading')}</div>
         </div>
       ) : containers.length === 0 ? (
         <div className="flex items-center justify-center py-12">
-          <div className="text-gray-dark-textSecondary">No containers available at the moment.</div>
+          <div className="text-gray-dark-textSecondary">{t('containers.noAvailable')}</div>
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 md:gap-8">

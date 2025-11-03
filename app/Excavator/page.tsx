@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react'
 import OrderForm from '@/components/OrderForm'
+import BlurUpBackground from '@/components/BlurUpBackground'
 import ExcavatorCard from './components/ExcavatorCard'
 import { useLanguage } from '@/contexts/LanguageContext'
 import { getActiveExcavators, Excavator } from '@/lib/excavators'
@@ -28,21 +29,13 @@ const Excavators: React.FC = () => {
 
   return (
     <>
-      {/* Full Screen Video Background - Outside all containers */}
-      <div className="fixed top-0 left-0 w-screen h-screen overflow-hidden z-0">
-        <video
-          autoPlay
-          loop
-          muted
-          playsInline
-          className="absolute inset-0 w-full h-full object-cover z-0"
-        >
-          <source src="/exscavators F.mp4" type="video/mp4" />
-          Your browser does not support the video tag.
-        </video>
-        {/* Overlay to ensure content readability */}
-        <div className="absolute inset-0 bg-black/80 z-10 pointer-events-none"></div>
-      </div>
+      {/* Full Screen Blur-Up Background */}
+      <BlurUpBackground
+        placeholderSrc="/loadE Small.jpeg"
+        fullSrc="/exscavators F.mp4"
+        overlayOpacity="bg-black/80"
+        isVideo={true}
+      />
       
       <div className="relative min-h-screen z-20">
       
@@ -57,11 +50,11 @@ const Excavators: React.FC = () => {
       </p>
       {loading ? (
         <div className="flex items-center justify-center py-12">
-          <div className="text-gray-dark-textSecondary">Loading excavators...</div>
+          <div className="text-gray-dark-textSecondary">{t('excavators.loading')}</div>
         </div>
       ) : excavators.length === 0 ? (
         <div className="flex items-center justify-center py-12">
-          <div className="text-gray-dark-textSecondary">No excavators available at the moment.</div>
+          <div className="text-gray-dark-textSecondary">{t('excavators.noAvailable')}</div>
         </div>
       ) : (
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6 md:gap-8">

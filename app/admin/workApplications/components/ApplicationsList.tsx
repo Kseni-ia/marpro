@@ -9,7 +9,7 @@ export default function ApplicationsList() {
   const [applications, setApplications] = useState<WorkApplication[]>([])
   const [loading, setLoading] = useState(true)
   const [selectedApplication, setSelectedApplication] = useState<WorkApplication | null>(null)
-  const [filter, setFilter] = useState<'all' | WorkApplication['status']>('all')
+  const [filter, setFilter] = useState<'all' | WorkApplication['status']>('new')
 
   const fetchApplications = async () => {
     setLoading(true)
@@ -95,16 +95,6 @@ export default function ApplicationsList() {
       <div className="bg-gradient-card-dark border-2 border-gray-dark-border rounded-lg p-3 sm:p-4 mb-4 sm:mb-6 shadow-[0_10px_30px_rgba(0,0,0,0.3)]">
         <div className="flex flex-wrap gap-2">
           <button
-            onClick={() => setFilter('all')}
-            className={`px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg text-xs sm:text-sm font-medium transition-all ${
-              filter === 'all'
-                ? 'bg-gradient-to-r from-red-600 to-red-700 text-white shadow-lg'
-                : 'bg-gray-dark-bg text-gray-dark-textSecondary hover:bg-gray-dark-accent border border-gray-dark-border'
-            }`}
-          >
-            All
-          </button>
-          <button
             onClick={() => setFilter('new')}
             className={`px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg text-xs sm:text-sm font-medium transition-all ${
               filter === 'new'
@@ -143,6 +133,16 @@ export default function ApplicationsList() {
             }`}
           >
             Archived
+          </button>
+          <button
+            onClick={() => setFilter('all')}
+            className={`px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg text-xs sm:text-sm font-medium transition-all ${
+              filter === 'all'
+                ? 'bg-gradient-to-r from-red-600 to-red-700 text-white shadow-lg'
+                : 'bg-gray-dark-bg text-gray-dark-textSecondary hover:bg-gray-dark-accent border border-gray-dark-border'
+            }`}
+          >
+            All
           </button>
         </div>
       </div>

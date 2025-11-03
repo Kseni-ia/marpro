@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useLanguage } from '@/contexts/LanguageContext'
 import OrderForm from '@/components/OrderForm'
+import BlurUpBackground from '@/components/BlurUpBackground'
 import WorkWithUs from './work/WorkWithUs'
 
 const Constructions: React.FC = () => {
@@ -14,21 +15,13 @@ const Constructions: React.FC = () => {
 
   return (
     <>
-      {/* Full Screen Video Background - Outside all containers */}
-      <div className="fixed top-0 left-0 w-screen h-screen overflow-hidden z-0">
-        <video
-          autoPlay
-          loop
-          muted
-          playsInline
-          className="absolute inset-0 w-full h-full object-cover z-0 pointer-events-none"
-        >
-          <source src="/constructions F.mp4" type="video/mp4" />
-          Your browser does not support the video tag.
-        </video>
-        {/* Overlay to ensure content readability */}
-        <div className="absolute inset-0 bg-black/70 z-10 pointer-events-none"></div>
-      </div>
+      {/* Full Screen Blur-Up Background */}
+      <BlurUpBackground
+        placeholderSrc="/loadC Small.jpeg"
+        fullSrc="/constructions F.mp4"
+        overlayOpacity="bg-black/70"
+        isVideo={true}
+      />
       
       <div className="relative min-h-screen z-10">
       

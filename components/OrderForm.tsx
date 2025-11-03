@@ -164,7 +164,7 @@ export default function OrderForm({ serviceType, onClose }: OrderFormProps) {
         <div className="bg-gradient-card-dark border-2 border-gray-dark-border rounded-[20px] p-8 max-w-md w-full text-center shadow-[0_25px_50px_rgba(0,0,0,0.4)]">
           <div className="text-green-400 text-6xl mb-4">✓</div>
           <h2 className="text-2xl font-bold text-gray-dark-text mb-2">{t('order.success')}</h2>
-          <p className="text-gray-dark-textSecondary">We'll contact you soon to discuss your requirements.</p>
+          <p className="text-gray-dark-textSecondary">{t('order.successMessage')}</p>
         </div>
       </div>
     )
@@ -261,7 +261,7 @@ export default function OrderForm({ serviceType, onClose }: OrderFormProps) {
               value={formData.address}
               onChange={handleChange}
               className={`w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 outline-none transition-all text-gray-800 placeholder-gray-500 ${formData.address ? 'bg-gray-100' : 'bg-white'}`}
-              placeholder="Enter your full address"
+              placeholder={t('order.addressPlaceholder')}
               required
             />
           </div>

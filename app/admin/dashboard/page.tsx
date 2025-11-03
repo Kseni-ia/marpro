@@ -8,10 +8,12 @@ import { Order } from '@/types/order'
 import Image from 'next/image'
 import EquipmentSchedule from '@/components/EquipmentSchedule'
 import NavigationBar from '@/app/admin/NavigationBar'
+import { useLanguage } from '@/contexts/LanguageContext'
 
 export default function AdminDashboard() {
   const { isAuthenticated, logout, loading: authLoading } = useAuth()
   const router = useRouter()
+  const { t } = useLanguage()
   const [orders, setOrders] = useState<Order[]>([])
   const [loading, setLoading] = useState(true)
   const [filter, setFilter] = useState<'all' | Order['status']>('pending')
@@ -181,7 +183,7 @@ export default function AdminDashboard() {
   if (authLoading || loading) {
     return (
       <div className="min-h-screen bg-gradient-main-dark flex items-center justify-center">
-        <div className="text-gray-dark-text text-xl">Loading...</div>
+        <div className="text-gray-dark-text text-xl">{t('admin.loading')}</div>
       </div>
     )
   }
@@ -231,7 +233,7 @@ export default function AdminDashboard() {
                               0 0 20px rgba(220, 38, 38, 0.3)`
                 }}
               >
-                Admin Dashboard
+                {t('admin.dashboard')}
                 {/* Animated gradient overlay that follows mouse */}
                 <div 
                   className="absolute inset-0 opacity-0 hover:opacity-100 transition-opacity duration-300 pointer-events-none"
@@ -249,25 +251,25 @@ export default function AdminDashboard() {
         {/* Stats */}
         <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-2 sm:gap-3 mb-4 sm:mb-6">
           <div className="bg-gradient-card-dark border-2 border-gray-dark-border rounded-lg p-2 sm:p-3 shadow-[0_10px_30px_rgba(0,0,0,0.3)] text-center">
-            <h3 className="text-[10px] sm:text-xs font-medium text-gray-dark-textSecondary uppercase tracking-wider">In Progress</h3>
+            <h3 className="text-[10px] sm:text-xs font-medium text-gray-dark-textSecondary uppercase tracking-wider">{t('admin.inProgress')}</h3>
             <p className="text-lg sm:text-xl font-bold text-blue-400">
               {orders.filter(o => o.status === 'in_progress').length}
             </p>
           </div>
           <div className="bg-gradient-card-dark border-2 border-gray-dark-border rounded-lg p-2 sm:p-3 shadow-[0_10px_30px_rgba(0,0,0,0.3)] text-center">
-            <h3 className="text-[10px] sm:text-xs font-medium text-gray-dark-textSecondary uppercase tracking-wider">Pending</h3>
+            <h3 className="text-[10px] sm:text-xs font-medium text-gray-dark-textSecondary uppercase tracking-wider">{t('admin.pending')}</h3>
             <p className="text-lg sm:text-xl font-bold text-yellow-400">
               {orders.filter(o => o.status === 'pending').length}
             </p>
           </div>
           <div className="bg-gradient-card-dark border-2 border-gray-dark-border rounded-lg p-2 sm:p-3 shadow-[0_10px_30px_rgba(0,0,0,0.3)] text-center">
-            <h3 className="text-[10px] sm:text-xs font-medium text-gray-dark-textSecondary uppercase tracking-wider">Completed</h3>
+            <h3 className="text-[10px] sm:text-xs font-medium text-gray-dark-textSecondary uppercase tracking-wider">{t('admin.completed')}</h3>
             <p className="text-lg sm:text-xl font-bold text-green-400">
               {orders.filter(o => o.status === 'completed').length}
             </p>
           </div>
           <div className="bg-gradient-card-dark border-2 border-gray-dark-border rounded-lg p-2 sm:p-3 shadow-[0_10px_30px_rgba(0,0,0,0.3)] text-center">
-            <h3 className="text-[10px] sm:text-xs font-medium text-gray-dark-textSecondary uppercase tracking-wider">Total Orders</h3>
+            <h3 className="text-[10px] sm:text-xs font-medium text-gray-dark-textSecondary uppercase tracking-wider">{t('admin.total')}</h3>
             <p className="text-lg sm:text-xl font-bold text-gray-dark-text">{orders.length}</p>
           </div>
         </div>
@@ -284,7 +286,7 @@ export default function AdminDashboard() {
                   : 'bg-gray-dark-bg text-gray-dark-textSecondary hover:bg-gray-dark-accent border border-gray-dark-border'
               }`}
             >
-              Pending
+              {t('admin.pending')}
             </button>
             <button
               onClick={() => setFilter('in_progress')}
@@ -294,7 +296,7 @@ export default function AdminDashboard() {
                   : 'bg-gray-dark-bg text-gray-dark-textSecondary hover:bg-gray-dark-accent border border-gray-dark-border'
               }`}
             >
-              In Progress
+              {t('admin.inProgress')}
             </button>
             <button
               onClick={() => setFilter('completed')}
@@ -304,7 +306,7 @@ export default function AdminDashboard() {
                   : 'bg-gray-dark-bg text-gray-dark-textSecondary hover:bg-gray-dark-accent border border-gray-dark-border'
               }`}
             >
-              Completed
+              {t('admin.completed')}
             </button>
             <button
               onClick={() => setFilter('cancelled')}
@@ -314,7 +316,7 @@ export default function AdminDashboard() {
                   : 'bg-gray-dark-bg text-gray-dark-textSecondary hover:bg-gray-dark-accent border border-gray-dark-border'
               }`}
             >
-              Cancelled
+              {t('admin.cancelled')}
             </button>
             <button
               onClick={() => setFilter('all')}
@@ -324,7 +326,7 @@ export default function AdminDashboard() {
                   : 'bg-gray-dark-bg text-gray-dark-textSecondary hover:bg-gray-dark-accent border border-gray-dark-border'
               }`}
             >
-              All
+              {t('admin.all')}
             </button>
           </div>
         </div>
@@ -456,7 +458,7 @@ export default function AdminDashboard() {
                       }}
                       className="w-full bg-gradient-to-r from-gray-600 to-gray-700 text-white px-2 py-1 sm:py-1.5 rounded-[6px] sm:rounded-[8px] text-[10px] sm:text-xs font-semibold hover:from-gray-700 hover:to-gray-800 transition-all duration-300"
                     >
-                      View Details
+                      {t('admin.viewDetails')}
                     </button>
                   )}
                 </div>
@@ -473,7 +475,7 @@ export default function AdminDashboard() {
         {/* Empty State */}
         {filteredOrders.length === 0 && (
           <div className="bg-gradient-card-dark border-2 border-gray-dark-border rounded-lg p-12 text-center shadow-[0_10px_30px_rgba(0,0,0,0.3)]">
-            <p className="text-gray-dark-textSecondary">No orders found with the selected filter.</p>
+            <p className="text-gray-dark-textSecondary">{t('admin.noOrdersFound')}</p>
           </div>
         )}
       </div>
@@ -550,7 +552,7 @@ export default function AdminDashboard() {
                           </div>
                         )}
                         <div className="flex justify-between">
-                          <span className="text-[11px] sm:text-xs font-semibold text-gray-dark-textSecondary uppercase">Scheduled:</span>
+                          <span className="text-[11px] sm:text-xs font-semibold text-gray-dark-textSecondary uppercase">{t('admin.scheduled')}:</span>
                           <span className="text-xs sm:text-sm font-medium text-gray-dark-text">{formatDateTime(selectedOrder.orderDate, selectedOrder.time)}</span>
                         </div>
                       </div>
@@ -589,7 +591,7 @@ export default function AdminDashboard() {
                 
                 {/* Status Update Actions */}
                 <div className="bg-gray-dark-bg/70 rounded-[12px] sm:rounded-[15px] p-3 sm:p-4 border border-gray-dark-border backdrop-blur-sm">
-                  <h3 className="text-sm sm:text-base font-bold text-gray-dark-text mb-2 sm:mb-3 uppercase tracking-[0.3px] sm:tracking-[0.5px] border-b border-gray-dark-border pb-1">Update Status</h3>
+                  <h3 className="text-sm sm:text-base font-bold text-gray-dark-text mb-2 sm:mb-3 uppercase tracking-[0.3px] sm:tracking-[0.5px] border-b border-gray-dark-border pb-1">{t('admin.updateStatus')}</h3>
                   <div className="grid grid-cols-2 sm:flex gap-2 sm:flex-wrap">
                     {['pending', 'in_progress', 'completed', 'cancelled'].map((status) => (
                       <button

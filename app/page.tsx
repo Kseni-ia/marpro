@@ -6,6 +6,7 @@ import Containers from '@/app/Container/page'
 import Excavators from '@/app/Excavator/page'
 import Constructions from '@/app/Construction/page'
 import AnimatedLogo from '@/components/AnimatedLogo'
+import BlurUpBackground from '@/components/BlurUpBackground'
 import Footer from '@/app/Footer'
 import { useLanguage } from '@/contexts/LanguageContext'
 import { useModal } from '@/contexts/ModalContext'
@@ -131,19 +132,11 @@ export default function Home() {
       )}
       
       {activeSection === 'home' && (
-        <div className="fixed top-0 left-0 w-screen h-screen overflow-hidden z-0">
-          <video
-            autoPlay
-            loop
-            muted
-            playsInline
-            className="absolute inset-0 w-full h-full object-cover z-0 pointer-events-none"
-          >
-            <source src="/F4.mp4" type="video/mp4" />
-            Your browser does not support the video tag.
-          </video>
-          <div className="absolute inset-0 bg-black/70 z-10 pointer-events-none"></div>
-        </div>
+        <BlurUpBackground
+          placeholderSrc="/loadD Small.jpeg"
+          fullSrc="/F4.mp4"
+          overlayOpacity="bg-black/70"
+        />
       )}
 
       {/* Background */}

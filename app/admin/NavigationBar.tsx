@@ -3,6 +3,7 @@
 import React, { useState, Fragment } from 'react'
 import { useRouter } from 'next/navigation'
 import { Calendar, LogOut, Home, ChevronRight, ChevronLeft, Package, Truck, FileText } from 'lucide-react'
+import { useLanguage } from '@/contexts/LanguageContext'
 
 interface NavigationBarProps {
   onScheduleClick: () => void
@@ -11,6 +12,7 @@ interface NavigationBarProps {
 
 export default function NavigationBar({ onScheduleClick, onLogout }: NavigationBarProps) {
   const router = useRouter()
+  const { t } = useLanguage()
   const [isOpen, setIsOpen] = useState(false)
 
   return (
@@ -45,10 +47,10 @@ export default function NavigationBar({ onScheduleClick, onLogout }: NavigationB
           className={`rounded-xl bg-red-950/40 text-white hover:bg-red-900/60 hover:text-white hover:border-red-600 flex items-center transition-all duration-300 border-2 border-red-900/50 ${
             isOpen ? 'w-full justify-start gap-3 px-4 h-12' : 'w-10 h-10 justify-center mx-auto'
           }`}
-          title="Home"
+          title={t('admin.home')}
         >
           <Home className="w-5 h-5 flex-shrink-0" />
-          {isOpen && <span className="text-sm font-medium">Home</span>}
+          {isOpen && <span className="text-sm font-medium">{t('admin.home')}</span>}
         </button>
       </div>
 
@@ -59,10 +61,10 @@ export default function NavigationBar({ onScheduleClick, onLogout }: NavigationB
           className={`rounded-xl bg-red-950/40 text-white hover:bg-red-900/60 hover:text-white hover:border-red-600 flex items-center transition-all duration-300 border-2 border-red-900/50 ${
             isOpen ? 'w-full justify-start gap-3 px-4 h-12' : 'w-10 h-10 justify-center mx-auto'
           }`}
-          title="Schedule"
+          title={t('admin.schedule')}
         >
           <Calendar className="w-5 h-5 flex-shrink-0" />
-          {isOpen && <span className="text-sm font-medium">Schedule</span>}
+          {isOpen && <span className="text-sm font-medium">{t('admin.schedule')}</span>}
         </button>
       </div>
 
@@ -73,10 +75,10 @@ export default function NavigationBar({ onScheduleClick, onLogout }: NavigationB
           className={`rounded-xl bg-red-950/40 text-white hover:bg-red-900/60 hover:text-white hover:border-red-600 flex items-center transition-all duration-300 border-2 border-red-900/50 ${
             isOpen ? 'w-full justify-start gap-3 px-4 h-12' : 'w-10 h-10 justify-center mx-auto'
           }`}
-          title="New Containers"
+          title={t('admin.newContainers')}
         >
           <Package className="w-5 h-5 flex-shrink-0" />
-          {isOpen && <span className="text-sm font-medium">New Containers</span>}
+          {isOpen && <span className="text-sm font-medium">{t('admin.newContainers')}</span>}
         </button>
       </div>
 
@@ -87,10 +89,10 @@ export default function NavigationBar({ onScheduleClick, onLogout }: NavigationB
           className={`rounded-xl bg-red-950/40 text-white hover:bg-red-900/60 hover:text-white hover:border-red-600 flex items-center transition-all duration-300 border-2 border-red-900/50 ${
             isOpen ? 'w-full justify-start gap-3 px-4 h-12' : 'w-10 h-10 justify-center mx-auto'
           }`}
-          title="New Excavators"
+          title={t('admin.newExcavators')}
         >
           <Truck className="w-5 h-5 flex-shrink-0" />
-          {isOpen && <span className="text-sm font-medium">New Excavators</span>}
+          {isOpen && <span className="text-sm font-medium">{t('admin.newExcavators')}</span>}
         </button>
       </div>
 
@@ -101,10 +103,10 @@ export default function NavigationBar({ onScheduleClick, onLogout }: NavigationB
           className={`rounded-xl bg-red-950/40 text-white hover:bg-red-900/60 hover:text-white hover:border-red-600 flex items-center transition-all duration-300 border-2 border-red-900/50 ${
             isOpen ? 'w-full justify-start gap-3 px-4 h-12' : 'w-10 h-10 justify-center mx-auto'
           }`}
-          title="Work Applications"
+          title={t('admin.workApplications')}
         >
           <FileText className="w-5 h-5 flex-shrink-0" />
-          {isOpen && <span className="text-sm font-medium">Work Applications</span>}
+          {isOpen && <span className="text-sm font-medium">{t('admin.workApplications')}</span>}
         </button>
       </div>
 
@@ -123,10 +125,10 @@ export default function NavigationBar({ onScheduleClick, onLogout }: NavigationB
           className={`rounded-xl bg-red-950/40 text-white hover:bg-red-600/40 hover:text-white hover:border-red-500 flex items-center transition-all duration-300 border-2 border-red-900/50 ${
             isOpen ? 'w-full justify-start gap-3 px-4 h-12' : 'w-10 h-10 justify-center mx-auto'
           }`}
-          title="Logout"
+          title={t('admin.logout')}
         >
           <LogOut className="w-5 h-5 flex-shrink-0" />
-          {isOpen && <span className="text-sm font-medium">Logout</span>}
+          {isOpen && <span className="text-sm font-medium">{t('admin.logout')}</span>}
         </button>
       </div>
     </div>
@@ -138,7 +140,7 @@ export default function NavigationBar({ onScheduleClick, onLogout }: NavigationB
           <button
             onClick={() => router.push('/admin/dashboard')}
             className="w-12 h-12 rounded-xl bg-red-950/40 text-white hover:bg-red-900/60 hover:text-white hover:border-red-600 flex items-center justify-center transition-all duration-300 border-2 border-red-900/50"
-            title="Home"
+            title={t('admin.home')}
           >
             <Home className="w-5 h-5" />
           </button>
@@ -147,7 +149,7 @@ export default function NavigationBar({ onScheduleClick, onLogout }: NavigationB
           <button
             onClick={onScheduleClick}
             className="w-12 h-12 rounded-xl bg-red-950/40 text-white hover:bg-red-900/60 hover:text-white hover:border-red-600 flex items-center justify-center transition-all duration-300 border-2 border-red-900/50"
-            title="Schedule"
+            title={t('admin.schedule')}
           >
             <Calendar className="w-5 h-5" />
           </button>
@@ -156,7 +158,7 @@ export default function NavigationBar({ onScheduleClick, onLogout }: NavigationB
           <button
             onClick={() => router.push('/admin/newContainers')}
             className="w-12 h-12 rounded-xl bg-red-950/40 text-white hover:bg-red-900/60 hover:text-white hover:border-red-600 flex items-center justify-center transition-all duration-300 border-2 border-red-900/50"
-            title="New Containers"
+            title={t('admin.newContainers')}
           >
             <Package className="w-5 h-5" />
           </button>
@@ -165,7 +167,7 @@ export default function NavigationBar({ onScheduleClick, onLogout }: NavigationB
           <button
             onClick={() => router.push('/admin/newExcavators')}
             className="w-12 h-12 rounded-xl bg-red-950/40 text-white hover:bg-red-900/60 hover:text-white hover:border-red-600 flex items-center justify-center transition-all duration-300 border-2 border-red-900/50"
-            title="New Excavators"
+            title={t('admin.newExcavators')}
           >
             <Truck className="w-5 h-5" />
           </button>
@@ -174,7 +176,7 @@ export default function NavigationBar({ onScheduleClick, onLogout }: NavigationB
           <button
             onClick={() => router.push('/admin/workApplications')}
             className="w-12 h-12 rounded-xl bg-red-950/40 text-white hover:bg-red-900/60 hover:text-white hover:border-red-600 flex items-center justify-center transition-all duration-300 border-2 border-red-900/50"
-            title="Work Applications"
+            title={t('admin.workApplications')}
           >
             <FileText className="w-5 h-5" />
           </button>
@@ -183,7 +185,7 @@ export default function NavigationBar({ onScheduleClick, onLogout }: NavigationB
           <button
             onClick={onLogout}
             className="w-12 h-12 rounded-xl bg-red-950/40 text-white hover:bg-red-600/40 hover:text-white hover:border-red-500 flex items-center justify-center transition-all duration-300 border-2 border-red-900/50"
-            title="Logout"
+            title={t('admin.logout')}
           >
             <LogOut className="w-5 h-5" />
           </button>

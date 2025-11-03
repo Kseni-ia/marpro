@@ -160,6 +160,7 @@ export default function ContainersList() {
               </button>
               
               <button
+                onClick={() => setSelectedContainer(container)}
                 className="px-2 py-2 bg-blue-950/40 text-blue-400 hover:bg-blue-900/60 border border-blue-900/50 hover:border-blue-600 rounded-lg transition-all duration-300 flex items-center justify-center gap-1 text-[10px] font-semibold shadow-md hover:shadow-blue-500/30"
                 title="Edit Container"
               >
