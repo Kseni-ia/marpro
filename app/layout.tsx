@@ -5,6 +5,8 @@ import { AuthProvider } from '@/contexts/AuthContext'
 import ClientThemeProvider from '@/components/ClientThemeProvider'
 import { LanguageProvider } from '@/contexts/LanguageContext'
 import { ModalProvider } from '@/contexts/ModalContext'
+import { LoadingProvider } from '@/contexts/LoadingContext'
+import LoadingManager from '@/components/LoadingManager'
 import GoogleAnalytics from '@/components/GoogleAnalytics'
 
 const inter = Inter({ subsets: ['latin'] })
@@ -23,15 +25,19 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${inter.className} bg-gray-dark-bg`}>
         <GoogleAnalytics gaId="G-7ZSNC2QFYH" />
-        <ClientThemeProvider>
-          <LanguageProvider>
-            <ModalProvider>
-              <AuthProvider>
-                {children}
-              </AuthProvider>
-            </ModalProvider>
-          </LanguageProvider>
-        </ClientThemeProvider>
+        <LoadingProvider>
+          <ClientThemeProvider>
+            <LanguageProvider>
+              <ModalProvider>
+                <AuthProvider>
+                  <LoadingManager>
+                    {children}
+                  </LoadingManager>
+                </AuthProvider>
+              </ModalProvider>
+            </LanguageProvider>
+          </ClientThemeProvider>
+        </LoadingProvider>
       </body>
     </html>
   )
