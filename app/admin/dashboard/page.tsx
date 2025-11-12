@@ -9,13 +9,22 @@ import Image from 'next/image'
 import EquipmentSchedule from '@/components/EquipmentSchedule'
 import NavigationBar from '@/app/admin/NavigationBar'
 import { useLanguage } from '@/contexts/LanguageContext'
+import { getActiveExcavators, Excavator } from '@/lib/excavators'
+import ExcavatorCard from '@/app/Excavator/components/ExcavatorCard'
+import { getActiveContainers, Container } from '@/lib/containers'
 
 export default function AdminDashboard() {
   const { isAuthenticated, logout, loading: authLoading } = useAuth()
   const router = useRouter()
-  const { t } = useLanguage()
+  const { t, language } = useLanguage()
   const [orders, setOrders] = useState<Order[]>([])
   const [loading, setLoading] = useState(true)
+  const [excavators, setExcavators] = useState<Excavator[]>([])
+  const [excavatorsLoading, setExcavatorsLoading] = useState(true)
+  const [selectedExcavator, setSelectedExcavator] = useState<Excavator | null>(null)
+  const [containers, setContainers] = useState<Container[]>([])
+  const [containersLoading, setContainersLoading] = useState(true)
+  const [selectedContainer, setSelectedContainer] = useState<Container | null>(null)
   const [filter, setFilter] = useState<'all' | Order['status']>('pending')
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null)
   const [showEquipmentSchedule, setShowEquipmentSchedule] = useState(false)
@@ -34,8 +43,32 @@ export default function AdminDashboard() {
   useEffect(() => {
     if (isAuthenticated) {
       fetchOrders()
+      fetchExcavators()
+      fetchContainers()
     }
   }, [isAuthenticated])
+
+  const fetchContainers = async () => {
+    try {
+      const data = await getActiveContainers()
+      setContainers(data)
+    } catch (error) {
+      console.error('Error fetching containers:', error)
+    } finally {
+      setContainersLoading(false)
+    }
+  }
+
+  const fetchExcavators = async () => {
+    try {
+      const data = await getActiveExcavators()
+      setExcavators(data)
+    } catch (error) {
+      console.error('Error fetching excavators:', error)
+    } finally {
+      setExcavatorsLoading(false)
+    }
+  }
 
   const fetchOrders = async () => {
     try {
@@ -89,8 +122,21 @@ export default function AdminDashboard() {
     }
   }
 
-  const handleProcessOrder = async () => {
-    if (!processingOrder) return
+  const handleProcessOrder = async (order?: Order) => {
+    if (order) {
+      // This is called when opening the modal
+      setProcessingOrder(order)
+      setSelectedExcavator(null)
+      setSelectedContainer(null)
+      setEndTime('')
+      setEndDate('')
+      setReservationType('time')
+      return
+    }
+
+    if (!processingOrder) {
+      return
+    }
 
     try {
       // Calculate end time/date based on reservation type
@@ -131,6 +177,8 @@ export default function AdminDashboard() {
       setEndTime('')
       setEndDate('')
       setReservationType('time')
+      setSelectedExcavator(null)
+      setSelectedContainer(null)
     } catch (error) {
       console.error('Error processing order:', error)
     }
@@ -180,7 +228,7 @@ export default function AdminDashboard() {
     return `${dateStr} at ${time}`
   }
 
-  if (authLoading || loading) {
+  if (authLoading || loading || excavatorsLoading || containersLoading) {
     return (
       <div className="min-h-screen bg-gradient-main-dark flex items-center justify-center">
         <div className="text-gray-dark-text text-xl">{t('admin.loading')}</div>
@@ -411,7 +459,7 @@ export default function AdminDashboard() {
                       <button
                         onClick={(e) => {
                           e.stopPropagation()
-                          setProcessingOrder(order)
+                          handleProcessOrder(order)
                         }}
                         className="flex-1 bg-gradient-to-r from-blue-600 to-blue-700 text-white px-2 py-1 sm:py-1.5 rounded-[6px] sm:rounded-[8px] text-[10px] sm:text-xs font-semibold hover:from-blue-700 hover:to-blue-800 transition-all duration-300"
                       >
@@ -623,7 +671,11 @@ export default function AdminDashboard() {
               <div className="flex justify-between items-center mb-4 sm:mb-6">
                 <h2 className="text-lg sm:text-xl font-bold text-gray-dark-text uppercase tracking-[0.5px] sm:tracking-[1px]">Process Order</h2>
                 <button
-                  onClick={() => setProcessingOrder(null)}
+                  onClick={() => {
+                    setProcessingOrder(null)
+                    setSelectedExcavator(null)
+                    setSelectedContainer(null)
+                  }}
                   className="text-gray-dark-textSecondary hover:text-gray-dark-text text-lg sm:text-xl font-bold transition-colors duration-300 hover:scale-110 transform"
                 >
                   ✕
@@ -642,6 +694,116 @@ export default function AdminDashboard() {
                   {processingOrder.constructionType && ` - ${processingOrder.constructionType}`}
                 </p>
               </div>
+
+              {/* Excavator Selection - Only show for excavator orders */}
+              {processingOrder.serviceType === 'excavators' && (
+                <div className="bg-gray-dark-bg/70 rounded-[12px] sm:rounded-[15px] p-3 sm:p-4 border border-gray-dark-border mb-3 sm:mb-4 backdrop-blur-sm">
+                  <h3 className="text-xs sm:text-sm font-bold text-gray-dark-text mb-2 sm:mb-3 uppercase tracking-[0.3px] sm:tracking-[0.5px]">
+                    Select Excavator
+                  </h3>
+                  {excavatorsLoading ? (
+                    <div className="flex items-center justify-center py-4">
+                      <div className="text-gray-dark-textSecondary text-xs sm:text-sm">Loading excavators...</div>
+                    </div>
+                  ) : excavators.length === 0 ? (
+                    <div className="flex items-center justify-center py-4">
+                      <div className="text-gray-dark-textSecondary text-xs sm:text-sm">No excavators available</div>
+                    </div>
+                  ) : (
+                    <div className="space-y-2 max-h-60 overflow-y-auto">
+                      {excavators.map((excavator) => (
+                        <div
+                          key={excavator.id}
+                          onClick={() => setSelectedExcavator(excavator)}
+                          className={`p-2 sm:p-3 rounded-lg border cursor-pointer transition-all duration-200 ${
+                            selectedExcavator?.id === excavator.id
+                              ? 'border-red-500 bg-red-500/10 shadow-[0_0_10px_rgba(239,68,68,0.3)]'
+                              : 'border-gray-dark-border hover:border-gray-dark-accent hover:bg-gray-dark-bg/50'
+                          }`}
+                        >
+                          <div className="flex items-center gap-3">
+                            <div className="w-12 h-12 flex-shrink-0">
+                              <Image 
+                                src={excavator.svgPath || '/TB145.svg'} 
+                                alt={`${excavator.model} excavator`}
+                                width={48}
+                                height={48}
+                                className="w-full h-full object-contain"
+                              />
+                            </div>
+                            <div className="flex-1 min-w-0">
+                              <div className="text-xs sm:text-sm font-bold text-gray-dark-text uppercase">
+                                {excavator.model}
+                              </div>
+                              <div className="text-[10px] sm:text-xs text-gray-dark-textSecondary">
+                                {excavator.type}
+                              </div>
+                              <div className="text-[10px] sm:text-xs text-gray-dark-textMuted">
+                                {excavator.specs.weight} • {excavator.specs.bucketCapacity}
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              )}
+
+                {/* Container Selection - Only show for container orders */}
+                {processingOrder.serviceType === 'containers' && (
+                  <div className="bg-gray-dark-bg/70 rounded-[12px] sm:rounded-[15px] p-3 sm:p-4 border border-gray-dark-border mb-3 sm:mb-4 backdrop-blur-sm">
+                    <h3 className="text-xs sm:text-sm font-bold text-gray-dark-text mb-2 sm:mb-3 uppercase tracking-[0.3px] sm:tracking-[0.5px]">
+                      Select Container
+                    </h3>
+                    {containersLoading ? (
+                      <div className="flex items-center justify-center py-4">
+                        <div className="text-gray-dark-textSecondary text-xs sm:text-sm">Loading containers...</div>
+                      </div>
+                    ) : containers.length === 0 ? (
+                      <div className="flex items-center justify-center py-4">
+                        <div className="text-gray-dark-textSecondary text-xs sm:text-sm">No containers available</div>
+                      </div>
+                    ) : (
+                      <div className="space-y-2 max-h-60 overflow-y-auto">
+                        {containers.map((container) => (
+                          <div
+                            key={container.id}
+                            onClick={() => setSelectedContainer(container)}
+                            className={`p-2 sm:p-3 rounded-lg border cursor-pointer transition-all duration-200 ${
+                              selectedContainer?.id === container.id
+                                ? 'border-red-500 bg-red-500/10 shadow-[0_0_10px_rgba(239,68,68,0.3)]'
+                                : 'border-gray-dark-border hover:border-gray-dark-accent hover:bg-gray-dark-bg/50'
+                            }`}
+                          >
+                            <div className="flex items-center gap-3">
+                              <div className="w-12 h-12 flex-shrink-0">
+                                <Image
+                                  src={container.image || '/container-medium.svg'}
+                                  alt={`${container.volume}m³ container`}
+                                  width={48}
+                                  height={48}
+                                  className="w-full h-full object-contain"
+                                />
+                              </div>
+                              <div className="flex-1 min-w-0">
+                                <div className="text-xs sm:text-sm font-bold text-gray-dark-text uppercase">
+                                  {container.volume}m³
+                                </div>
+                                <div className="text-[10px] sm:text-xs text-gray-dark-textSecondary">
+                                  {container.dims}
+                                </div>
+                                <div className="text-[10px] sm:text-xs text-gray-dark-textMuted">
+                                  {container.price.toLocaleString('cs-CZ')} CZK
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                )}
               
               <div className="bg-gray-dark-bg/70 rounded-[15px] p-4 border border-gray-dark-border backdrop-blur-sm">
                 <label className="block text-sm font-semibold text-gray-dark-textSecondary uppercase mb-2">
@@ -698,16 +860,30 @@ export default function AdminDashboard() {
               
               <div className="flex gap-2 mt-3 sm:mt-4">
                 <button
-                  onClick={() => setProcessingOrder(null)}
+                  onClick={() => {
+                    setProcessingOrder(null)
+                    setSelectedExcavator(null)
+                    setSelectedContainer(null)
+                  }}
                   className="flex-1 bg-gradient-to-r from-gray-600 to-gray-700 text-white px-3 sm:px-4 py-1.5 sm:py-2 rounded-[8px] sm:rounded-[10px] text-xs sm:text-sm font-semibold hover:from-gray-700 hover:to-gray-800 transition-all duration-300"
                 >
                   Cancel
                 </button>
                 <button
-                  onClick={handleProcessOrder}
-                  className="flex-1 bg-gradient-to-r from-blue-600 to-blue-700 text-white px-3 sm:px-4 py-1.5 sm:py-2 rounded-[8px] sm:rounded-[10px] text-xs sm:text-sm font-semibold hover:from-blue-700 hover:to-blue-800 transition-all duration-300"
+                  onClick={() => handleProcessOrder()}
+                  disabled={(processingOrder.serviceType === 'excavators' && !selectedExcavator) || (processingOrder.serviceType === 'containers' && !selectedContainer)}
+                  className={`flex-1 px-3 sm:px-4 py-1.5 sm:py-2 rounded-[8px] sm:rounded-[10px] text-xs sm:text-sm font-semibold transition-all duration-300 ${
+                    (processingOrder.serviceType === 'excavators' && !selectedExcavator) || (processingOrder.serviceType === 'containers' && !selectedContainer)
+                      ? 'bg-gray-600 text-gray-400 cursor-not-allowed'
+                      : 'bg-gradient-to-r from-blue-600 to-blue-700 text-white hover:from-blue-700 hover:to-blue-800'
+                  }`}
                 >
-                  Process Order
+                  {(processingOrder.serviceType === 'excavators' && !selectedExcavator) 
+                    ? 'Select Excavator' 
+                    : (processingOrder.serviceType === 'containers' && !selectedContainer)
+                    ? 'Select Container'
+                    : 'Process Order'
+                  }
                 </button>
               </div>
             </div>

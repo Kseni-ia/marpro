@@ -1,0 +1,12 @@
+<svg viewBox="0 0 200 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Small Container -->
+  <rect x="80" y="40" width="60" height="20" fill="#e8e8e8" stroke="#cccccc" stroke-width="1"/>
+  <rect x="30" y="45" width="40" height="15" fill="#666666" rx="2"/>
+  <rect x="30" y="42" width="15" height="10" fill="#555555" rx="1"/>
+  <rect x="70" y="60" width="70" height="4" fill="#cccccc"/>
+  <circle cx="60" cy="70" r="8" fill="#444444"/>
+  <circle cx="60" cy="70" r="4" fill="#eeeeee"/>
+  <circle cx="130" cy="70" r="8" fill="#444444"/>
+  <circle cx="130" cy="70" r="4" fill="#eeeeee"/>
+  <text x="110" y="54" text-anchor="middle" fill="#666" font-family="Arial" font-size="8">3m³</text>
+</svg>

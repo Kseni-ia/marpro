@@ -6,6 +6,7 @@ import { Edit, Eye, EyeOff, Plus, Trash2 } from 'lucide-react'
 import { useLanguage } from '@/contexts/LanguageContext'
 import AddExcavatorModal from './AddExcavatorModal'
 import ExcavatorDetailsModal from './ExcavatorDetailsModal'
+import Image from 'next/image'
 
 export default function ExcavatorsList() {
   const { t } = useLanguage()
@@ -117,18 +118,15 @@ export default function ExcavatorsList() {
               </div>
             </div>
 
-            {/* Excavator Image Placeholder */}
+            {/* Excavator Image */}
             <div className="flex justify-center items-center h-16 mb-4 bg-gray-700/20 rounded-lg">
-              <svg width="120" height="50" viewBox="0 0 200 80" fill="none" xmlns="http://www.w3.org/2000/svg">
-                {/* Excavator body */}
-                <rect x="60" y="40" width="60" height="20" fill="#6B7280" rx="2"/>
-                <rect x="50" y="30" width="30" height="30" fill="#9CA3AF" rx="2"/>
-                {/* Arm */}
-                <rect x="80" y="20" width="40" height="8" fill="#6B7280" rx="1" transform="rotate(-30 80 20)"/>
-                <rect x="110" y="10" width="30" height="6" fill="#9CA3AF" rx="1" transform="rotate(-45 110 10)"/>
-                {/* Tracks */}
-                <rect x="50" y="60" width="70" height="10" fill="#4B5563" rx="2"/>
-              </svg>
+              <Image 
+                src={excavator.svgPath || '/TB145.svg'} 
+                alt={`${excavator.model} excavator`}
+                width={120}
+                height={50}
+                className="w-full h-full object-contain"
+              />
             </div>
 
             {/* Description */}

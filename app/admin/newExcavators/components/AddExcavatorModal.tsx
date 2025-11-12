@@ -1,11 +1,10 @@
 'use client'
 
 import React, { useState } from 'react'
-import { X, Upload, Image as ImageIcon } from 'lucide-react'
+import { X } from 'lucide-react'
 import { useLanguage } from '@/contexts/LanguageContext'
 import { addExcavator } from '@/lib/excavators'
 import { EXCAVATOR_PRESET_DESCRIPTIONS } from '@/lib/excavatorPresets'
-import { uploadImage, validateImageFile } from '@/lib/uploadImage'
 import Image from 'next/image'
 
 interface AddExcavatorModalProps {
@@ -16,6 +15,14 @@ interface AddExcavatorModalProps {
 export default function AddExcavatorModal({ onClose, onSuccess }: AddExcavatorModalProps) {
   const { t } = useLanguage()
   const [loading, setLoading] = useState(false)
+  
+  // Available excavator images
+  const excavatorImages = [
+    { path: '/TB145.svg', name: 'TB145' },
+    { path: '/TB290-1.svg', name: 'TB290-1' },
+    { path: '/TB290-2.svg.svg', name: 'TB290-2' }
+  ]
+  
   const [formData, setFormData] = useState({
     model: '',
     type: 'mini',
@@ -24,35 +31,17 @@ export default function AddExcavatorModal({ onClose, onSuccess }: AddExcavatorMo
     weight: '',
     bucketCapacity: '',
     maxReach: '',
+    svgPath: '/TB145.svg', // Default image
     isActive: true
   })
   const [descriptionMode, setDescriptionMode] = useState<'preset' | 'custom'>('preset')
   const [selectedPreset, setSelectedPreset] = useState<number>(0)
-  const [imageFile, setImageFile] = useState<File | null>(null)
-  const [imagePreview, setImagePreview] = useState<string | null>(null)
-  const [uploadingImage, setUploadingImage] = useState(false)
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setLoading(true)
 
     try {
-      let imageUrl: string | undefined
-
-      // Upload image if one is selected
-      if (imageFile) {
-        setUploadingImage(true)
-        try {
-          imageUrl = await uploadImage(imageFile, 'excavators')
-        } catch (uploadError) {
-          console.error('Image upload failed:', uploadError)
-          // Continue without image, but show warning
-          alert('Image upload failed. Excavator will be created without an image. Please check Firebase Storage configuration.')
-          imageUrl = undefined
-        }
-        setUploadingImage(false)
-      }
-
       await addExcavator({
         model: formData.model,
         type: formData.type,
@@ -67,8 +56,8 @@ export default function AddExcavatorModal({ onClose, onSuccess }: AddExcavatorMo
           bucketCapacity: formData.bucketCapacity,
           maxReach: formData.maxReach
         },
-        isActive: formData.isActive,
-        imageUrl
+        svgPath: formData.svgPath,
+        isActive: formData.isActive
       })
 
       onSuccess()
@@ -78,7 +67,6 @@ export default function AddExcavatorModal({ onClose, onSuccess }: AddExcavatorMo
       alert(t('admin.failedAdd'))
     } finally {
       setLoading(false)
-      setUploadingImage(false)
     }
   }
 
@@ -87,30 +75,6 @@ export default function AddExcavatorModal({ onClose, onSuccess }: AddExcavatorMo
     setFormData(prev => ({ ...prev, [name]: value }))
   }
 
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0]
-    if (!file) return
-
-    try {
-      validateImageFile(file)
-      setImageFile(file)
-      
-      // Create preview
-      const reader = new FileReader()
-      reader.onloadend = () => {
-        setImagePreview(reader.result as string)
-      }
-      reader.readAsDataURL(file)
-    } catch (error) {
-      alert(error instanceof Error ? error.message : 'Invalid image file')
-      e.target.value = ''
-    }
-  }
-
-  const handleRemoveImage = () => {
-    setImageFile(null)
-    setImagePreview(null)
-  }
 
   return (
     <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
@@ -179,48 +143,6 @@ export default function AddExcavatorModal({ onClose, onSuccess }: AddExcavatorMo
             />
           </div>
 
-          {/* Image Upload */}
-          <div>
-            <label className="block text-xs font-medium text-gray-dark-text mb-1">
-              {t('admin.excavatorImage')}
-            </label>
-            <div className="space-y-2">
-              {imagePreview ? (
-                <div className="relative w-full h-48 bg-gray-dark-card border-2 border-gray-dark-border rounded-lg overflow-hidden">
-                  <Image
-                    src={imagePreview}
-                    alt="Preview"
-                    fill
-                    className="object-contain"
-                  />
-                  <button
-                    type="button"
-                    onClick={handleRemoveImage}
-                    className="absolute top-2 right-2 p-1.5 bg-red-600/90 hover:bg-red-700 rounded-lg transition-colors"
-                  >
-                    <X className="w-4 h-4 text-white" />
-                  </button>
-                </div>
-              ) : (
-                <label className="flex flex-col items-center justify-center w-full h-48 border-2 border-dashed border-gray-dark-border rounded-lg cursor-pointer bg-gray-dark-card hover:bg-gray-800/60 transition-colors">
-                  <div className="flex flex-col items-center justify-center pt-5 pb-6">
-                    <Upload className="w-10 h-10 mb-3 text-gray-400" />
-                    <p className="mb-2 text-sm text-gray-400">
-                      <span className="font-semibold">Click to upload</span> or drag and drop
-                    </p>
-                    <p className="text-xs text-gray-500">PNG, JPG, WebP (MAX. 5MB)</p>
-                  </div>
-                  <input
-                    type="file"
-                    className="hidden"
-                    accept="image/jpeg,image/jpg,image/png,image/webp"
-                    onChange={handleImageChange}
-                  />
-                </label>
-              )}
-            </div>
-          </div>
-
           {/* Specs */}
           <div className="grid grid-cols-3 gap-3">
             <div>
@@ -264,6 +186,46 @@ export default function AddExcavatorModal({ onClose, onSuccess }: AddExcavatorMo
                 className="w-full px-3 py-2 bg-gray-dark-card border border-gray-dark-border rounded-lg text-gray-dark-text text-sm focus:outline-none focus:border-red-500"
                 placeholder="e.g., 3.8m"
               />
+            </div>
+          </div>
+
+          {/* Excavator Image Selection */}
+          <div>
+            <label className="block text-xs font-medium text-gray-dark-text mb-2">
+              {t('admin.excavatorImage')} *
+            </label>
+            <div className="grid grid-cols-3 gap-3">
+              {excavatorImages.map((image) => (
+                <div
+                  key={image.path}
+                  onClick={() => setFormData(prev => ({ ...prev, svgPath: image.path }))}
+                  className={`relative cursor-pointer rounded-lg border-2 p-3 transition-all duration-200 ${
+                    formData.svgPath === image.path
+                      ? 'border-red-500 bg-red-500/10 shadow-[0_0_10px_rgba(239,68,68,0.3)]'
+                      : 'border-gray-dark-border hover:border-gray-dark-accent hover:bg-gray-dark-bg/50'
+                  }`}
+                >
+                  <div className="aspect-square mb-2">
+                    <Image
+                      src={image.path}
+                      alt={image.name}
+                      width={80}
+                      height={80}
+                      className="w-full h-full object-contain"
+                    />
+                  </div>
+                  <p className="text-xs text-center text-gray-dark-text font-medium">
+                    {image.name}
+                  </p>
+                  {formData.svgPath === image.path && (
+                    <div className="absolute top-1 right-1 w-4 h-4 bg-red-500 rounded-full flex items-center justify-center">
+                      <svg className="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                      </svg>
+                    </div>
+                  )}
+                </div>
+              ))}
             </div>
           </div>
 
@@ -339,10 +301,10 @@ export default function AddExcavatorModal({ onClose, onSuccess }: AddExcavatorMo
             </button>
             <button
               type="submit"
-              disabled={loading || uploadingImage}
+              disabled={loading}
               className="flex-1 px-4 py-2 bg-red-950/40 text-white hover:bg-red-900/60 border border-red-900/50 hover:border-red-600 rounded-lg transition-all duration-300 text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {uploadingImage ? 'Uploading image...' : loading ? t('admin.adding') : t('admin.addExcavator')}
+              {loading ? t('admin.adding') : t('admin.addExcavator')}
             </button>
           </div>
         </form>

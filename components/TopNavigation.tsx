@@ -4,11 +4,13 @@ import React, { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { useLanguage } from '@/contexts/LanguageContext'
 import WorkApplicationForm from './WorkApplicationForm'
+import { Menu, X } from 'lucide-react'
 
 export default function TopNavigation() {
   const router = useRouter()
   const { t, language } = useLanguage()
   const [showWorkForm, setShowWorkForm] = useState(false)
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
   // Handle hash scrolling on component mount
   useEffect(() => {
@@ -25,6 +27,7 @@ export default function TopNavigation() {
 
   const navigateToSection = (path: string) => {
     router.push(path)
+    setMobileMenuOpen(false) // Close menu after navigation
   }
 
   const handleWorkWithUs = () => {
@@ -32,6 +35,7 @@ export default function TopNavigation() {
   }
 
   const handleContact = () => {
+    setMobileMenuOpen(false) // Close menu
     // Navigate to home page first, then scroll to contact section
     const currentPath = window.location.pathname
     if (currentPath !== '/') {
@@ -65,6 +69,12 @@ export default function TopNavigation() {
             {/* Navigation Items - centered */}
             <div className="hidden md:flex items-center space-x-8">
               <button 
+                onClick={() => navigateToSection('/')}
+                className="text-gray-dark-textSecondary/90 hover:text-red-400 transition-all duration-300 font-medium hover:scale-105 hover:drop-shadow-[0_0_10px_rgba(220,38,38,0.3)]"
+              >
+                {language === 'cs' ? 'Hlavní' : language === 'ru' ? 'Главная' : 'Main'}
+              </button>
+              <button 
                 onClick={handleContact}
                 className="text-gray-dark-textSecondary/90 hover:text-red-400 transition-all duration-300 font-medium hover:scale-105 hover:drop-shadow-[0_0_10px_rgba(220,38,38,0.3)]"
               >
@@ -96,46 +106,61 @@ export default function TopNavigation() {
               </button>
             </div>
 
-            {/* Mobile menu button - positioned on the right */}
+            {/* Hamburger menu button - positioned on the right */}
             <div className="absolute right-4 sm:right-6 md:hidden">
               <button 
-                onClick={handleWorkWithUs}
-                className="text-gray-dark-textSecondary/90 hover:text-red-400 transition-all duration-300 font-medium text-sm hover:scale-105 hover:drop-shadow-[0_0_10px_rgba(220,38,38,0.3)]"
+                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                className="text-gray-dark-textSecondary/90 hover:text-red-400 transition-all duration-300 p-2 hover:scale-110"
+                aria-label="Toggle menu"
               >
-                {language === 'cs' ? 'Spolupráce' : language === 'ru' ? 'Сотрудничество' : 'Work With Us'}
+                {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
               </button>
             </div>
           </div>
 
-          {/* Mobile Navigation - centered */}
-          <div className="md:hidden pb-4">
-            <div className="flex flex-col space-y-2 items-center">
-              <button 
-                onClick={handleContact}
-                className="text-gray-dark-textSecondary/90 hover:text-red-400 transition-all duration-300 font-medium py-2 hover:scale-105"
-              >
-                {language === 'cs' ? 'Kontakt' : language === 'ru' ? 'Контакт' : 'Contact Us'}
-              </button>
-              <button 
-                onClick={() => navigateToSection('/Container')}
-                className="text-gray-dark-textSecondary/90 hover:text-red-400 transition-all duration-300 font-medium py-2 hover:scale-105"
-              >
-                {t('nav.containers')}
-              </button>
-              <button 
-                onClick={() => navigateToSection('/Excavator')}
-                className="text-gray-dark-textSecondary/90 hover:text-red-400 transition-all duration-300 font-medium py-2 hover:scale-105"
-              >
-                {t('nav.excavators')}
-              </button>
-              <button 
-                onClick={() => navigateToSection('/Construction')}
-                className="text-gray-dark-textSecondary/90 hover:text-red-400 transition-all duration-300 font-medium py-2 hover:scale-105"
-              >
-                {t('nav.constructions')}
-              </button>
+          {/* Mobile Navigation Dropdown - Right Side */}
+          {mobileMenuOpen && (
+            <div className="md:hidden absolute top-16 right-4 bg-gradient-to-br from-gray-900/95 to-gray-800/95 backdrop-blur-xl border-2 border-gray-700/50 rounded-xl shadow-[0_8px_32px_rgba(0,0,0,0.4)] min-w-[220px] overflow-hidden">
+              <div className="flex flex-col py-3">
+                <button 
+                  onClick={() => navigateToSection('/')}
+                  className="text-gray-300 hover:text-white hover:bg-gradient-to-r hover:from-red-600/20 hover:to-red-500/10 transition-all duration-300 font-medium py-3.5 px-5 text-left border-b border-gray-700/30 hover:border-red-500/30"
+                >
+                  {language === 'cs' ? 'Hlavní' : language === 'ru' ? 'Главная' : 'Main'}
+                </button>
+                <button 
+                  onClick={handleContact}
+                  className="text-gray-300 hover:text-white hover:bg-gradient-to-r hover:from-red-600/20 hover:to-red-500/10 transition-all duration-300 font-medium py-3.5 px-5 text-left border-b border-gray-700/30 hover:border-red-500/30"
+                >
+                  {language === 'cs' ? 'Kontakt' : language === 'ru' ? 'Контакт' : 'Contact Us'}
+                </button>
+                <button 
+                  onClick={() => navigateToSection('/Container')}
+                  className="text-gray-300 hover:text-white hover:bg-gradient-to-r hover:from-red-600/20 hover:to-red-500/10 transition-all duration-300 font-medium py-3.5 px-5 text-left border-b border-gray-700/30 hover:border-red-500/30"
+                >
+                  {t('nav.containers')}
+                </button>
+                <button 
+                  onClick={() => navigateToSection('/Excavator')}
+                  className="text-gray-300 hover:text-white hover:bg-gradient-to-r hover:from-red-600/20 hover:to-red-500/10 transition-all duration-300 font-medium py-3.5 px-5 text-left border-b border-gray-700/30 hover:border-red-500/30"
+                >
+                  {t('nav.excavators')}
+                </button>
+                <button 
+                  onClick={() => navigateToSection('/Construction')}
+                  className="text-gray-300 hover:text-white hover:bg-gradient-to-r hover:from-red-600/20 hover:to-red-500/10 transition-all duration-300 font-medium py-3.5 px-5 text-left border-b border-gray-700/30 hover:border-red-500/30"
+                >
+                  {t('nav.constructions')}
+                </button>
+                <button 
+                  onClick={() => { setMobileMenuOpen(false); handleWorkWithUs(); }}
+                  className="text-gray-300 hover:text-white hover:bg-gradient-to-r hover:from-red-600/20 hover:to-red-500/10 transition-all duration-300 font-medium py-3.5 px-5 text-left"
+                >
+                  {language === 'cs' ? 'Spolupráce' : language === 'ru' ? 'Сотрудничество' : 'Work With Us'}
+                </button>
+              </div>
             </div>
-          </div>
+          )}
         </div>
       </nav>
 

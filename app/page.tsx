@@ -136,41 +136,7 @@ export default function Home() {
 
       {/* Background */}
       <div className="relative min-h-screen z-10 flex flex-col">
-        {/* Logo bg */}
-        <div className="relative px-4 sm:px-5 pt-20 sm:pt-20 md:pt-24 pb-4 sm:pb-3">
-          {/* section buttons (inline) - only show when NOT on home page and modal is closed */}
-          {!isModalOpen && activeSection !== 'home' && (
-            <div className="flex justify-center items-center md:w-full">
-              <nav className="flex justify-center items-center gap-1 bg-gray-dark-card/90 backdrop-blur-[10px] rounded-[30px] sm:rounded-[40px] md:rounded-[50px] p-1.5 sm:p-1.5 md:p-2 shadow-[0_2px_15px_rgba(0,0,0,0.3)] z-20 w-full max-w-sm sm:max-w-none sm:w-auto">
-                <button 
-                  className={`bg-transparent text-gray-dark-textSecondary border-none px-4 sm:px-4 md:px-6 py-2 sm:py-2 md:py-2.5 text-xs sm:text-sm md:text-base cursor-pointer transition-all duration-300 rounded-[25px] sm:rounded-[30px] md:rounded-[40px] font-medium capitalize tracking-[0.2px] sm:tracking-[0.3px] relative hover:bg-gray-f0f/80 dark:hover:bg-gray-dark-border/80 hover:text-gray-dark-text flex-1 sm:flex-none ${
-                    activeSection === 'containers' ? 'bg-gradient-button-dark text-gray-dark-text font-semibold shadow-[0_2px_8px_rgba(0,0,0,0.3)]' : ''
-                  }`}
-                  onClick={() => setActiveSection('containers')}
-                >
-                  {t('nav.containers')}
-                </button>
-                <button 
-                  className={`bg-transparent text-gray-dark-textSecondary border-none px-6 sm:px-4 md:px-6 py-2 sm:py-2 md:py-2.5 text-xs sm:text-sm md:text-base cursor-pointer transition-all duration-300 rounded-[25px] sm:rounded-[30px] md:rounded-[40px] font-medium capitalize tracking-[0.2px] sm:tracking-[0.3px] relative hover:bg-gray-f0f/80 dark:hover:bg-gray-dark-border/80 hover:text-gray-dark-text flex-1 sm:flex-none ${
-                    activeSection === 'excavators' ? 'bg-gradient-button-dark text-gray-dark-text font-semibold shadow-[0_2px_8px_rgba(0,0,0,0.3)]' : ''
-                  }`}
-                  onClick={() => setActiveSection('excavators')}
-                >
-                  {t('nav.excavators')}
-                </button>
-                <button 
-                  className={`bg-transparent text-gray-dark-textSecondary border-none px-6 sm:px-4 md:px-6 py-2 sm:py-2 md:py-2.5 text-xs sm:text-sm md:text-base cursor-pointer transition-all duration-300 rounded-[25px] sm:rounded-[30px] md:rounded-[40px] font-medium capitalize tracking-[0.2px] sm:tracking-[0.3px] relative hover:bg-gray-f0f/80 dark:hover:bg-gray-dark-border/80 hover:text-gray-dark-text flex-1 sm:flex-none ${
-                    activeSection === 'constructions' ? 'bg-gradient-button-dark text-gray-dark-text font-semibold shadow-[0_2px_8px_rgba(0,0,0,0.3)]' : ''
-                  }`}
-                  onClick={() => setActiveSection('constructions')}
-                >
-                  {t('nav.constructions')}
-                </button>
-              </nav>
-            </div>
-          )}
-        </div>
-        <main className="flex-1 flex justify-center items-center text-center">
+        <main className="flex-1 flex justify-center items-center text-center pt-2 sm:pt-2 md:pt-2">
           {renderSection()}
         </main>
         

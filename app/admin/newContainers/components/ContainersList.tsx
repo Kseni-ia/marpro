@@ -6,6 +6,7 @@ import { Edit, Eye, EyeOff, Plus, Trash2 } from 'lucide-react'
 import { useLanguage } from '@/contexts/LanguageContext'
 import AddContainerModal from './AddContainerModal'
 import ContainerDetailsModal from './ContainerDetailsModal'
+import Image from 'next/image'
 
 export default function ContainersList() {
   const { t } = useLanguage()
@@ -109,18 +110,15 @@ export default function ContainersList() {
               <span className="text-xs text-gray-300 font-medium">{container.dims}</span>
             </div>
 
-            {/* Container Image Placeholder */}
+            {/* Container Image */}
             <div className="flex justify-center items-center h-16 mb-4 bg-gray-700/20 rounded-lg">
-              <svg width="120" height="50" viewBox="0 0 200 80" fill="none" xmlns="http://www.w3.org/2000/svg">
-                {/* Container body */}
-                <rect x="40" y="20" width="120" height="40" fill="#6B7280" rx="2"/>
-                <rect x="50" y="25" width="100" height="30" fill="#9CA3AF" rx="1"/>
-                {/* Wheels */}
-                <circle cx="60" cy="65" r="8" fill="#4B5563"/>
-                <circle cx="60" cy="65" r="4" fill="#6B7280"/>
-                <circle cx="140" cy="65" r="8" fill="#4B5563"/>
-                <circle cx="140" cy="65" r="4" fill="#6B7280"/>
-              </svg>
+              <Image 
+                src={container.image || '/container-medium.svg'} 
+                alt={`${container.volume}m³ container`}
+                width={120}
+                height={50}
+                className="w-full h-full object-contain"
+              />
             </div>
 
             {/* Description */}

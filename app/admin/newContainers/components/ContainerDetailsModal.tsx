@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react'
 import { X, Edit2 } from 'lucide-react'
 import { Container, updateContainer } from '@/lib/containers'
 import { CONTAINER_PRESET_DESCRIPTIONS } from '@/lib/containerPresets'
+import Image from 'next/image'
 
 interface ContainerDetailsModalProps {
   container: Container
@@ -13,10 +14,9 @@ interface ContainerDetailsModalProps {
 
 // Available container images
 const CONTAINER_IMAGES = [
-  { id: 'container-1', name: 'Standard Container', path: '/containers/container-1.svg' },
-  { id: 'container-2', name: 'Large Container', path: '/containers/container-2.svg' },
-  { id: 'container-3', name: 'Small Container', path: '/containers/container-3.svg' },
-  { id: 'container-4', name: 'Wide Container', path: '/containers/container-4.svg' },
+  { id: 'container-small', name: 'Small (3m³)', path: '/container-small.svg' },
+  { id: 'container-medium', name: 'Medium (5m³)', path: '/container-medium.svg' },
+  { id: 'container-large', name: 'Large (7m³)', path: '/container-large.svg' }
 ]
 
 export default function ContainerDetailsModal({ container, onClose, onUpdate }: ContainerDetailsModalProps) {
@@ -50,7 +50,7 @@ export default function ContainerDetailsModal({ container, onClose, onUpdate }: 
     description: container.description || '',
     price: container.price,
     isActive: container.isActive,
-    image: container.image || 'container-1'
+    image: container.image || '/container-medium.svg'
   })
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -106,7 +106,7 @@ export default function ContainerDetailsModal({ container, onClose, onUpdate }: 
       description: container.description || '',
       price: container.price,
       isActive: container.isActive,
-      image: container.image || 'container-1'
+      image: container.image || '/container-medium.svg'
     })
     setEditingField(null)
   }
@@ -302,20 +302,26 @@ export default function ContainerDetailsModal({ container, onClose, onUpdate }: 
             </label>
             {editingField === 'image' ? (
               <div className="space-y-3" onClick={(e) => e.stopPropagation()}>
-                <div className="grid grid-cols-4 gap-3">
+                <div className="grid grid-cols-3 gap-3">
                   {CONTAINER_IMAGES.map((img) => (
                     <div
                       key={img.id}
-                      onClick={() => setFormData(prev => ({ ...prev, image: img.id }))}
+                      onClick={() => setFormData(prev => ({ ...prev, image: img.path }))}
                       className={`p-3 rounded-xl border-2 cursor-pointer transition-all duration-300 ${
-                        formData.image === img.id
+                        formData.image === img.path
                           ? 'border-red-500 bg-red-950/30 shadow-lg shadow-red-500/30 scale-105'
                           : 'border-gray-600/50 hover:border-gray-500 hover:scale-102'
                       }`}
                     >
                       <div className="text-[10px] text-gray-400 mb-2 text-center font-medium">{img.name}</div>
                       <div className="bg-gray-700/50 rounded-lg p-2 h-14 flex items-center justify-center">
-                        <span className="text-xs text-gray-400 font-semibold">IMG</span>
+                        <Image
+                          src={img.path}
+                          alt={img.name}
+                          width={60}
+                          height={30}
+                          className="w-full h-full object-contain"
+                        />
                       </div>
                     </div>
                   ))}
@@ -338,10 +344,16 @@ export default function ContainerDetailsModal({ container, onClose, onUpdate }: 
             ) : (
               <div className="flex items-center gap-4">
                 <div className="bg-gray-700/50 rounded-xl p-3 h-20 w-20 flex items-center justify-center shadow-inner">
-                  <span className="text-sm text-gray-400 font-semibold">IMG</span>
+                  <Image 
+                    src={container.image || '/container-medium.svg'} 
+                    alt={`${container.volume}m³ container`}
+                    width={80}
+                    height={60}
+                    className="w-full h-full object-contain"
+                  />
                 </div>
                 <span className="text-base text-white font-medium">
-                  {CONTAINER_IMAGES.find(img => img.id === (container.image || 'container-1'))?.name || 'Standard Container'}
+                  {CONTAINER_IMAGES.find(img => img.path === (container.image || '/container-medium.svg'))?.name || 'Medium Container'}
                 </span>
               </div>
             )}

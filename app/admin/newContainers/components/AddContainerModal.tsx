@@ -5,6 +5,7 @@ import { X } from 'lucide-react'
 import { useLanguage } from '@/contexts/LanguageContext'
 import { addContainer } from '@/lib/containers'
 import { CONTAINER_PRESET_DESCRIPTIONS } from '@/lib/containerPresets'
+import Image from 'next/image'
 
 interface AddContainerModalProps {
   onClose: () => void
@@ -14,6 +15,14 @@ interface AddContainerModalProps {
 export default function AddContainerModal({ onClose, onSuccess }: AddContainerModalProps) {
   const { t } = useLanguage()
   const [loading, setLoading] = useState(false)
+  
+  // Available container images
+  const containerImages = [
+    { path: '/container-small.svg', name: 'Small (3m³)' },
+    { path: '/container-medium.svg', name: 'Medium (5m³)' },
+    { path: '/container-large.svg', name: 'Large (7m³)' }
+  ]
+  
   const [formData, setFormData] = useState({
     volume: '',
     length: '',
@@ -21,6 +30,7 @@ export default function AddContainerModal({ onClose, onSuccess }: AddContainerMo
     height: '',
     description: CONTAINER_PRESET_DESCRIPTIONS[0] || '',
     price: '',
+    image: '/container-medium.svg', // Default image
     isActive: true
   })
   const [descriptionMode, setDescriptionMode] = useState<'preset' | 'custom'>('preset')
@@ -46,6 +56,7 @@ export default function AddContainerModal({ onClose, onSuccess }: AddContainerMo
         dims: dims,
         description: formData.description,
         price: Number(formData.price),
+        image: formData.image,
         isActive: formData.isActive
       })
 
@@ -159,6 +170,46 @@ export default function AddContainerModal({ onClose, onSuccess }: AddContainerMo
                 <span className="text-gray-dark-text text-sm font-medium ml-1">m</span>
               </div>
             </div>
+
+          {/* Container Image Selection */}
+          <div>
+            <label className="block text-xs font-medium text-gray-dark-text mb-2">
+              {t('admin.containerImage')} *
+            </label>
+            <div className="grid grid-cols-3 gap-3">
+              {containerImages.map((image) => (
+                <div
+                  key={image.path}
+                  onClick={() => setFormData(prev => ({ ...prev, image: image.path }))}
+                  className={`relative cursor-pointer rounded-lg border-2 p-3 transition-all duration-200 ${
+                    formData.image === image.path
+                      ? 'border-red-500 bg-red-500/10 shadow-[0_0_10px_rgba(239,68,68,0.3)]'
+                      : 'border-gray-dark-border hover:border-gray-dark-accent hover:bg-gray-dark-bg/50'
+                  }`}
+                >
+                  <div className="aspect-square mb-2">
+                    <Image
+                      src={image.path}
+                      alt={image.name}
+                      width={80}
+                      height={80}
+                      className="w-full h-full object-contain"
+                    />
+                  </div>
+                  <p className="text-xs text-center text-gray-dark-text font-medium">
+                    {image.name}
+                  </p>
+                  {formData.image === image.path && (
+                    <div className="absolute top-1 right-1 w-4 h-4 bg-red-500 rounded-full flex items-center justify-center">
+                      <svg className="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                      </svg>
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+          </div>
 
           <div>
             <label className="block text-xs font-medium text-gray-dark-text mb-1">
