@@ -101,7 +101,7 @@ export default function AddContainerModal({ onClose, onSuccess }: AddContainerMo
             {/* Price */}
             <div>
               <label className="block text-xs font-medium text-gray-dark-text mb-1">
-                {t('admin.price')} *
+                {t('admin.price')} (CZK/hour) *
               </label>
               <input
                 type="number"
@@ -111,7 +111,7 @@ export default function AddContainerModal({ onClose, onSuccess }: AddContainerMo
                 required
                 min="0"
                 className="w-full px-3 py-2 bg-gray-dark-card border border-gray-dark-border rounded-lg text-gray-dark-text text-sm focus:outline-none focus:border-red-500"
-                placeholder="e.g., 1500"
+                placeholder="e.g., 400"
               />
             </div>
           </div>

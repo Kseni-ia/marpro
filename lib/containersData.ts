@@ -7,7 +7,7 @@ export interface ContainerData {
     cs: string
     ru: string
   }
-  price: number // in CZK
+  price: number // in CZK per hour
   isActive: boolean
 }
 
@@ -23,7 +23,7 @@ export const containersData: ContainerData[] = [
       cs: 'Ideální pro malé rekonstrukce a domovní odpad',
       ru: 'Идеально подходит для небольших ремонтов и бытовых отходов'
     },
-    price: 3090,
+    price: 386,
     isActive: true
   },
   {
@@ -35,7 +35,7 @@ export const containersData: ContainerData[] = [
       cs: 'Ideální pro středně velké projekty a zahradní odpad',
       ru: 'Идеально подходит для проектов среднего размера и садовых отходов'
     },
-    price: 3630,
+    price: 454,
     isActive: true
   },
   {
@@ -47,7 +47,7 @@ export const containersData: ContainerData[] = [
       cs: 'Skvělé pro větší rekonstrukce a stavební suť',
       ru: 'Отлично подходит для крупных ремонтов и строительного мусора'
     },
-    price: 4330,
+    price: 541,
     isActive: true
   },
   {
@@ -59,7 +59,7 @@ export const containersData: ContainerData[] = [
       cs: 'Perfektní pro rozsáhlé projekty a těžké materiály',
       ru: 'Идеально подходит для крупномасштабных проектов и тяжелых материалов'
     },
-    price: 6000,
+    price: 750,
     isActive: true
   }
 ]

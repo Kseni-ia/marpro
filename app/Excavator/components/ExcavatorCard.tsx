@@ -10,6 +10,7 @@ type ExcavatorCardProps = {
   description: string
   price: string
   svgPath: string
+  imageUrl?: string
   specs: {
     weight: string
     bucketCapacity: string
@@ -18,7 +19,7 @@ type ExcavatorCardProps = {
   onOrder: () => void
 }
 
-const ExcavatorCard: React.FC<ExcavatorCardProps> = ({ model, type, description, price, svgPath, specs, onOrder }) => {
+const ExcavatorCard: React.FC<ExcavatorCardProps> = ({ model, type, description, price, svgPath, imageUrl, specs, onOrder }) => {
   const { t } = useLanguage()
   return (
     <div className="bg-gradient-card-dark border-2 border-gray-dark-border rounded-[15px] sm:rounded-[20px] p-4 sm:p-5 md:p-7 transition-all duration-[400ms] shadow-[0_8px_25px_rgba(0,0,0,0.3)] relative overflow-hidden group hover:-translate-y-2 hover:scale-[1.03] hover:shadow-[0_15px_35px_rgba(0,0,0,0.1)] dark:hover:shadow-[0_15px_35px_rgba(0,0,0,0.4)] hover:bg-gradient-card-hover-dark hover:border-gray-dark-border card-shine z-20">
@@ -33,7 +34,7 @@ const ExcavatorCard: React.FC<ExcavatorCardProps> = ({ model, type, description,
       </div>
       <div className="my-4 sm:my-6 flex justify-center">
         <Image 
-          src={svgPath} 
+          src={imageUrl || svgPath} 
           alt={`${model} excavator`} 
           width={300} 
           height={200} 

@@ -10,14 +10,15 @@ export interface Excavator {
     cs: string
     ru: string
   }
-  price: number // in CZK per day
+  price: number // in CZK per hour
   specs: {
     weight: string
     bucketCapacity: string
     maxReach: string
   }
   isActive: boolean
-  svgPath?: string // excavator image path
+  svgPath?: string // excavator image path (legacy)
+  imageUrl?: string // uploaded image URL from Firebase Storage
   createdAt: Date
 }
 

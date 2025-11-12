@@ -1,8 +1,10 @@
 'use client'
 
 import React, { useState } from 'react'
-import { X, Edit2 } from 'lucide-react'
+import { X, Edit2, Upload } from 'lucide-react'
 import { Excavator, updateExcavator } from '@/lib/excavators'
+import { uploadImage, validateImageFile, deleteImage } from '@/lib/uploadImage'
+import Image from 'next/image'
 
 interface ExcavatorDetailsModalProps {
   excavator: Excavator
@@ -23,6 +25,9 @@ export default function ExcavatorDetailsModal({ excavator, onClose, onUpdate }: 
     maxReach: excavator.specs.maxReach,
     isActive: excavator.isActive
   })
+  const [imageFile, setImageFile] = useState<File | null>(null)
+  const [imagePreview, setImagePreview] = useState<string | null>(null)
+  const [uploadingImage, setUploadingImage] = useState(false)
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target
@@ -85,6 +90,90 @@ export default function ExcavatorDetailsModal({ excavator, onClose, onUpdate }: 
       isActive: excavator.isActive
     })
     setEditingField(null)
+    setImageFile(null)
+    setImagePreview(null)
+  }
+
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+
+    try {
+      validateImageFile(file)
+      setImageFile(file)
+      
+      // Create preview
+      const reader = new FileReader()
+      reader.onloadend = () => {
+        setImagePreview(reader.result as string)
+      }
+      reader.readAsDataURL(file)
+    } catch (error) {
+      alert(error instanceof Error ? error.message : 'Invalid image file')
+      e.target.value = ''
+    }
+  }
+
+  const handleRemoveImage = () => {
+    setImageFile(null)
+    setImagePreview(null)
+  }
+
+  const handleSaveImage = async () => {
+    if (!imageFile) return
+
+    setUploadingImage(true)
+    setLoading(true)
+    try {
+      // Delete old image if exists
+      if (excavator.imageUrl) {
+        await deleteImage(excavator.imageUrl)
+      }
+
+      // Upload new image
+      const imageUrl = await uploadImage(imageFile, 'excavators')
+      
+      // Update excavator in database
+      await updateExcavator(excavator.id, { imageUrl })
+      
+      // Update local excavator object
+      excavator.imageUrl = imageUrl
+      
+      setImageFile(null)
+      setImagePreview(null)
+      setEditingField(null)
+      onUpdate()
+    } catch (error) {
+      console.error('Error uploading image:', error)
+      alert('Failed to upload image. Please check Firebase Storage configuration.')
+    } finally {
+      setUploadingImage(false)
+      setLoading(false)
+    }
+  }
+
+  const handleDeleteImage = async () => {
+    if (!excavator.imageUrl) return
+    if (!confirm('Are you sure you want to delete this image?')) return
+
+    setLoading(true)
+    try {
+      // Delete from storage
+      await deleteImage(excavator.imageUrl)
+      
+      // Update excavator in database
+      await updateExcavator(excavator.id, { imageUrl: undefined })
+      
+      // Update local excavator object
+      excavator.imageUrl = undefined
+      
+      onUpdate()
+    } catch (error) {
+      console.error('Error deleting image:', error)
+      alert('Failed to delete image')
+    } finally {
+      setLoading(false)
+    }
   }
 
   return (
@@ -208,7 +297,7 @@ export default function ExcavatorDetailsModal({ excavator, onClose, onUpdate }: 
                 <Edit2 className="w-3 h-3 text-red-400" />
               </div>
               <label className="block text-xs font-semibold text-gray-400 mb-2">
-                Price (CZK/day)
+                Price (CZK/hour)
               </label>
               {editingField === 'price' ? (
                 <div className="space-y-2">
@@ -318,6 +407,108 @@ export default function ExcavatorDetailsModal({ excavator, onClose, onUpdate }: 
                   <p className="text-xs text-gray-400 mb-1">Max Reach</p>
                   <p className="text-base text-white font-medium">{excavator.specs.maxReach}</p>
                 </div>
+              </div>
+            )}
+          </div>
+
+          {/* Excavator Image */}
+          <div 
+            className="group relative bg-gradient-to-br from-gray-800/60 to-gray-900/60 backdrop-blur-sm p-5 rounded-xl cursor-pointer hover:from-gray-800/80 hover:to-gray-900/80 transition-all duration-300 border border-gray-700/30 hover:border-red-500/50 shadow-lg hover:shadow-red-900/20"
+            onClick={() => editingField !== 'image' && setEditingField('image')}
+          >
+            <div className="absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity">
+              <Edit2 className="w-4 h-4 text-red-400" />
+            </div>
+            <label className="text-sm font-semibold text-gray-300 mb-3 block">
+              Excavator Image <span className="text-xs text-gray-500 font-normal">(Optional)</span>
+            </label>
+            {editingField === 'image' ? (
+              <div className="space-y-3" onClick={(e) => e.stopPropagation()}>
+                {imagePreview || excavator.imageUrl ? (
+                  <div className="relative w-full h-64 bg-gray-900/60 border-2 border-gray-700 rounded-lg overflow-hidden">
+                    <Image
+                      src={imagePreview || excavator.imageUrl || ''}
+                      alt="Excavator"
+                      fill
+                      className="object-contain"
+                    />
+                    {!imagePreview && excavator.imageUrl && (
+                      <button
+                        type="button"
+                        onClick={handleDeleteImage}
+                        disabled={loading}
+                        className="absolute top-2 right-2 p-2 bg-red-600/90 hover:bg-red-700 rounded-lg transition-colors disabled:opacity-50"
+                      >
+                        <X className="w-4 h-4 text-white" />
+                      </button>
+                    )}
+                    {imagePreview && (
+                      <button
+                        type="button"
+                        onClick={handleRemoveImage}
+                        className="absolute top-2 right-2 p-2 bg-red-600/90 hover:bg-red-700 rounded-lg transition-colors"
+                      >
+                        <X className="w-4 h-4 text-white" />
+                      </button>
+                    )}
+                  </div>
+                ) : (
+                  <label className="flex flex-col items-center justify-center w-full h-64 border-2 border-dashed border-gray-600 rounded-lg cursor-pointer bg-gray-900/40 hover:bg-gray-800/60 transition-colors">
+                    <div className="flex flex-col items-center justify-center pt-5 pb-6">
+                      <Upload className="w-12 h-12 mb-3 text-gray-400" />
+                      <p className="mb-2 text-sm text-gray-400">
+                        <span className="font-semibold">Click to upload</span> or drag and drop
+                      </p>
+                      <p className="text-xs text-gray-500">PNG, JPG, WebP (MAX. 5MB)</p>
+                    </div>
+                    <input
+                      type="file"
+                      className="hidden"
+                      accept="image/jpeg,image/jpg,image/png,image/webp"
+                      onChange={handleImageChange}
+                      onClick={(e) => e.stopPropagation()}
+                    />
+                  </label>
+                )}
+                <div className="flex gap-2">
+                  <button
+                    type="button"
+                    onClick={handleCancelEdit}
+                    disabled={loading}
+                    className="flex-1 px-4 py-2 bg-gray-700/60 text-gray-300 hover:bg-gray-600/80 border border-gray-600/50 hover:border-gray-500 rounded-lg transition-all duration-300 text-sm font-medium disabled:opacity-50"
+                  >
+                    Cancel
+                  </button>
+                  {imageFile && (
+                    <button
+                      type="button"
+                      onClick={handleSaveImage}
+                      disabled={loading || uploadingImage}
+                      className="flex-1 px-4 py-2 bg-red-600/80 text-white hover:bg-red-600 border border-red-500/50 hover:border-red-400 rounded-lg transition-all duration-300 text-sm font-medium disabled:opacity-50"
+                    >
+                      {uploadingImage ? 'Uploading...' : 'Save Image'}
+                    </button>
+                  )}
+                </div>
+              </div>
+            ) : (
+              <div className="flex items-center justify-center">
+                {excavator.imageUrl ? (
+                  <div className="relative w-full h-48 bg-gray-900/40 rounded-lg overflow-hidden">
+                    <Image
+                      src={excavator.imageUrl}
+                      alt="Excavator"
+                      fill
+                      className="object-contain"
+                    />
+                  </div>
+                ) : (
+                  <div className="flex flex-col items-center py-8 text-gray-500">
+                    <Upload className="w-8 h-8 mb-2" />
+                    <p className="text-sm">No image uploaded</p>
+                    <p className="text-xs mt-1">Click to add an image</p>
+                  </div>
+                )}
               </div>
             )}
           </div>

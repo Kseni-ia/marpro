@@ -4,6 +4,8 @@ import React, { useState, useEffect } from 'react'
 import OrderForm from '@/components/OrderForm'
 import BlurUpBackground from '@/components/BlurUpBackground'
 import ExcavatorCard from './components/ExcavatorCard'
+import TopNavigation from '@/components/TopNavigation'
+import Footer from '@/app/Footer'
 import { useLanguage } from '@/contexts/LanguageContext'
 import { getActiveExcavators, Excavator } from '@/lib/excavators'
 
@@ -29,6 +31,8 @@ const Excavators: React.FC = () => {
 
   return (
     <>
+      <TopNavigation />
+      
       {/* Full Screen Blur-Up Background */}
       <BlurUpBackground
         placeholderSrc="/loadE Small.jpeg"
@@ -37,7 +41,7 @@ const Excavators: React.FC = () => {
         isVideo={true}
       />
       
-      <div className="relative min-h-screen z-20">
+      <div className="relative min-h-screen z-10 pt-16">
       
       {/* Content Container */}
       <div className="relative z-30 p-4 sm:p-6 md:p-10 animate-fade-in min-h-[calc(100vh-100px)]">
@@ -64,8 +68,9 @@ const Excavators: React.FC = () => {
               model={excavator.model}
               type={excavator.type}
               description={excavator.description[language]}
-              price={`${t('containers.price')} ${excavator.price.toLocaleString('cs-CZ')} CZK/${t('excavators.price.day')} ${t('containers.vat')}`}
+              price={`${t('containers.price')} ${excavator.price.toLocaleString('cs-CZ')} CZK/${t('excavators.price.hour')} ${t('containers.vat')}`}
               svgPath={excavator.svgPath || '/TB145.svg'}
+              imageUrl={excavator.imageUrl}
               specs={excavator.specs}
               onOrder={handleOrder}
             />
@@ -80,6 +85,7 @@ const Excavators: React.FC = () => {
         />
       )}
       </div>
+      <Footer />
       </div>
     </>
   )

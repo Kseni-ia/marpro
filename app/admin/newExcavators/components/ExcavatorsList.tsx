@@ -141,7 +141,7 @@ export default function ExcavatorsList() {
             {/* Price */}
             <div className="bg-gradient-to-r from-gray-700/40 to-gray-800/40 px-3 py-2 rounded-lg mb-4 border border-gray-600/30">
               <p className="text-white font-semibold text-sm">
-                {excavator.price.toLocaleString('cs-CZ')} <span className="text-gray-400 text-xs font-normal">CZK/day excl. VAT</span>
+                {excavator.price.toLocaleString('cs-CZ')} <span className="text-gray-400 text-xs font-normal">CZK/hour excl. VAT</span>
               </p>
             </div>
 

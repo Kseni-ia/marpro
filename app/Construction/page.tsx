@@ -1,11 +1,12 @@
 'use client'
 
 import React, { useState } from 'react'
-import Link from 'next/link'
 import { useRouter } from 'next/navigation'
+import BlurUpBackground from '@/components/BlurUpBackground'
+import TopNavigation from '@/components/TopNavigation'
+import Footer from '@/app/Footer'
 import { useLanguage } from '@/contexts/LanguageContext'
 import OrderForm from '@/components/OrderForm'
-import BlurUpBackground from '@/components/BlurUpBackground'
 import WorkWithUs from './work/WorkWithUs'
 
 const Constructions: React.FC = () => {
@@ -15,6 +16,8 @@ const Constructions: React.FC = () => {
 
   return (
     <>
+      <TopNavigation />
+      
       {/* Full Screen Blur-Up Background */}
       <BlurUpBackground
         placeholderSrc="/loadC Small.jpeg"
@@ -23,7 +26,7 @@ const Constructions: React.FC = () => {
         isVideo={true}
       />
       
-      <div className="relative min-h-screen z-10">
+      <div className="relative min-h-screen z-10 pt-16">
       
       {/* Content Container */}
       <div className="relative z-10 p-4 sm:p-6 md:p-10 animate-fade-in min-h-screen">
@@ -108,6 +111,7 @@ const Constructions: React.FC = () => {
           />
         )}
       </div>
+      <Footer />
       </div>
     </>
   )

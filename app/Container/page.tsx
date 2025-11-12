@@ -4,6 +4,8 @@ import React, { useState, useEffect } from 'react'
 import OrderForm from '@/components/OrderForm'
 import BlurUpBackground from '@/components/BlurUpBackground'
 import ContainerCard from './components/ContainerCard'
+import TopNavigation from '@/components/TopNavigation'
+import Footer from '@/app/Footer'
 import { useLanguage } from '@/contexts/LanguageContext'
 import { getActiveContainers, Container } from '@/lib/containers'
 
@@ -28,6 +30,8 @@ const Containers: React.FC = () => {
 
   return (
     <>
+      <TopNavigation />
+      
       {/* Full Screen Blur-Up Background */}
       <BlurUpBackground
         placeholderSrc="/loadK Small.jpeg"
@@ -36,7 +40,7 @@ const Containers: React.FC = () => {
         isVideo={true}
       />
       
-      <div className="relative min-h-screen z-10">
+      <div className="relative min-h-screen z-10 pt-16">
       
       {/* Content Container */}
       <div className="relative z-10 p-4 sm:p-6 md:p-10 animate-fade-in min-h-[calc(100vh-100px)]">
@@ -63,7 +67,7 @@ const Containers: React.FC = () => {
               volume={container.volume}
               dims={container.dims}
               description={container.description}
-              price={`${t('containers.price')} ${container.price.toLocaleString('cs-CZ')} CZK ${t('containers.vat')}`}
+              price={`${t('containers.price')} ${container.price.toLocaleString('cs-CZ')} CZK/hour ${t('containers.vat')}`}
               onOrder={handleOrder}
             />
           ))}
@@ -77,6 +81,7 @@ const Containers: React.FC = () => {
         />
       )}
       </div>
+      <Footer />
       </div>
     </>
   )

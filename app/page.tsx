@@ -1,13 +1,13 @@
 'use client'
 
 import React, { useState } from 'react'
-import Image from 'next/image'
 import Containers from '@/app/Container/page'
 import Excavators from '@/app/Excavator/page'
 import Constructions from '@/app/Construction/page'
 import AnimatedLogo from '@/components/AnimatedLogo'
 import BlurUpBackground from '@/components/BlurUpBackground'
 import Footer from '@/app/Footer'
+import TopNavigation from '@/components/TopNavigation'
 import { useLanguage } from '@/contexts/LanguageContext'
 import { useModal } from '@/contexts/ModalContext'
 
@@ -35,6 +35,7 @@ export default function Home() {
             {/* Mobile and tablet view - 1 column (all three sections) */}
             <div className="grid grid-cols-1 gap-6 justify-items-center max-w-full mx-auto px-2 md:hidden">
               <div 
+                id="containers"
                 className="w-full max-w-xs bg-gradient-card-dark border-2 border-gray-dark-border rounded-[15px] p-5 cursor-pointer transition-all duration-[400ms] shadow-[0_10px_40px_rgba(220,38,38,0.4)] relative overflow-hidden group hover:-translate-y-2.5 hover:scale-[1.02] hover:shadow-[0_20px_40px_rgba(220,38,38,0.6)] hover:bg-gradient-card-hover-dark hover:border-gray-dark-border"
                 onClick={() => setActiveSection('containers')}
               >
@@ -47,6 +48,7 @@ export default function Home() {
               </div>
               
               <div 
+                id="excavators"
                 className="w-full max-w-xs bg-gradient-card-dark border-2 border-gray-dark-border rounded-[15px] p-5 cursor-pointer transition-all duration-[400ms] shadow-[0_10px_40px_rgba(220,38,38,0.4)] relative overflow-hidden group hover:-translate-y-2.5 hover:scale-[1.02] hover:shadow-[0_20px_40px_rgba(220,38,38,0.6)] hover:bg-gradient-card-hover-dark hover:border-gray-dark-border"
                 onClick={() => setActiveSection('excavators')}
               >
@@ -59,6 +61,7 @@ export default function Home() {
               </div>
               
               <div 
+                id="constructions"
                 className="w-full max-w-xs bg-gradient-card-dark border-2 border-gray-dark-border rounded-[15px] p-5 cursor-pointer transition-all duration-[400ms] shadow-[0_10px_40px_rgba(220,38,38,0.4)] relative overflow-hidden group hover:-translate-y-2.5 hover:scale-[1.02] hover:shadow-[0_20px_40px_rgba(220,38,38,0.6)] hover:bg-gradient-card-hover-dark hover:border-gray-dark-border"
                 onClick={() => setActiveSection('constructions')}
               >
@@ -74,6 +77,7 @@ export default function Home() {
             {/* Desktop view - 3 columns with constructions */}
             <div className="hidden md:grid md:grid-cols-3 gap-8 lg:gap-10 justify-items-center max-w-7xl mx-auto">
               <div 
+                id="containers"
                 className="bg-gradient-card-dark border-2 border-gray-dark-border rounded-[20px] cursor-pointer transition-all duration-[400ms] shadow-[0_10px_30px_rgba(0,0,0,0.3)] hover:shadow-[0_20px_40px_rgba(220,38,38,0.6)] relative overflow-hidden group hover:-translate-y-2.5 hover:scale-[1.02] hover:bg-gradient-card-hover-dark hover:border-gray-dark-border text-center w-[320px] h-[160px] flex flex-col justify-center items-center px-6 py-6"
                 onClick={() => setActiveSection('containers')}
               >
@@ -86,6 +90,7 @@ export default function Home() {
               </div>
               
               <div 
+                id="excavators"
                 className="bg-gradient-card-dark border-2 border-gray-dark-border rounded-[20px] cursor-pointer transition-all duration-[400ms] shadow-[0_10px_30px_rgba(0,0,0,0.3)] hover:shadow-[0_20px_40px_rgba(220,38,38,0.6)] relative overflow-hidden group hover:-translate-y-2.5 hover:scale-[1.02] hover:bg-gradient-card-hover-dark hover:border-gray-dark-border text-center w-[320px] h-[160px] flex flex-col justify-center items-center px-6 py-6"
                 onClick={() => setActiveSection('excavators')}
               >
@@ -98,6 +103,7 @@ export default function Home() {
               </div>
               
               <div 
+                id="constructions"
                 className="bg-gradient-card-dark border-2 border-gray-dark-border rounded-[20px] cursor-pointer transition-all duration-[400ms] shadow-[0_10px_30px_rgba(0,0,0,0.3)] hover:shadow-[0_20px_40px_rgba(220,38,38,0.6)] relative overflow-hidden group hover:-translate-y-2.5 hover:scale-[1.02] hover:bg-gradient-card-hover-dark hover:border-gray-dark-border text-center w-[320px] h-[160px] flex flex-col justify-center items-center px-6 py-6"
                 onClick={() => setActiveSection('constructions')}
               >
@@ -117,19 +123,8 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-gradient-main-dark relative">
-      {/* Logo Container - Independent positioning - hidden when modal is open */}
-      {!isModalOpen && (
-        <div className="absolute top-0 left-0 sm:-top-14 sm:-left-12 z-30">
-          <Image 
-            src="/logo.svg" 
-            alt="MARPRO" 
-            width={250}
-            height={200}
-            className="h-[100px] sm:h-[120px] md:h-[150px] lg:h-[250px] w-auto cursor-pointer transition-all duration-300"
-            onClick={() => setActiveSection('home')}
-          />
-        </div>
-      )}
+      {/* Top Navigation - hidden when modal is open */}
+      {!isModalOpen && <TopNavigation />}
       
       {activeSection === 'home' && (
         <BlurUpBackground
@@ -142,7 +137,7 @@ export default function Home() {
       {/* Background */}
       <div className="relative min-h-screen z-10 flex flex-col">
         {/* Logo bg */}
-        <div className="relative px-4 sm:px-5 pt-24 sm:pt-20 md:pt-28 pb-4 sm:pb-3">
+        <div className="relative px-4 sm:px-5 pt-20 sm:pt-20 md:pt-24 pb-4 sm:pb-3">
           {/* section buttons (inline) - only show when NOT on home page and modal is closed */}
           {!isModalOpen && activeSection !== 'home' && (
             <div className="flex justify-center items-center md:w-full">

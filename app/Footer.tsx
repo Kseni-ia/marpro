@@ -4,7 +4,7 @@ import React from 'react'
 
 export default function Footer() {
   return (
-    <footer className="w-full py-8 mt-16 bg-gradient-to-t from-black/20 to-transparent backdrop-blur-sm">
+    <footer id="contact" className="w-full py-8 mt-16 bg-gradient-to-t from-black/20 to-transparent backdrop-blur-sm">
       <div className="flex flex-col items-center justify-center space-y-4">
         <div className="flex flex-col sm:flex-row items-center justify-center gap-6 sm:gap-8">
           {/* Email */}
