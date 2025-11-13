@@ -34,7 +34,7 @@ export default function AdminLogin() {
       {/* Logo Container - Same as main page */}
       <div className="absolute top-0 left-0 sm:-top-14 sm:-left-12 z-30">
         <Image 
-          src="/logo.svg" 
+          src="/logoDF.svg" 
           alt="MARPRO" 
           width={250}
           height={200}

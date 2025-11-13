@@ -10,6 +10,7 @@ import Footer from '@/app/Footer'
 import TopNavigation from '@/components/TopNavigation'
 import { useLanguage } from '@/contexts/LanguageContext'
 import { useModal } from '@/contexts/ModalContext'
+import { useRouter } from 'next/navigation'
 
 type Section = 'home' | 'containers' | 'excavators' | 'constructions'
 
@@ -17,6 +18,11 @@ export default function Home() {
   const [activeSection, setActiveSection] = useState<Section>('home')
   const { t } = useLanguage()
   const { isModalOpen } = useModal()
+  const router = useRouter()
+
+  const navigateToSection = (path: string) => {
+    router.push(path)
+  }
 
   const renderSection = () => {
     switch (activeSection) {
@@ -37,7 +43,7 @@ export default function Home() {
               <div 
                 id="containers"
                 className="w-full max-w-xs bg-gradient-card-dark border-2 border-gray-dark-border rounded-[15px] p-5 cursor-pointer transition-all duration-[400ms] shadow-[0_10px_40px_rgba(220,38,38,0.4)] relative overflow-hidden group hover:-translate-y-2.5 hover:scale-[1.02] hover:shadow-[0_20px_40px_rgba(220,38,38,0.6)] hover:bg-gradient-card-hover-dark hover:border-gray-dark-border"
-                onClick={() => setActiveSection('containers')}
+                onClick={() => navigateToSection('/Container')}
               >
                 <h3 className="text-gray-dark-text text-xl mb-3 font-bold uppercase tracking-[1px]">
                   {t('nav.containers')}
@@ -50,7 +56,7 @@ export default function Home() {
               <div 
                 id="excavators"
                 className="w-full max-w-xs bg-gradient-card-dark border-2 border-gray-dark-border rounded-[15px] p-5 cursor-pointer transition-all duration-[400ms] shadow-[0_10px_40px_rgba(220,38,38,0.4)] relative overflow-hidden group hover:-translate-y-2.5 hover:scale-[1.02] hover:shadow-[0_20px_40px_rgba(220,38,38,0.6)] hover:bg-gradient-card-hover-dark hover:border-gray-dark-border"
-                onClick={() => setActiveSection('excavators')}
+                onClick={() => navigateToSection('/Excavator')}
               >
                 <h3 className="text-gray-dark-text text-xl mb-3 font-bold uppercase tracking-[1px]">
                   {t('nav.excavators')}
@@ -63,7 +69,7 @@ export default function Home() {
               <div 
                 id="constructions"
                 className="w-full max-w-xs bg-gradient-card-dark border-2 border-gray-dark-border rounded-[15px] p-5 cursor-pointer transition-all duration-[400ms] shadow-[0_10px_40px_rgba(220,38,38,0.4)] relative overflow-hidden group hover:-translate-y-2.5 hover:scale-[1.02] hover:shadow-[0_20px_40px_rgba(220,38,38,0.6)] hover:bg-gradient-card-hover-dark hover:border-gray-dark-border"
-                onClick={() => setActiveSection('constructions')}
+                onClick={() => navigateToSection('/Construction')}
               >
                 <h3 className="text-gray-dark-text text-xl mb-3 font-bold uppercase tracking-[1px]">
                   {t('nav.constructions')}
@@ -79,7 +85,7 @@ export default function Home() {
               <div 
                 id="containers"
                 className="bg-gradient-card-dark border-2 border-gray-dark-border rounded-[20px] cursor-pointer transition-all duration-[400ms] shadow-[0_10px_30px_rgba(0,0,0,0.3)] hover:shadow-[0_20px_40px_rgba(220,38,38,0.6)] relative overflow-hidden group hover:-translate-y-2.5 hover:scale-[1.02] hover:bg-gradient-card-hover-dark hover:border-gray-dark-border text-center w-[320px] h-[160px] flex flex-col justify-center items-center px-6 py-6"
-                onClick={() => setActiveSection('containers')}
+                onClick={() => navigateToSection('/Container')}
               >
                 <h3 className="text-gray-dark-text text-2xl font-bold uppercase tracking-[2px] mb-3 leading-tight">
                   {t('nav.containers').toUpperCase()}
@@ -92,7 +98,7 @@ export default function Home() {
               <div 
                 id="excavators"
                 className="bg-gradient-card-dark border-2 border-gray-dark-border rounded-[20px] cursor-pointer transition-all duration-[400ms] shadow-[0_10px_30px_rgba(0,0,0,0.3)] hover:shadow-[0_20px_40px_rgba(220,38,38,0.6)] relative overflow-hidden group hover:-translate-y-2.5 hover:scale-[1.02] hover:bg-gradient-card-hover-dark hover:border-gray-dark-border text-center w-[320px] h-[160px] flex flex-col justify-center items-center px-6 py-6"
-                onClick={() => setActiveSection('excavators')}
+                onClick={() => navigateToSection('/Excavator')}
               >
                 <h3 className="text-gray-dark-text text-2xl font-bold uppercase tracking-[2px] mb-3 leading-tight">
                   {t('nav.excavators').toUpperCase()}
@@ -105,7 +111,7 @@ export default function Home() {
               <div 
                 id="constructions"
                 className="bg-gradient-card-dark border-2 border-gray-dark-border rounded-[20px] cursor-pointer transition-all duration-[400ms] shadow-[0_10px_30px_rgba(0,0,0,0.3)] hover:shadow-[0_20px_40px_rgba(220,38,38,0.6)] relative overflow-hidden group hover:-translate-y-2.5 hover:scale-[1.02] hover:bg-gradient-card-hover-dark hover:border-gray-dark-border text-center w-[320px] h-[160px] flex flex-col justify-center items-center px-6 py-6"
-                onClick={() => setActiveSection('constructions')}
+                onClick={() => navigateToSection('/Construction')}
               >
                 <h3 className="text-gray-dark-text text-2xl font-bold uppercase tracking-[2px] mb-3 leading-tight">
                   {t('nav.constructions').toUpperCase()}
@@ -123,8 +129,8 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-gradient-main-dark relative">
-      {/* Top Navigation - hidden when modal is open */}
-      {!isModalOpen && <TopNavigation />}
+      {/* Top Navigation - always visible but will be behind modal when open */}
+      <TopNavigation />
       
       {activeSection === 'home' && (
         <BlurUpBackground
@@ -136,7 +142,7 @@ export default function Home() {
 
       {/* Background */}
       <div className="relative min-h-screen z-10 flex flex-col">
-        <main className="flex-1 flex justify-center items-center text-center pt-2 sm:pt-2 md:pt-2">
+        <main className="flex-1 flex justify-center items-center text-center pt-48 sm:pt-48 md:pt-48">
           {renderSection()}
         </main>
         

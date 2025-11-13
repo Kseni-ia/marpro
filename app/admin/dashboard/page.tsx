@@ -245,7 +245,7 @@ export default function AdminDashboard() {
       {/* Logo Container - Same as main page */}
       <div className="absolute top-0 left-0 sm:-top-8 sm:-left-5 z-10 pointer-events-none">
         <Image 
-          src="/logo.svg" 
+          src="/logoDF.svg" 
           alt="MARPRO" 
           width={250}
           height={200}

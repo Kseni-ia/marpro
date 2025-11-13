@@ -1,18 +1,109 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
+import Image from 'next/image'
+import { ChevronLeft, ChevronRight, X } from 'lucide-react'
 import BlurUpBackground from '@/components/BlurUpBackground'
 import TopNavigation from '@/components/TopNavigation'
 import Footer from '@/app/Footer'
 import { useLanguage } from '@/contexts/LanguageContext'
 import OrderForm from '@/components/OrderForm'
 import WorkWithUs from './work/WorkWithUs'
+import { getAllReferences, Reference } from '@/lib/constructions'
 
 const Constructions: React.FC = () => {
   const router = useRouter()
   const { t } = useLanguage()
   const [showOrderForm, setShowOrderForm] = useState(false)
+  const [references, setReferences] = useState<Reference[]>([])
+  const [loading, setLoading] = useState(true)
+  const [selectedReference, setSelectedReference] = useState<Reference | null>(null)
+  const [currentImageIndex, setCurrentImageIndex] = useState(0)
+
+  // Fetch references from Firebase
+  useEffect(() => {
+    const fetchReferences = async () => {
+      try {
+        const data = await getAllReferences()
+        // Filter only active references
+        const activeReferences = data.filter(ref => ref.isActive)
+        setReferences(activeReferences)
+      } catch (error) {
+        console.error('Error fetching references:', error)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchReferences()
+  }, [])
+
+  // Keyboard navigation for image viewer
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (!selectedReference || !selectedReference.imageUrls) return
+
+      switch (e.key) {
+        case 'Escape':
+          setSelectedReference(null)
+          break
+        case 'ArrowLeft':
+          setCurrentImageIndex((prev) => 
+            prev === 0 ? selectedReference.imageUrls!.length - 1 : prev - 1
+          )
+          break
+        case 'ArrowRight':
+          setCurrentImageIndex((prev) => 
+            prev === selectedReference.imageUrls!.length - 1 ? 0 : prev + 1
+          )
+          break
+      }
+    }
+
+    if (selectedReference) {
+      document.addEventListener('keydown', handleKeyDown)
+      // Prevent body scroll when modal is open
+      document.body.style.overflow = 'hidden'
+    }
+
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown)
+      document.body.style.overflow = 'unset'
+    }
+  }, [selectedReference, currentImageIndex])
+
+  // Compact Czech Construction Services - Text-focused
+  const constructionServices = [
+    {
+      icon: '🏢',
+      title: 'Demolice',
+      description: 'Provádíme kompletní a částečné demolice všech typů objektů včetně průmyslových budov, rodinných domů a interiérových prostor. Naše práce zahrnuje bezpečnou likvidaci stavebních materiálů, ekologickou recyklaci sutě a kompletní úklid pozemku po demolici. Zajišťujeme veškeré potřebné povolení, zajištění staveniště a profesionální projektový management.',
+      features: ['Bezpečnost', 'Ekologie', 'Rychlost'],
+      color: 'text-red-500'
+    },
+    {
+      icon: '🔧',
+      title: 'Instalace',
+      description: 'Nabízíme profesionální instalatérské práce včetně vodovodních a kanalizačních systémů, elektroinstalací pro domácnosti i průmysl, a kompletní HVAC systémy pro vytápění, ventilaci a klimatizaci. Naši certifikovaní technici zajišťují kvalitní provedení, záruční servis a pravidelnou údržbu všech instalovaných systémů.',
+      features: ['Kvalita', 'Spolehlivost', 'Servis'],
+      color: 'text-blue-500'
+    },
+    {
+      icon: '🏗️',
+    title: 'Stavební práce',
+      description: 'Realizujeme komplexní stavební úpravy, rekonstrukce a modernizace objektů. Naše služby zahrnují stavby na klíč, rekonstrukce bytů a domů, průmyslové stavby, zemní práce, betonáž, zednické práce a finální úpravy. Používáme moderní technologie a kvalitní materiály pro dlouhou životnost staveb.',
+      features: ['Moderní technologie', 'Preciznost', 'Flexibilita'],
+      color: 'text-green-500'
+    },
+    {
+      icon: '🚛',
+      title: 'Odvoz materiálu',
+      description: 'Zajišťujeme ekologický odvoz a likvidaci stavebního odpadu, sutě a nebezpečných materiálů v souladu s legislativními požadavky. Naše vozový park umožňuje rychlý odvoz materiálu přímo ze staveniště, třídění odpadu pro recyklaci a přepravu na autorizované skládky. Vystavujeme potřebné doklady o nakládání s odpady.',
+      features: ['Ekologický přístup', 'Efektivita', 'Legislativa'],
+      color: 'text-yellow-500'
+    }
+  ]
 
   return (
     <>
@@ -29,75 +120,156 @@ const Constructions: React.FC = () => {
       <div className="relative min-h-screen z-10 pt-16">
       
       {/* Content Container */}
-      <div className="relative z-10 p-4 sm:p-6 md:p-10 animate-fade-in min-h-screen">
-        <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl text-gray-dark-text text-center mb-8 sm:mb-10 md:mb-12 pb-3 sm:pb-4 md:pb-5 relative uppercase tracking-[1px] sm:tracking-[2px] md:tracking-[3px] font-extrabold shadow-text">
-          {t('constructions.title')}
+      <div className="relative z-10 p-4 sm:p-6 md:p-8 animate-fade-in min-h-screen">
+        <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl text-gray-dark-text text-center mb-6 sm:mb-8 pb-3 sm:pb-4 relative uppercase tracking-[1px] sm:tracking-[2px] md:tracking-[3px] font-extrabold shadow-text">
+          Stavby
           <span className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-[60px] sm:w-[80px] md:w-[100px] h-1 bg-gradient-to-r from-transparent via-gray-dark-textMuted to-transparent animate-pulse-width"></span>
         </h1>
-      
-      {/* Two Main Service Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8 md:gap-10 max-w-5xl mx-auto">
-        {/* Demolishing Card */}
-        <div 
-          className="bg-gradient-card-dark border-2 border-gray-dark-border rounded-[20px] sm:rounded-[25px] p-6 sm:p-8 md:p-10 transition-all duration-[400ms] shadow-[0_10px_30px_rgba(0,0,0,0.3)] relative overflow-hidden group hover:-translate-y-2 hover:scale-[1.02] hover:shadow-[0_20px_40px_rgba(0,0,0,0.4)] hover:bg-gradient-card-hover-dark cursor-pointer card-shine"
-          onClick={() => router.push('/Construction/demolishing')}
-        >
-          <div className="absolute -top-full -right-full w-[200%] h-[200%] bg-gradient-radial-hover-dark transition-all duration-500 group-hover:-top-1/2 group-hover:-right-1/2"></div>
-          <div className="relative z-10">
-            <div className="flex items-center justify-center mb-4">
-              <svg className="w-16 h-16 sm:w-20 sm:h-20 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
-              </svg>
+        
+        <p className="text-gray-dark-textSecondary text-center text-base sm:text-lg md:text-xl mb-8 max-w-4xl mx-auto">
+          Kompletní stavební služby včetně demolice, instalací a odvozu materiálu
+        </p>
+
+        {/* Compact Text-focused Services Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-6xl mx-auto mb-12">
+          {constructionServices.map((service, index) => (
+            <div
+              key={index}
+              className="group cursor-pointer transition-all duration-300 hover:translate-x-2 border border-gray-dark-border/50 rounded-lg p-5 bg-gradient-card-dark/50 hover:border-gray-dark-border/80"
+              onClick={() => setShowOrderForm(true)}
+            >
+              <div className="flex items-start gap-4">
+                <div className={`text-2xl sm:text-3xl ${service.color} flex-shrink-0 mt-1`}>
+                  {service.icon}
+                </div>
+                <div className="flex-1">
+                  <h3 className={`text-xl sm:text-2xl font-bold ${service.color} mb-2 group-hover:underline`}>
+                    {service.title}
+                  </h3>
+                  <p className="text-gray-dark-textSecondary text-sm sm:text-base leading-relaxed mb-3">
+                    {service.description}
+                  </p>
+                  <div className="flex flex-wrap gap-2 items-center">
+                    {service.features.map((feature, featureIndex) => (
+                      <span
+                        key={featureIndex}
+                        className={`text-xs font-medium ${service.color} opacity-80`}
+                      >
+                        • {feature}
+                      </span>
+                    ))}
+                    <span className={`text-xs font-semibold ${service.color} ml-auto group-hover:underline`}>
+                      Objednat →
+                    </span>
+                  </div>
+                </div>
+              </div>
             </div>
-            <h2 className="text-2xl sm:text-3xl md:text-4xl text-gray-dark-text text-center mb-3 font-bold uppercase tracking-wide">
-              {t('constructions.demolishing')}
-            </h2>
-            <p className="text-gray-dark-textSecondary text-center text-sm sm:text-base md:text-lg">
-              {t('constructions.demolishing.desc')}
-            </p>
-            <div className="mt-6 text-center">
-              <span className="text-red-500 font-semibold text-sm uppercase tracking-wider group-hover:underline">
-                {t('common.more')} →
-              </span>
-            </div>
-          </div>
+          ))}
         </div>
 
-        {/* Installations Card */}
-        <div 
-          className="bg-gradient-card-dark border-2 border-gray-dark-border rounded-[20px] sm:rounded-[25px] p-6 sm:p-8 md:p-10 transition-all duration-[400ms] shadow-[0_10px_30px_rgba(0,0,0,0.3)] relative overflow-hidden group hover:-translate-y-2 hover:scale-[1.02] hover:shadow-[0_20px_40px_rgba(0,0,0,0.4)] hover:bg-gradient-card-hover-dark cursor-pointer card-shine"
-          onClick={() => router.push('/Construction/installations')}
-        >
-          <div className="absolute -top-full -right-full w-[200%] h-[200%] bg-gradient-radial-hover-dark transition-all duration-500 group-hover:-top-1/2 group-hover:-right-1/2"></div>
-          <div className="relative z-10">
-            <div className="flex items-center justify-center mb-4">
-              <svg className="w-16 h-16 sm:w-20 sm:h-20 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-              </svg>
+        {/* Reference Section */}
+        <div className="max-w-6xl mx-auto mb-12">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl text-gray-dark-text text-center mb-8 font-bold uppercase">
+            Reference
+          </h2>
+          
+          {/* Reference Cards */}
+          {loading ? (
+            <div className="flex items-center justify-center py-20">
+              <div className="text-gray-dark-textSecondary text-lg">Načítání referencí...</div>
             </div>
-            <h2 className="text-2xl sm:text-3xl md:text-4xl text-gray-dark-text text-center mb-3 font-bold uppercase tracking-wide">
-              {t('constructions.installations')}
-            </h2>
-            <p className="text-gray-dark-textSecondary text-center text-sm sm:text-base md:text-lg">
-              {t('constructions.installations.desc')}
-            </p>
-            <div className="mt-6 text-center">
-              <span className="text-blue-500 font-semibold text-sm uppercase tracking-wider group-hover:underline">
-                {t('common.more')} →
-              </span>
+          ) : references.length > 0 ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {references.map((reference) => (
+                <div
+                  key={reference.id}
+                  className="group bg-gradient-to-br from-red-900/20 via-gray-800/30 to-red-800/20 border border-red-900/30 rounded-xl overflow-hidden transition-all duration-300 hover:border-red-600/50 hover:shadow-lg hover:shadow-red-600/20 hover:scale-[1.02] backdrop-blur-sm"
+                >
+                  {/* Reference Images */}
+                  <div className="aspect-video bg-gray-dark-bg/50 relative cursor-pointer" onClick={() => {
+                    setSelectedReference(reference)
+                    setCurrentImageIndex(0)
+                  }}>
+                    {(reference.imageUrls && reference.imageUrls.length > 0) ? (
+                      <div className="relative w-full h-full">
+                        <Image
+                          src={reference.imageUrls[0]}
+                          alt={reference.title}
+                          width={400}
+                          height={300}
+                          className="w-full h-full object-cover"
+                          onError={(e) => {
+                            e.currentTarget.src = '/placeholder-image.jpg'
+                          }}
+                        />
+                        
+                        {/* Overlay for additional images */}
+                        {reference.imageUrls.length > 1 && (
+                          <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent flex items-end justify-center pointer-events-none">
+                            <div className="flex items-center justify-center mb-4">
+                              <div className="flex gap-1">
+                                {reference.imageUrls.slice(0, 5).map((_, index) => (
+                                  <div
+                                    key={index}
+                                    className={`w-2 h-2 rounded-full ${
+                                      index === 0 ? 'bg-white' : 'bg-white/50'
+                                    }`}
+                                  />
+                                ))}
+                              </div>
+                            </div>
+                          </div>
+                        )}
+                        
+                        {/* Click hint */}
+                        <div className="absolute top-3 right-3 bg-black/50 text-white text-xs px-2 py-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity">
+                          {reference.imageUrls.length > 1 ? 'Zobrazit všechny' : 'Zvětšit'}
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center text-gray-dark-textSecondary">
+                        <div className="text-center">
+                          <div className="text-2xl mb-1">📷</div>
+                          <div className="text-xs">Žádné obrázky</div>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Reference Content */}
+                  <div className="p-5 bg-gradient-to-b from-transparent to-red-900/10">
+                    <h3 className="text-xl font-bold text-white mb-3 group-hover:text-red-400 transition-colors">
+                      {reference.title}
+                    </h3>
+                    <p className="text-gray-300 text-sm leading-relaxed line-clamp-4">
+                      {reference.description}
+                    </p>
+                  </div>
+                </div>
+              ))}
             </div>
-          </div>
+          ) : (
+            <div className="flex items-center justify-center py-20 border-2 border-dashed border-gray-dark-border/50 rounded-lg">
+              <div className="text-center">
+                <div className="text-gray-dark-textSecondary text-lg mb-4">
+                  Žádné reference k zobrazení
+                </div>
+                <div className="text-gray-dark-textSecondary/60 text-sm">
+                  Reference budou přidány administrátorem
+                </div>
+              </div>
+            </div>
+          )}
         </div>
-      </div>
 
       {/* Order Button */}
-      <div className="text-center mt-10">
+      <div className="text-center mt-8">
         <button 
           onClick={() => setShowOrderForm(true)}
-          className="rounded-[14px] px-6 sm:px-8 py-3 sm:py-4 bg-gradient-button-dark text-gray-dark-text font-semibold shadow-[0_4px_12px_rgba(0,0,0,0.3)] hover:shadow-[0_8px_16px_rgba(0,0,0,0.4)] transition-all text-base sm:text-lg hover:scale-105"
+          className="rounded-[14px] px-8 sm:px-10 py-4 sm:py-5 bg-gradient-button-dark text-gray-dark-text font-semibold shadow-[0_4px_12px_rgba(0,0,0,0.3)] hover:shadow-[0_8px_16px_rgba(0,0,0,0.4)] transition-all text-lg sm:text-xl hover:scale-105"
         >
-          {t('constructions.order')}
+          Objednat stavbu
         </button>
       </div>
 
@@ -109,6 +281,85 @@ const Constructions: React.FC = () => {
             serviceType="constructions"
             onClose={() => setShowOrderForm(false)}
           />
+        )}
+
+        {/* Image Viewer Modal */}
+        {selectedReference && (
+          <div className="fixed inset-0 bg-black/90 z-[9999] flex items-center justify-center p-4">
+            <div className="relative w-full max-w-4xl max-h-[90vh]">
+              {/* Close Button */}
+              <button
+                onClick={() => setSelectedReference(null)}
+                className="absolute top-4 right-4 z-10 bg-black/50 hover:bg-black/70 text-white p-2 rounded-full transition-colors"
+                title="Zavřít"
+              >
+                <X className="w-6 h-6" />
+              </button>
+
+              {/* Image Navigation */}
+              {selectedReference.imageUrls && selectedReference.imageUrls.length > 1 && (
+                <>
+                  <button
+                    onClick={() => setCurrentImageIndex((prev) => 
+                      prev === 0 ? selectedReference.imageUrls!.length - 1 : prev - 1
+                    )}
+                    className="absolute left-4 top-1/2 -translate-y-1/2 z-10 bg-black/50 hover:bg-black/70 text-white p-3 rounded-full transition-colors"
+                    title="Předchozí"
+                  >
+                    <ChevronLeft className="w-6 h-6" />
+                  </button>
+                  <button
+                    onClick={() => setCurrentImageIndex((prev) => 
+                      prev === selectedReference.imageUrls!.length - 1 ? 0 : prev + 1
+                    )}
+                    className="absolute right-4 top-1/2 -translate-y-1/2 z-10 bg-black/50 hover:bg-black/70 text-white p-3 rounded-full transition-colors"
+                    title="Další"
+                  >
+                    <ChevronRight className="w-6 h-6" />
+                  </button>
+                </>
+              )}
+
+              {/* Current Image */}
+              <div className="relative w-full h-full flex items-center justify-center mb-4">
+                <Image
+                  src={selectedReference.imageUrls?.[currentImageIndex] || '/placeholder-image.jpg'}
+                  alt={`${selectedReference.title} ${currentImageIndex + 1}`}
+                  width={1200}
+                  height={800}
+                  className="max-w-full max-h-[60vh] object-contain"
+                  onError={(e) => {
+                    e.currentTarget.src = '/placeholder-image.jpg'
+                  }}
+                />
+              </div>
+
+              {/* Image Info - Below Image */}
+              <div className="text-center text-white">
+                <h3 className="text-xl font-bold mb-2">
+                  {selectedReference.title}
+                </h3>
+                <p className="text-sm text-white/80 leading-relaxed max-w-2xl mx-auto">
+                  {selectedReference.description}
+                </p>
+                {selectedReference.imageUrls && selectedReference.imageUrls.length > 1 && (
+                  <div className="flex items-center justify-center gap-2 mt-4">
+                    <div className="flex gap-1">
+                      {selectedReference.imageUrls.map((_, index) => (
+                        <button
+                          key={index}
+                          onClick={() => setCurrentImageIndex(index)}
+                          className={`w-2 h-2 rounded-full transition-colors ${
+                            index === currentImageIndex ? 'bg-white' : 'bg-white/50 hover:bg-white/70'
+                          }`}
+                        />
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
         )}
       </div>
       <Footer />

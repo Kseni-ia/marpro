@@ -6,9 +6,9 @@ import { useRouter } from 'next/navigation'
 import { useLanguage } from '@/contexts/LanguageContext'
 import Image from 'next/image'
 import NavigationBar from '@/app/admin/NavigationBar'
-import ExcavatorsList from './components/ExcavatorsList'
+import ConstructionsList from './components/ConstructionsList'
 
-export default function AddRemoveExcavator() {
+export default function AddRemoveConstruction() {
   const { isAuthenticated, logout, loading: authLoading } = useAuth()
   const { t } = useLanguage()
   const router = useRouter()
@@ -58,15 +58,15 @@ export default function AddRemoveExcavator() {
           {/* Header */}
           <div className="mb-8 text-center">
             <h1 className="text-2xl sm:text-3xl font-bold text-gray-dark-text uppercase tracking-wider mb-2">
-              {t('admin.excavatorManagement')}
+              Správa staveb
             </h1>
             <p className="text-gray-dark-textSecondary text-sm sm:text-base">
-              {t('admin.excavatorManagementDesc')}
+              Správa demoličních a instalačních služeb a referencí
             </p>
           </div>
 
-          {/* Excavators List */}
-          <ExcavatorsList />
+          {/* Constructions List */}
+          <ConstructionsList />
         </div>
       </div>
     </div>

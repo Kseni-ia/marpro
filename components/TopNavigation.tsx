@@ -2,13 +2,16 @@
 
 import React, { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
+import Image from 'next/image'
 import { useLanguage } from '@/contexts/LanguageContext'
+import { useModal } from '@/contexts/ModalContext'
 import WorkApplicationForm from './WorkApplicationForm'
 import { Menu, X } from 'lucide-react'
 
 export default function TopNavigation() {
   const router = useRouter()
   const { t, language } = useLanguage()
+  const { isModalOpen } = useModal()
   const [showWorkForm, setShowWorkForm] = useState(false)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
@@ -53,15 +56,18 @@ export default function TopNavigation() {
   return (
     <>
       {/* Top Navigation Bar */}
-      <nav className="fixed top-0 left-0 right-0 z-50 bg-transparent backdrop-blur-sm border-b border-gray-dark-border/20">
+      <nav className={`fixed top-0 left-0 right-0 bg-transparent backdrop-blur-sm border-b border-gray-dark-border/20 transition-all duration-300 ${isModalOpen ? 'z-1000' : 'z-50'}`}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-center items-center h-16">
-            {/* Logo - centered */}
-            <div className="absolute left-4 sm:left-6 flex-shrink-0">
-              <img 
-                src="/logo.svg" 
+            {/* Logo - much bigger and more prominent */}
+            <div className="absolute left-0 sm:-left-4 -top-2 sm:-top-1 z-50">
+              <Image 
+                src="/logoDF.svg" 
                 alt="MARPRO" 
-                className="h-12 w-auto cursor-pointer transition-all duration-300 hover:scale-110 hover:drop-shadow-[0_0_20px_rgba(220,38,38,0.3)]"
+                width={120}
+                height={120}
+                priority
+                className="h-16 sm:h-20 md:h-24 w-auto cursor-pointer transition-all duration-300 hover:scale-110 hover:drop-shadow-[0_0_30px_rgba(220,38,38,0.5)]"
                 onClick={() => navigateToSection('/')}
               />
             </div>
@@ -120,7 +126,7 @@ export default function TopNavigation() {
 
           {/* Mobile Navigation Dropdown - Right Side */}
           {mobileMenuOpen && (
-            <div className="md:hidden absolute top-16 right-4 bg-gradient-to-br from-gray-900/95 to-gray-800/95 backdrop-blur-xl border-2 border-gray-700/50 rounded-xl shadow-[0_8px_32px_rgba(0,0,0,0.4)] min-w-[220px] overflow-hidden">
+            <div className={`md:hidden absolute top-16 right-4 bg-gradient-to-br from-gray-900/95 to-gray-800/95 backdrop-blur-xl border-2 border-gray-700/50 rounded-xl shadow-[0_8px_32px_rgba(0,0,0,0.4)] min-w-[220px] overflow-hidden transition-all duration-300 ${isModalOpen ? 'z-1000' : 'z-50'}`}>
               <div className="flex flex-col py-3">
                 <button 
                   onClick={() => navigateToSection('/')}

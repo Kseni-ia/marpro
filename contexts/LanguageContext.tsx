@@ -267,6 +267,14 @@ const translations = {
     'work.expertise.safety': 'Safety Specialist',
     'work.expertise.management': 'Project Management',
     'work.expertise.other': 'Other',
+    
+    // Footer
+    'footer.contact': 'Contact',
+    'footer.followUs': 'Follow Us',
+    'footer.socialInfo': 'Follow us on social media for the latest information',
+    'footer.allRightsReserved': 'All rights reserved',
+    'footer.privacy': 'Privacy Policy',
+    'footer.terms': 'Terms of Service',
   },
   cs: {
     // Navigation
@@ -524,6 +532,14 @@ const translations = {
     'work.expertise.safety': 'Bezpečnostní specialista',
     'work.expertise.management': 'Projektový management',
     'work.expertise.other': 'Jiné',
+    
+    // Footer
+    'footer.contact': 'Kontakt',
+    'footer.followUs': 'Sledujte nás',
+    'footer.socialInfo': 'Sledujte nás na sociálních sítích pro nejnovější informace',
+    'footer.allRightsReserved': 'Všechna práva vyhrazena',
+    'footer.privacy': 'Ochrana soukromí',
+    'footer.terms': 'Obchodní podmínky',
   },
   ru: {
     // Navigation
@@ -781,6 +797,14 @@ const translations = {
     'work.expertise.safety': 'Специалист по безопасности',
     'work.expertise.management': 'Управление проектами',
     'work.expertise.other': 'Другое',
+    
+    // Footer
+    'footer.contact': 'Контакты',
+    'footer.followUs': 'Следите за нами',
+    'footer.socialInfo': 'Следите за нами в социальных сетях для получения самой последней информации',
+    'footer.allRightsReserved': 'Все права защищены',
+    'footer.privacy': 'Политика конфиденциальности',
+    'footer.terms': 'Условия использования',
   }
 }
 

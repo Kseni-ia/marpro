@@ -77,6 +77,17 @@ service cloud.firestore {
     }
     
     // ========================================
+    // CONSTRUCTIONS REFERENCES RULES
+    // ========================================
+    // Construction project references and portfolio
+    match /constructionsReferences/{referenceId} {
+      allow read: if true;   // Public can view construction references
+      allow create: if true; // Admin can create new references
+      allow update: if true; // Admin can update reference details
+      allow delete: if true; // Admin can delete references
+    }
+    
+    // ========================================
     // DEFAULT DENY RULE
     // ========================================
     // Deny access to any other collections not explicitly defined

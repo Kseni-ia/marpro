@@ -2,7 +2,7 @@
 
 import React, { useState, Fragment } from 'react'
 import { useRouter } from 'next/navigation'
-import { Calendar, LogOut, Home, ChevronRight, ChevronLeft, Package, Truck, FileText } from 'lucide-react'
+import { Calendar, LogOut, Home, ChevronRight, ChevronLeft, Package, Truck, FileText, Hammer } from 'lucide-react'
 import { useLanguage } from '@/contexts/LanguageContext'
 
 interface NavigationBarProps {
@@ -96,6 +96,20 @@ export default function NavigationBar({ onScheduleClick, onLogout }: NavigationB
         </button>
       </div>
 
+      {/* New Constructions Button */}
+      <div className="w-full px-3 mb-4">
+        <button
+          onClick={() => router.push('/admin/newConstructions')}
+          className={`rounded-xl bg-red-950/40 text-white hover:bg-red-900/60 hover:text-white hover:border-red-600 flex items-center transition-all duration-300 border-2 border-red-900/50 ${
+            isOpen ? 'w-full justify-start gap-3 px-4 h-12' : 'w-10 h-10 justify-center mx-auto'
+          }`}
+          title="Správa staveb"
+        >
+          <Hammer className="w-5 h-5 flex-shrink-0" />
+          {isOpen && <span className="text-sm font-medium">Stavby</span>}
+        </button>
+      </div>
+
       {/* Work Applications Button */}
       <div className="w-full px-3 mb-4">
         <button
@@ -170,6 +184,15 @@ export default function NavigationBar({ onScheduleClick, onLogout }: NavigationB
             title={t('admin.newExcavators')}
           >
             <Truck className="w-5 h-5" />
+          </button>
+
+          {/* New Constructions Button */}
+          <button
+            onClick={() => router.push('/admin/newConstructions')}
+            className="w-12 h-12 rounded-xl bg-red-950/40 text-white hover:bg-red-900/60 hover:text-white hover:border-red-600 flex items-center justify-center transition-all duration-300 border-2 border-red-900/50"
+            title="Správa staveb"
+          >
+            <Hammer className="w-5 h-5" />
           </button>
 
           {/* Work Applications Button */}
