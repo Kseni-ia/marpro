@@ -111,7 +111,7 @@ const Constructions: React.FC = () => {
       
       {/* Full Screen Blur-Up Background */}
       <BlurUpBackground
-        placeholderSrc="/loadC%20Small.jpeg"
+        placeholderSrc="/loadC_Small.jpeg"
         fullSrc="/constructions F.mp4"
         overlayOpacity="bg-black/70"
         isVideo={true}

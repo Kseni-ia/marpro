@@ -35,7 +35,7 @@ const Excavators: React.FC = () => {
       
       {/* Full Screen Blur-Up Background */}
       <BlurUpBackground
-        placeholderSrc="/loadE%20Small.jpeg"
+        placeholderSrc="/loadE_Small.jpeg"
         fullSrc="/exscavators F.mp4"
         overlayOpacity="bg-black/80"
         isVideo={true}
