@@ -34,14 +34,14 @@ export default function AddRemoveContainer() {
 
   return (
     <div className="min-h-screen bg-gradient-main-dark relative">
-      {/* Logo Container - Same as main page */}
-      <div className="absolute top-0 left-0 sm:-top-8 sm:-left-5 z-10 pointer-events-none">
+      {/* Logo Container */}
+      <div className="absolute top-4 left-4 z-10 pointer-events-none">
         <Image 
           src="/logoDF.svg" 
           alt="MARPRO" 
-          width={250}
-          height={200}
-          className="h-[100px] sm:h-[120px] md:h-[150px] lg:h-[170px] w-auto transition-all duration-300 object-contain"
+          width={60}
+          height={60}
+          className="h-8 w-auto transition-all duration-300 object-contain sm:h-10 md:h-12"
           style={{ objectPosition: 'left top' }}
         />
       </div>

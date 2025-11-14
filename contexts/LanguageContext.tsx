@@ -171,6 +171,24 @@ const translations = {
     'admin.workApplicationsTitle': 'Work Applications',
     'admin.workApplicationsDesc': 'Manage all form submissions from customers',
     
+    // Equipment Schedule
+    'admin.equipmentSchedule': 'Equipment Schedule Management',
+    'admin.equipmentType': 'Equipment Type',
+    'admin.allEquipment': 'All Equipment',
+    'admin.date': 'Date',
+    'admin.loadingBookings': 'Loading bookings...',
+    'admin.noBookingsFound': 'No bookings found for the selected filters.',
+    'admin.orderId': 'Order ID',
+    'admin.complete': 'Complete',
+    'admin.cancelBooking': 'Cancel',
+    'admin.completedStatus': 'Completed',
+    'admin.cancelledStatus': 'Cancelled',
+    'admin.notes': 'Notes',
+    'admin.equipmentScheduleInfo': 'Equipment Schedule Management',
+    'admin.equipmentInfo1': '• Equipment is booked with specific start and end times',
+    'admin.equipmentInfo2': '• Completed or cancelled bookings free up the time slot for new orders',
+    'admin.equipmentInfo3': '• Changes take effect immediately and update customer availability',
+    
     // Admin form fields
     'admin.addNewContainer': 'Add New Container',
     'admin.addNewContainerDesc': 'Create a new container option',
@@ -436,6 +454,24 @@ const translations = {
     'admin.workApplicationsTitle': 'Pracovní žádosti',
     'admin.workApplicationsDesc': 'Spravujte všechny formuláře odeslané zákazníky',
     
+    // Equipment Schedule
+    'admin.equipmentSchedule': 'Správa harmonogramu vybavení',
+    'admin.equipmentType': 'Typ vybavení',
+    'admin.allEquipment': 'Všechny vybavení',
+    'admin.date': 'Datum',
+    'admin.loadingBookings': 'Načítání rezervací...',
+    'admin.noBookingsFound': 'Nebyly nalezeny žádné rezervace pro vybrané filtry.',
+    'admin.orderId': 'ID objednávky',
+    'admin.complete': 'Dokončit',
+    'admin.cancelBooking': 'Zrušit',
+    'admin.completedStatus': 'Dokončeno',
+    'admin.cancelledStatus': 'Zrušeno',
+    'admin.notes': 'Poznámky',
+    'admin.equipmentScheduleInfo': 'Správa harmonogramu vybavení',
+    'admin.equipmentInfo1': '• Vybavení je rezervováno s konkrétním časem začátku a konce',
+    'admin.equipmentInfo2': '• Dokončené nebo zrušené rezervace uvolní časový slot pro nové objednávky',
+    'admin.equipmentInfo3': '• Změny se projeví okamžitě a aktualizují dostupnost pro zákazníky',
+    
     // Admin form fields
     'admin.addNewContainer': 'Přidat nový kontejner',
     'admin.addNewContainerDesc': 'Vytvořit novou možnost kontejneru',
@@ -700,6 +736,24 @@ const translations = {
     'admin.excavatorManagementDesc': 'Управление экскаваторами, отображаемыми на основном сайте',
     'admin.workApplicationsTitle': 'Рабочие заявки',
     'admin.workApplicationsDesc': 'Управление всеми отправленными клиентами формами',
+    
+    // Equipment Schedule
+    'admin.equipmentSchedule': 'Управление расписанием оборудования',
+    'admin.equipmentType': 'Тип оборудования',
+    'admin.allEquipment': 'Все оборудование',
+    'admin.date': 'Дата',
+    'admin.loadingBookings': 'Загрузка бронирований...',
+    'admin.noBookingsFound': 'Бронирования не найдены для выбранных фильтров.',
+    'admin.orderId': 'ID заказа',
+    'admin.complete': 'Завершить',
+    'admin.cancelBooking': 'Отменить',
+    'admin.completedStatus': 'Завершено',
+    'admin.cancelledStatus': 'Отменено',
+    'admin.notes': 'Примечания',
+    'admin.equipmentScheduleInfo': 'Управление расписанием оборудования',
+    'admin.equipmentInfo1': '• Оборудование забронировано с определенным временем начала и окончания',
+    'admin.equipmentInfo2': '• Завершенные или отмененные бронирования освобождают временной слот для новых заказов',
+    'admin.equipmentInfo3': '• Изменения вступают в силу немедленно и обновляют доступность для клиентов',
     
     // Admin form fields
     'admin.addNewContainer': 'Добавить новый контейнер',

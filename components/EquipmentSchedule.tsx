@@ -3,12 +3,14 @@
 import React, { useState, useEffect } from 'react'
 import { getEquipmentBookings, updateEquipmentBookingStatus } from '@/lib/equipment'
 import { EquipmentBooking } from '@/types/order'
+import { useLanguage } from '@/contexts/LanguageContext'
 
 interface EquipmentScheduleProps {
   onClose: () => void
 }
 
 export default function EquipmentSchedule({ onClose }: EquipmentScheduleProps) {
+  const { t } = useLanguage()
   const [bookings, setBookings] = useState<EquipmentBooking[]>([])
   const [loading, setLoading] = useState(true)
   const [filter, setFilter] = useState<'all' | 'containers' | 'excavators'>('all')
@@ -64,7 +66,7 @@ export default function EquipmentSchedule({ onClose }: EquipmentScheduleProps) {
         <div className="p-6">
           {/* Header */}
           <div className="flex justify-between items-center mb-6">
-            <h2 className="text-2xl font-bold text-gray-dark-text uppercase tracking-wider">Equipment Schedule Management</h2>
+            <h2 className="text-2xl font-bold text-gray-dark-text uppercase tracking-wider">{t('admin.equipmentSchedule')}</h2>
             <button
               onClick={onClose}
               className="text-gray-dark-textSecondary hover:text-gray-dark-text text-2xl font-bold transition-colors duration-300 hover:scale-110 transform"
@@ -78,21 +80,21 @@ export default function EquipmentSchedule({ onClose }: EquipmentScheduleProps) {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm font-medium text-gray-dark-textSecondary mb-2 uppercase tracking-wider">
-                  Equipment Type
+                  {t('admin.equipmentType')}
                 </label>
                 <select
                   value={filter}
                   onChange={(e) => setFilter(e.target.value as any)}
                   className="w-full px-3 py-2 bg-gray-dark-bg border border-gray-dark-border rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 text-gray-dark-text"
                 >
-                  <option value="all">All Equipment</option>
+                  <option value="all">{t('admin.allEquipment')}</option>
                   <option value="containers">Containers</option>
                   <option value="excavators">Excavators</option>
                 </select>
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-dark-textSecondary mb-2 uppercase tracking-wider">
-                  Date
+                  {t('admin.date')}
                 </label>
                 <input
                   type="date"
@@ -107,11 +109,11 @@ export default function EquipmentSchedule({ onClose }: EquipmentScheduleProps) {
           {/* Bookings List */}
           {loading ? (
             <div className="text-center py-8">
-              <div className="text-gray-dark-textSecondary">Loading bookings...</div>
+              <div className="text-gray-dark-textSecondary">{t('admin.loadingBookings')}</div>
             </div>
           ) : bookings.length === 0 ? (
             <div className="text-center py-8">
-              <div className="text-gray-dark-textSecondary">No bookings found for the selected filters.</div>
+              <div className="text-gray-dark-textSecondary">{t('admin.noBookingsFound')}</div>
             </div>
           ) : (
             <div className="space-y-4">
@@ -125,7 +127,7 @@ export default function EquipmentSchedule({ onClose }: EquipmentScheduleProps) {
                         {booking.equipmentType}: {booking.equipmentId}
                       </div>
                       <div className="text-sm text-gray-dark-textSecondary">
-                        Order ID: {booking.orderId.slice(-8)}
+                        {t('admin.orderId')}: {booking.orderId.slice(-8)}
                       </div>
                     </div>
 
@@ -151,19 +153,19 @@ export default function EquipmentSchedule({ onClose }: EquipmentScheduleProps) {
                             onClick={() => handleStatusUpdate(booking.id, 'completed')}
                             className="bg-gradient-to-r from-green-600 to-green-700 text-white px-3 py-1 rounded text-xs hover:from-green-700 hover:to-green-800 shadow-lg hover:shadow-xl transition-all"
                           >
-                            Complete
+                            {t('admin.complete')}
                           </button>
                           <button
                             onClick={() => handleStatusUpdate(booking.id, 'cancelled')}
                             className="bg-gradient-to-r from-red-600 to-red-700 text-white px-3 py-1 rounded text-xs hover:from-red-700 hover:to-red-800 shadow-lg hover:shadow-xl transition-all"
                           >
-                            Cancel
+                            {t('admin.cancelBooking')}
                           </button>
                         </>
                       )}
                       {booking.status !== 'active' && (
                         <span className="text-sm text-gray-dark-textSecondary">
-                          {booking.status === 'completed' ? 'Completed' : 'Cancelled'}
+                          {booking.status === 'completed' ? t('admin.completedStatus') : t('admin.cancelledStatus')}
                         </span>
                       )}
                     </div>
@@ -172,7 +174,7 @@ export default function EquipmentSchedule({ onClose }: EquipmentScheduleProps) {
                   {booking.notes && (
                     <div className="mt-3 pt-3 border-t border-gray-dark-border/50 relative z-10">
                       <div className="text-sm text-gray-dark-textSecondary">
-                        <strong>Notes:</strong> {booking.notes}
+                        <strong>{t('admin.notes')}:</strong> {booking.notes}
                       </div>
                     </div>
                   )}
@@ -183,11 +185,11 @@ export default function EquipmentSchedule({ onClose }: EquipmentScheduleProps) {
 
           {/* Info Box */}
           <div className="mt-6 bg-blue-900/20 border border-blue-400/30 rounded-lg p-4 backdrop-blur-sm">
-            <h3 className="font-semibold text-blue-400 mb-2 uppercase tracking-wider">Equipment Schedule Management</h3>
+            <h3 className="font-semibold text-blue-400 mb-2 uppercase tracking-wider">{t('admin.equipmentScheduleInfo')}</h3>
             <ul className="text-sm text-blue-300 space-y-1">
-              <li>• Equipment is booked with specific start and end times</li>
-              <li>• Completed or cancelled bookings free up the time slot for new orders</li>
-              <li>• Changes take effect immediately and update customer availability</li>
+              <li>{t('admin.equipmentInfo1')}</li>
+              <li>{t('admin.equipmentInfo2')}</li>
+              <li>{t('admin.equipmentInfo3')}</li>
             </ul>
           </div>
         </div>

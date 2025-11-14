@@ -36,7 +36,7 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
           
           {/* Company Info & Addresses */}
-          <div className="space-y-4">
+          <div className="space-y-4 text-center md:text-left">
             <h3 className="text-red-500 text-lg font-bold uppercase tracking-wider mb-4">
               MARPRO S.R.O.
             </h3>
@@ -53,13 +53,13 @@ export default function Footer() {
           </div>
 
           {/* Contact Info */}
-          <div className="space-y-4">
+          <div className="space-y-4 text-center md:text-left">
             <h3 className="text-red-500 text-lg font-bold uppercase tracking-wider mb-4">
               {t('footer.contact') || 'Kontakt'}
             </h3>
             <div className="space-y-3">
               {/* Email */}
-              <div className="flex items-center gap-3 text-gray-dark-text hover:text-red-400 transition-colors duration-300">
+              <div className="flex items-center justify-center md:justify-start gap-3 text-gray-dark-text hover:text-red-400 transition-colors duration-300">
                 <span className="text-red-500 text-base">✉</span>
                 <a 
                   href="mailto:marprostav@outlook.cz" 
@@ -70,7 +70,7 @@ export default function Footer() {
               </div>
               
               {/* Phone */}
-              <div className="flex items-center gap-3 text-gray-dark-text hover:text-red-400 transition-colors duration-300">
+              <div className="flex items-center justify-center md:justify-start gap-3 text-gray-dark-text hover:text-red-400 transition-colors duration-300">
                 <span className="text-red-500 text-base">📞</span>
                 <a 
                   href="tel:+420607428667" 
@@ -83,11 +83,11 @@ export default function Footer() {
           </div>
 
           {/* Social Media */}
-          <div className="space-y-4">
+          <div className="space-y-4 text-center md:text-left">
             <h3 className="text-red-500 text-lg font-bold uppercase tracking-wider mb-4">
               {t('footer.followUs') || 'Sledujte nás'}
             </h3>
-            <div className="flex flex-wrap gap-4">
+            <div className="flex flex-wrap justify-center md:justify-start gap-4">
               {/* Instagram 
               <a 
                 href={socialLinks.instagram}
