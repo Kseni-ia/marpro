@@ -134,7 +134,7 @@ export default function Home() {
       
       {activeSection === 'home' && (
         <BlurUpBackground
-          placeholderSrc="/loadD Small.jpeg"
+          placeholderSrc="/loadC%20Small.jpeg"
           fullSrc="/F4.mp4"
           overlayOpacity="bg-black/70"
         />

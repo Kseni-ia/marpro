@@ -87,16 +87,15 @@ const BlurUpBackground: React.FC<BlurUpBackgroundProps> = ({
 
   return (
     <div className={`fixed top-0 left-0 w-screen h-screen overflow-hidden z-0 ${className}`}>
-      {/* Placeholder image - visible immediately, stays until video is ready */}
+      {/* Placeholder image - visible immediately as clear background, stays until video is ready */}
       <div
         className={`absolute inset-0 w-full h-full bg-cover bg-center bg-no-repeat transition-opacity duration-1000 ${
           showPlaceholder ? 'opacity-100' : 'opacity-0'
         }`}
         style={{
           backgroundImage: `url(${placeholderSrc})`,
-          filter: 'blur(15px)',
-          transform: 'scale(1.05)',
-          zIndex: 1
+          zIndex: 1,
+          backgroundColor: '#1a1a1a' // Dark background to prevent black flash
         }}
       />
       

@@ -34,7 +34,7 @@ const Containers: React.FC = () => {
       
       {/* Full Screen Blur-Up Background */}
       <BlurUpBackground
-        placeholderSrc="/loadK Small.jpeg"
+        placeholderSrc="/loadK%20Small.jpeg"
         fullSrc="/containers_F.mp4"
         overlayOpacity="bg-black/70"
         isVideo={true}
