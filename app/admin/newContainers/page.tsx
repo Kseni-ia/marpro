@@ -8,6 +8,7 @@ import Image from 'next/image'
 import NavigationBar from '@/app/admin/NavigationBar'
 import ContainersList from './components/ContainersList'
 import WasteTypesList from '@/app/admin/pricing/components/WasteTypesList'
+import SurchargesList from '@/app/admin/pricing/components/SurchargesList'
 
 export default function AddRemoveContainer() {
   const { isAuthenticated, logout, loading: authLoading } = useAuth()
@@ -84,6 +85,22 @@ export default function AddRemoveContainer() {
 
           {/* Waste Types List */}
           <WasteTypesList />
+
+          {/* Divider */}
+          <div className="my-12 border-t border-gray-700/50" />
+
+          {/* Surcharges Section */}
+          <div className="mb-8 text-center">
+            <h2 className="text-xl sm:text-2xl font-bold text-gray-dark-text uppercase tracking-wider mb-2">
+              Příplatky
+            </h2>
+            <p className="text-gray-dark-textSecondary text-sm sm:text-base">
+              Nastavte příplatky za dopravu, víkendy a další služby
+            </p>
+          </div>
+
+          {/* Surcharges List */}
+          <SurchargesList />
         </div>
       </div>
     </div>
