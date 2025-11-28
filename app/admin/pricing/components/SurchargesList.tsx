@@ -69,7 +69,7 @@ export default function SurchargesList() {
     try {
       await addSurcharge({
         name: { cs: formData.name, en: formData.name, ru: formData.name },
-        note: formData.note ? { cs: formData.note, en: formData.note, ru: formData.note } : undefined,
+        note: formData.note && formData.note.trim() ? { cs: formData.note, en: formData.note, ru: formData.note } : null,
         price: formData.isIndividual ? 0 : formData.price,
         isPercentage: false,
         isActive: true,
@@ -91,11 +91,17 @@ export default function SurchargesList() {
     }
 
     try {
-      await updateSurcharge(id, {
+      const updateData: any = {
         name: { cs: formData.name, en: formData.name, ru: formData.name },
-        note: formData.note ? { cs: formData.note, en: formData.note, ru: formData.note } : undefined,
         price: formData.isIndividual ? 0 : formData.price
-      })
+      }
+      // Only include note if it has a value, use null to clear it
+      if (formData.note && formData.note.trim()) {
+        updateData.note = { cs: formData.note, en: formData.note, ru: formData.note }
+      } else {
+        updateData.note = null
+      }
+      await updateSurcharge(id, updateData)
       setEditingId(null)
       setFormData({ name: '', note: '', price: 0, isIndividual: false })
       await fetchSurcharges()
@@ -184,27 +190,20 @@ export default function SurchargesList() {
               placeholder="Poznámka (volitelné)"
               className="px-3 py-2 bg-gray-800 border border-gray-600 rounded-lg text-white text-sm focus:outline-none focus:border-red-500"
             />
-            <div className="flex items-center gap-2">
-              {!formData.isIndividual && (
-                <input
-                  type="number"
-                  value={formData.price || ''}
-                  onChange={(e) => setFormData(prev => ({ ...prev, price: Number(e.target.value) }))}
-                  placeholder="Cena (Kč)"
-                  className="flex-1 px-3 py-2 bg-gray-800 border border-gray-600 rounded-lg text-white text-sm focus:outline-none focus:border-red-500"
-                  min="0"
-                />
-              )}
-              <label className="flex items-center gap-1 text-xs text-gray-400 whitespace-nowrap">
-                <input
-                  type="checkbox"
-                  checked={formData.isIndividual}
-                  onChange={(e) => setFormData(prev => ({ ...prev, isIndividual: e.target.checked }))}
-                  className="rounded border-gray-600"
-                />
-                Individuální
-              </label>
-            </div>
+            <input
+              type="text"
+              value={formData.isIndividual ? '-' : (formData.price || '')}
+              onChange={(e) => {
+                const val = e.target.value
+                if (val === '-' || val === '') {
+                  setFormData(prev => ({ ...prev, price: 0, isIndividual: true }))
+                } else {
+                  setFormData(prev => ({ ...prev, price: Number(val) || 0, isIndividual: false }))
+                }
+              }}
+              placeholder="Cena nebo - pro individuální"
+              className="px-3 py-2 bg-gray-800 border border-gray-600 rounded-lg text-white text-sm focus:outline-none focus:border-red-500 text-center"
+            />
             <div className="flex gap-2">
               <button
                 onClick={handleAdd}
@@ -261,17 +260,20 @@ export default function SurchargesList() {
                     />
                   </div>
                   <div className="col-span-2 flex items-center gap-1">
-                    {!formData.isIndividual ? (
-                      <input
-                        type="number"
-                        value={formData.price || ''}
-                        onChange={(e) => setFormData(prev => ({ ...prev, price: Number(e.target.value) }))}
-                        className="w-full px-2 py-1 bg-gray-800 border border-gray-600 rounded text-white text-sm focus:outline-none focus:border-red-500"
-                        min="0"
-                      />
-                    ) : (
-                      <span className="text-gray-400 text-sm">Indiv.</span>
-                    )}
+                    <input
+                      type="text"
+                      value={formData.isIndividual ? '-' : (formData.price || '')}
+                      onChange={(e) => {
+                        const val = e.target.value
+                        if (val === '-' || val === '') {
+                          setFormData(prev => ({ ...prev, price: 0, isIndividual: true }))
+                        } else {
+                          setFormData(prev => ({ ...prev, price: Number(val) || 0, isIndividual: false }))
+                        }
+                      }}
+                      className="w-full px-2 py-1 bg-gray-800 border border-gray-600 rounded text-white text-sm focus:outline-none focus:border-red-500 text-center"
+                      placeholder="- nebo cena"
+                    />
                   </div>
                   <div className="col-span-3 flex justify-end gap-1">
                     <button

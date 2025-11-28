@@ -34,7 +34,7 @@ export interface Surcharge {
     en: string
     cs: string
     ru: string
-  }
+  } | null
   price: number // price in CZK, 0 means "individual/contact us"
   isPercentage: boolean // if true, price is a percentage
   isActive: boolean
