@@ -41,7 +41,7 @@ export default function AddRemoveContainer() {
           alt="MARPRO" 
           width={60}
           height={60}
-          className="h-8 w-auto transition-all duration-300 object-contain sm:h-10 md:h-12"
+          className="h-6 w-auto transition-all duration-300 object-contain sm:h-7 md:h-8"
           style={{ objectPosition: 'left top' }}
         />
       </div>

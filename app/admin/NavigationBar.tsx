@@ -2,7 +2,7 @@
 
 import React, { useState, Fragment } from 'react'
 import { useRouter } from 'next/navigation'
-import { Calendar, LogOut, Home, ChevronRight, ChevronLeft, Package, Truck, FileText, Hammer, Menu, X } from 'lucide-react'
+import { Calendar, LogOut, Home, ChevronRight, ChevronLeft, Package, Truck, FileText, Hammer, Menu, X, Tractor } from 'lucide-react'
 import { useLanguage } from '@/contexts/LanguageContext'
 
 interface NavigationBarProps {
@@ -78,7 +78,7 @@ export default function NavigationBar({ onScheduleClick, onLogout }: NavigationB
           }`}
           title={t('admin.newContainers')}
         >
-          <Package className="w-5 h-5 flex-shrink-0" />
+          <Truck className="w-5 h-5 flex-shrink-0" />
           {isOpen && <span className="text-sm font-medium">{t('admin.newContainers')}</span>}
         </button>
       </div>
@@ -92,7 +92,7 @@ export default function NavigationBar({ onScheduleClick, onLogout }: NavigationB
           }`}
           title={t('admin.newExcavators')}
         >
-          <Truck className="w-5 h-5 flex-shrink-0" />
+          <Tractor className="w-5 h-5 flex-shrink-0" />
           {isOpen && <span className="text-sm font-medium">{t('admin.newExcavators')}</span>}
         </button>
       </div>
@@ -212,7 +212,7 @@ export default function NavigationBar({ onScheduleClick, onLogout }: NavigationB
                 }}
                 className="w-full rounded-xl bg-red-950/40 text-white hover:bg-red-900/60 hover:text-white hover:border-red-600 flex items-center gap-3 px-4 h-12 transition-all duration-300 border-2 border-red-900/50"
               >
-                <Package className="w-5 h-5 flex-shrink-0" />
+                <Truck className="w-5 h-5 flex-shrink-0" />
                 <span className="text-sm font-medium">{t('admin.newContainers')}</span>
               </button>
 
@@ -224,7 +224,7 @@ export default function NavigationBar({ onScheduleClick, onLogout }: NavigationB
                 }}
                 className="w-full rounded-xl bg-red-950/40 text-white hover:bg-red-900/60 hover:text-white hover:border-red-600 flex items-center gap-3 px-4 h-12 transition-all duration-300 border-2 border-red-900/50"
               >
-                <Truck className="w-5 h-5 flex-shrink-0" />
+                <Tractor className="w-5 h-5 flex-shrink-0" />
                 <span className="text-sm font-medium">{t('admin.newExcavators')}</span>
               </button>
 

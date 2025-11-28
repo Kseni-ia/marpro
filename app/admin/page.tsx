@@ -38,7 +38,7 @@ export default function AdminLogin() {
           alt="MARPRO" 
           width={60}
           height={60}
-          className="h-8 w-auto cursor-pointer transition-all duration-300 sm:h-10 md:h-12"
+          className="h-6 w-auto cursor-pointer transition-all duration-300 sm:h-7 md:h-8"
           onClick={() => router.push('/')}
         />
       </div>
