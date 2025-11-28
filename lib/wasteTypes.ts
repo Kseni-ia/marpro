@@ -22,6 +22,9 @@ export interface WasteType {
   createdAt: Date
 }
 
+// Service types for surcharges
+export type ServiceType = 'containers' | 'excavators' | 'constructions'
+
 // Surcharge configuration
 export interface Surcharge {
   id: string
@@ -39,6 +42,7 @@ export interface Surcharge {
   isPercentage: boolean // if true, price is a percentage
   isActive: boolean
   order: number
+  serviceType: ServiceType // which service this surcharge applies to
 }
 
 const WASTE_TYPES_COLLECTION = 'wasteTypesList'
@@ -140,7 +144,8 @@ export const getAllSurcharges = async (): Promise<Surcharge[]> => {
         price: data.price ?? 0,
         isPercentage: data.isPercentage ?? false,
         isActive: data.isActive ?? true,
-        order: data.order ?? 0
+        order: data.order ?? 0,
+        serviceType: data.serviceType || 'containers'
       })
     })
     
@@ -151,10 +156,22 @@ export const getAllSurcharges = async (): Promise<Surcharge[]> => {
   }
 }
 
+// Get surcharges by service type
+export const getSurchargesByServiceType = async (serviceType: ServiceType): Promise<Surcharge[]> => {
+  const surcharges = await getAllSurcharges()
+  return surcharges.filter(s => s.serviceType === serviceType)
+}
+
 // Get only active surcharges
 export const getActiveSurcharges = async (): Promise<Surcharge[]> => {
   const surcharges = await getAllSurcharges()
   return surcharges.filter(s => s.isActive)
+}
+
+// Get active surcharges by service type
+export const getActiveSurchargesByServiceType = async (serviceType: ServiceType): Promise<Surcharge[]> => {
+  const surcharges = await getAllSurcharges()
+  return surcharges.filter(s => s.isActive && s.serviceType === serviceType)
 }
 
 // Add new surcharge
@@ -273,45 +290,79 @@ export const DEFAULT_WASTE_TYPES: Omit<WasteType, 'id' | 'createdAt'>[] = [
   }
 ]
 
-// Default surcharges to seed the database
-export const DEFAULT_SURCHARGES: Omit<Surcharge, 'id'>[] = [
+// Default surcharges for containers
+export const DEFAULT_CONTAINER_SURCHARGES: Omit<Surcharge, 'id'>[] = [
   {
-    name: { en: 'Extra Day', cs: 'Každý další den', ru: 'Дополнительный день' },
-    note: { en: 'More than 4 days', cs: 'Více než 4 dny', ru: 'Более 4 дней' },
+    name: { en: 'Extra Day', cs: 'Každý další den (více než 4)', ru: 'Дополнительный день' },
+    note: { en: 'Per day', cs: 'Za den', ru: 'За день' },
     price: 100,
     isPercentage: false,
     isActive: true,
-    order: 1
+    order: 1,
+    serviceType: 'containers'
   },
   {
-    name: { en: 'Vehicle Waiting', cs: 'Čekání vozidla', ru: 'Ожидание транспорта' },
-    note: { en: 'Per 30 minutes', cs: 'Za každých 30 minut', ru: 'За каждые 30 минут' },
+    name: { en: 'Vehicle Waiting', cs: 'Každá 1/2 hodina čekání vozu', ru: 'Ожидание транспорта' },
+    note: { en: 'Per 30 minutes', cs: 'Za 30 minut', ru: 'За 30 минут' },
     price: 400,
     isPercentage: false,
     isActive: true,
-    order: 2
+    order: 2,
+    serviceType: 'containers'
   },
   {
     name: { en: 'Weekends & Holidays', cs: 'Víkendy a svátky', ru: 'Выходные и праздники' },
-    note: { en: 'Saturday, Sunday, holidays', cs: 'Sobota, neděle, svátky', ru: 'Суббота, воскресенье, праздники' },
+    note: { en: 'Order surcharge', cs: 'Příplatek k zakázce', ru: 'Доплата к заказу' },
     price: 300,
     isPercentage: false,
     isActive: true,
-    order: 3
+    order: 3,
+    serviceType: 'containers'
   },
   {
-    name: { en: 'Left Bank / Outside Prague', cs: 'Levý břeh / mimo Prahu', ru: 'Левый берег / за пределами Праги' },
-    note: { en: 'Left bank of Vltava or outside Prague', cs: 'Levý břeh Vltavy nebo mimo Prahu', ru: 'Левый берег Влтавы или за пределами Праги' },
+    name: { en: 'Left Bank / Outside Prague', cs: 'Doprava na levý břeh Vltavy nebo mimo Prahu', ru: 'Левый берег / за пределами Праги' },
+    note: { en: 'Flat surcharge', cs: 'Paušální příplatek', ru: 'Паушальная доплата' },
     price: 500,
     isPercentage: false,
     isActive: true,
-    order: 4
+    order: 4,
+    serviceType: 'containers'
   },
   {
     name: { en: 'Distance Beyond 20km', cs: 'Doprava dál než 20 km', ru: 'Расстояние более 20 км' },
+    note: null,
     price: 0, // 0 means individual pricing
     isPercentage: false,
     isActive: true,
-    order: 5
+    order: 5,
+    serviceType: 'containers'
   }
+]
+
+// Default surcharges for excavators
+export const DEFAULT_EXCAVATOR_SURCHARGES: Omit<Surcharge, 'id'>[] = [
+  {
+    name: { en: 'Weekends & Holidays', cs: 'Víkendy a svátky', ru: 'Выходные и праздники' },
+    note: { en: 'Saturday, Sunday, holidays', cs: 'Sobota, neděle, svátky', ru: 'Суббота, воскресенье, праздники' },
+    price: 500,
+    isPercentage: false,
+    isActive: true,
+    order: 1,
+    serviceType: 'excavators'
+  },
+  {
+    name: { en: 'Minimum Billed Time', cs: 'Minimální účtovaný čas', ru: 'Минимальное время' },
+    note: { en: '4 hours minimum', cs: 'Minimálně 4 hodiny', ru: 'Минимум 4 часа' },
+    price: 0, // Individual pricing
+    isPercentage: false,
+    isActive: true,
+    order: 2,
+    serviceType: 'excavators'
+  }
+]
+
+// Combined default surcharges (for backward compatibility)
+export const DEFAULT_SURCHARGES: Omit<Surcharge, 'id'>[] = [
+  ...DEFAULT_CONTAINER_SURCHARGES,
+  ...DEFAULT_EXCAVATOR_SURCHARGES
 ]

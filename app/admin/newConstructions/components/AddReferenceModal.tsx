@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react'
 import { X, Plus, Trash2 } from 'lucide-react'
-import { createReference } from '@/lib/constructions'
+import { createReference, REFERENCE_CATEGORIES, ReferenceCategory } from '@/lib/constructions'
 import { uploadMultipleImages, validateMultipleImages } from '@/lib/imageUpload'
 
 interface AddReferenceModalProps {
@@ -15,6 +15,7 @@ export default function AddReferenceModal({ onClose, onSuccess }: AddReferenceMo
     title: '',
     description: '',
     imageUrls: [] as string[],
+    category: 'demolice' as ReferenceCategory,
     isActive: true
   })
   const [loading, setLoading] = useState(false)
@@ -149,6 +150,25 @@ export default function AddReferenceModal({ onClose, onSuccess }: AddReferenceMo
               className="w-full px-3 py-2 bg-gray-700/50 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent resize-none"
               placeholder="Zadejte popis reference"
             />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-300 mb-1">
+              Kategorie
+            </label>
+            <select
+              name="category"
+              value={formData.category}
+              onChange={(e) => setFormData(prev => ({ ...prev, category: e.target.value as ReferenceCategory }))}
+              required
+              className="w-full px-3 py-2 bg-gray-700/50 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent"
+            >
+              {REFERENCE_CATEGORIES.map((cat) => (
+                <option key={cat.value} value={cat.value} className="bg-gray-800">
+                  {cat.label}
+                </option>
+              ))}
+            </select>
           </div>
 
           <div>

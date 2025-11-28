@@ -6,8 +6,9 @@ import { OrderFormData } from '@/types/order'
 import { useModal } from '@/contexts/ModalContext'
 import { useLanguage } from '@/contexts/LanguageContext'
 import TimeReelPicker from './TimeReelPicker'
-import { WasteType, getActiveWasteTypes, getActiveSurcharges, Surcharge } from '@/lib/wasteTypes'
+import { WasteType, getActiveWasteTypes, getActiveSurchargesByServiceType, Surcharge, ServiceType } from '@/lib/wasteTypes'
 import { Container, getActiveContainers } from '@/lib/containers'
+import { Excavator, getActiveExcavators } from '@/lib/excavators'
 
 interface OrderFormProps {
   serviceType: 'containers' | 'excavators' | 'constructions'
@@ -53,8 +54,10 @@ export default function OrderForm({ serviceType, onClose }: OrderFormProps) {
   // Dynamic pricing state
   const [wasteTypes, setWasteTypes] = useState<WasteType[]>([])
   const [containers, setContainers] = useState<Container[]>([])
+  const [excavators, setExcavators] = useState<Excavator[]>([])
   const [surcharges, setSurcharges] = useState<Surcharge[]>([])
   const [loadingPricing, setLoadingPricing] = useState(false)
+  const [selectedExcavator, setSelectedExcavator] = useState<Excavator | null>(null)
 
   // Handle modal state and body scroll prevention
   useEffect(() => {
@@ -73,18 +76,26 @@ export default function OrderForm({ serviceType, onClose }: OrderFormProps) {
 
   // Fetch pricing data for containers
   useEffect(() => {
+    const fetchSurchargesData = async () => {
+      try {
+        const surchargesData = await getActiveSurchargesByServiceType(serviceType as ServiceType)
+        setSurcharges(surchargesData)
+      } catch (error) {
+        console.error('Error fetching surcharges:', error)
+      }
+    }
+    fetchSurchargesData()
+
     if (serviceType === 'containers') {
       const fetchPricingData = async () => {
         setLoadingPricing(true)
         try {
-          const [wasteTypesData, containersData, surchargesData] = await Promise.all([
+          const [wasteTypesData, containersData] = await Promise.all([
             getActiveWasteTypes(),
-            getActiveContainers(),
-            getActiveSurcharges()
+            getActiveContainers()
           ])
           setWasteTypes(wasteTypesData)
           setContainers(containersData)
-          setSurcharges(surchargesData)
           
           // Set first waste type as default if available
           if (wasteTypesData.length > 0) {
@@ -102,6 +113,32 @@ export default function OrderForm({ serviceType, onClose }: OrderFormProps) {
         }
       }
       fetchPricingData()
+    }
+
+    if (serviceType === 'excavators') {
+      const fetchExcavatorsData = async () => {
+        setLoadingPricing(true)
+        try {
+          const excavatorsData = await getActiveExcavators()
+          setExcavators(excavatorsData)
+          
+          // Set first excavator as default if available
+          if (excavatorsData.length > 0) {
+            const firstExcavator = excavatorsData[0]
+            setSelectedExcavator(firstExcavator)
+            setFormData(prev => ({
+              ...prev,
+              excavatorType: `${firstExcavator.type} - ${firstExcavator.model}`,
+              calculatedPrice: firstExcavator.price
+            }))
+          }
+        } catch (error) {
+          console.error('Error fetching excavators:', error)
+        } finally {
+          setLoadingPricing(false)
+        }
+      }
+      fetchExcavatorsData()
     }
   }, [serviceType, language])
 
@@ -495,22 +532,66 @@ export default function OrderForm({ serviceType, onClose }: OrderFormProps) {
           )}
 
           {serviceType === 'excavators' && (
-            <div>
-              <label htmlFor="excavatorType" className="block text-xs font-semibold text-gray-dark-textSecondary uppercase tracking-[0.3px] mb-1">
-                {t('order.excavatorType')} *
-              </label>
-              <select
-                id="excavatorType"
-                name="excavatorType"
-                value={formData.excavatorType}
-                onChange={handleChange}
-                className={`w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 outline-none transition-all text-gray-800 ${formData.excavatorType ? 'bg-gray-100' : 'bg-white'}`}
-                required
-              >
-                <option value="TB145">{t('order.excavator.tb145')}</option>
-                <option value="TB290-1">{t('order.excavator.tb290-1')}</option>
-                <option value="TB290-2">{t('order.excavator.tb290-2')}</option>
-              </select>
+            <div className="space-y-3">
+              {/* Excavator Selection */}
+              <div>
+                <label htmlFor="excavatorType" className="block text-xs font-semibold text-gray-dark-textSecondary uppercase tracking-[0.3px] mb-1">
+                  Typ mechanizace *
+                </label>
+                {loadingPricing ? (
+                  <div className="w-full px-3 py-2 text-sm bg-gray-100 border border-gray-300 rounded-lg text-gray-500">
+                    Načítání...
+                  </div>
+                ) : (
+                  <select
+                    id="excavatorType"
+                    name="excavatorType"
+                    value={selectedExcavator?.id || ''}
+                    onChange={(e) => {
+                      const selected = excavators.find(ex => ex.id === e.target.value)
+                      if (selected) {
+                        setSelectedExcavator(selected)
+                        setFormData(prev => ({
+                          ...prev,
+                          excavatorType: `${selected.type} - ${selected.model}`,
+                          calculatedPrice: selected.price
+                        }))
+                      }
+                    }}
+                    className={`w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 outline-none transition-all text-gray-800 ${selectedExcavator ? 'bg-gray-100' : 'bg-white'}`}
+                    required
+                  >
+                    <option value="">-- Vyberte stroj --</option>
+                    {excavators.map(ex => (
+                      <option key={ex.id} value={ex.id}>
+                        {ex.type} - {ex.model} {ex.specs?.weight ? `| ${ex.specs.weight}` : ''}
+                      </option>
+                    ))}
+                  </select>
+                )}
+              </div>
+
+              {/* Dynamic Price Display for Excavators */}
+              {selectedExcavator && selectedExcavator.price > 0 && (
+                <div className="bg-gradient-to-r from-green-900/30 to-green-800/20 border border-green-500/30 rounded-lg p-3">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-xs text-green-300 uppercase tracking-wide font-semibold">
+                        Orientační cena
+                      </p>
+                      <p className="text-xs text-gray-400 mt-0.5">
+                        {selectedExcavator.type} - {selectedExcavator.model}
+                      </p>
+                    </div>
+                    <div className="text-right">
+                      <p className="text-2xl font-bold text-green-400">
+                        {selectedExcavator.price.toLocaleString('cs-CZ')} Kč
+                      </p>
+                      <p className="text-[10px] text-gray-500">/ hod. bez DPH</p>
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
           )}
 
@@ -610,8 +691,8 @@ export default function OrderForm({ serviceType, onClose }: OrderFormProps) {
             </div>
           )}
 
-          {/* Surcharges Section - Only for Containers - Dynamic from Firebase */}
-          {serviceType === 'containers' && surcharges.length > 0 && (
+          {/* Surcharges Section - For Containers and Excavators - Dynamic from Firebase */}
+          {(serviceType === 'containers' || serviceType === 'excavators') && surcharges.length > 0 && (
             <div className="bg-gray-100 rounded-lg p-3 border border-gray-200">
               <h3 className="text-sm font-bold text-gray-800 mb-2">
                 {t('surcharges.title')}
@@ -624,7 +705,11 @@ export default function OrderForm({ serviceType, onClose }: OrderFormProps) {
                   >
                     <div className="flex items-center gap-2">
                       <span className="text-gray-600">
-                        {index === 0 ? '📅' : index === 1 ? '⏱' : index === 2 ? '🗓' : index === 3 ? '🚚' : '📍'}
+                        {surcharge.name.cs.includes('Víkend') ? '🗓' : 
+                         surcharge.name.cs.includes('čekání') ? '⏱' : 
+                         surcharge.name.cs.includes('den') ? '📅' : 
+                         surcharge.name.cs.includes('břeh') || surcharge.name.cs.includes('Doprava') ? '🚚' : 
+                         surcharge.name.cs.includes('čas') ? '⏱' : '📍'}
                       </span>
                       <div>
                         <span className="text-gray-800 font-medium">{surcharge.name.cs}</span>

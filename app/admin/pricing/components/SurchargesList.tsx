@@ -4,14 +4,20 @@ import React, { useState, useEffect } from 'react'
 import { Plus, Trash2, Edit2, Save, X } from 'lucide-react'
 import { 
   Surcharge, 
-  getAllSurcharges, 
+  ServiceType,
+  getSurchargesByServiceType, 
   addSurcharge, 
   updateSurcharge, 
   deleteSurcharge,
-  DEFAULT_SURCHARGES
+  DEFAULT_CONTAINER_SURCHARGES,
+  DEFAULT_EXCAVATOR_SURCHARGES
 } from '@/lib/wasteTypes'
 
-export default function SurchargesList() {
+interface SurchargesListProps {
+  serviceType: ServiceType
+}
+
+export default function SurchargesList({ serviceType }: SurchargesListProps) {
   const [surcharges, setSurcharges] = useState<Surcharge[]>([])
   const [loading, setLoading] = useState(true)
   const [editingId, setEditingId] = useState<string | null>(null)
@@ -28,12 +34,12 @@ export default function SurchargesList() {
 
   useEffect(() => {
     fetchSurcharges()
-  }, [])
+  }, [serviceType])
 
   const fetchSurcharges = async () => {
     setLoading(true)
     try {
-      const data = await getAllSurcharges()
+      const data = await getSurchargesByServiceType(serviceType)
       setSurcharges(data)
     } catch (error) {
       console.error('Error fetching surcharges:', error)
@@ -42,12 +48,16 @@ export default function SurchargesList() {
     }
   }
 
+  const getDefaultSurcharges = () => {
+    return serviceType === 'excavators' ? DEFAULT_EXCAVATOR_SURCHARGES : DEFAULT_CONTAINER_SURCHARGES
+  }
+
   const handleSeedDefaults = async () => {
     if (!confirm('Toto přidá výchozí příplatky do databáze. Pokračovat?')) return
     
     setSeedingDefaults(true)
     try {
-      for (const surcharge of DEFAULT_SURCHARGES) {
+      for (const surcharge of getDefaultSurcharges()) {
         await addSurcharge(surcharge)
       }
       await fetchSurcharges()
@@ -73,7 +83,8 @@ export default function SurchargesList() {
         price: formData.isIndividual ? 0 : formData.price,
         isPercentage: false,
         isActive: true,
-        order: Date.now()
+        order: Date.now(),
+        serviceType: serviceType
       })
       setShowAddForm(false)
       setFormData({ name: '', note: '', price: 0, isIndividual: false })

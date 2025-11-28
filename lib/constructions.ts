@@ -1,11 +1,22 @@
 import { collection, addDoc, getDocs, doc, updateDoc, deleteDoc, serverTimestamp } from 'firebase/firestore'
 import { db } from './firebase'
 
+// Category types for construction services
+export type ReferenceCategory = 'demolice' | 'instalace' | 'stavebni_prace' | 'odvoz_materialu'
+
+export const REFERENCE_CATEGORIES: { value: ReferenceCategory; label: string }[] = [
+  { value: 'demolice', label: 'Demolice' },
+  { value: 'instalace', label: 'Instalace' },
+  { value: 'stavebni_prace', label: 'Stavební práce' },
+  { value: 'odvoz_materialu', label: 'Odvoz materiálu' }
+]
+
 export interface Reference {
   id: string
   title: string
   description: string
   imageUrls: string[] // Array of image URLs (up to 10)
+  category: ReferenceCategory // Category of the reference
   isActive: boolean
   createdAt: any
   updatedAt: any

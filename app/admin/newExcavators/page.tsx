@@ -7,6 +7,7 @@ import { useLanguage } from '@/contexts/LanguageContext'
 import Image from 'next/image'
 import NavigationBar from '@/app/admin/NavigationBar'
 import ExcavatorsList from './components/ExcavatorsList'
+import SurchargesList from '@/app/admin/pricing/components/SurchargesList'
 
 export default function AddRemoveExcavator() {
   const { isAuthenticated, logout, loading: authLoading } = useAuth()
@@ -67,6 +68,22 @@ export default function AddRemoveExcavator() {
 
           {/* Excavators List */}
           <ExcavatorsList />
+
+          {/* Divider */}
+          <div className="my-12 border-t border-gray-700/50" />
+
+          {/* Surcharges Section */}
+          <div className="mb-8 text-center">
+            <h2 className="text-xl sm:text-2xl font-bold text-gray-dark-text uppercase tracking-wider mb-2">
+              Příplatky pro mechanizaci
+            </h2>
+            <p className="text-gray-dark-textSecondary text-sm sm:text-base">
+              Nastavte příplatky za víkendy, minimální účtovaný čas a další služby
+            </p>
+          </div>
+
+          {/* Surcharges List */}
+          <SurchargesList serviceType="excavators" />
         </div>
       </div>
     </div>

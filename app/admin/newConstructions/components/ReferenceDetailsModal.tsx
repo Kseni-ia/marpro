@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react'
 import { X, Trash2, Plus } from 'lucide-react'
-import { updateReference, deleteReference, Reference } from '@/lib/constructions'
+import { updateReference, deleteReference, Reference, REFERENCE_CATEGORIES, ReferenceCategory } from '@/lib/constructions'
 import { uploadMultipleImages, validateMultipleImages } from '@/lib/imageUpload'
 
 interface ReferenceDetailsModalProps {
@@ -16,6 +16,7 @@ export default function ReferenceDetailsModal({ reference, onClose, onUpdate }: 
     title: reference.title,
     description: reference.description,
     imageUrls: reference.imageUrls || [],
+    category: reference.category || 'demolice' as ReferenceCategory,
     isActive: reference.isActive
   })
   const [loading, setLoading] = useState(false)
@@ -169,6 +170,25 @@ export default function ReferenceDetailsModal({ reference, onClose, onUpdate }: 
               className="w-full px-3 py-2 bg-gray-700/50 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent resize-none"
               placeholder="Zadejte popis reference"
             />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-300 mb-1">
+              Kategorie
+            </label>
+            <select
+              name="category"
+              value={formData.category}
+              onChange={(e) => setFormData(prev => ({ ...prev, category: e.target.value as ReferenceCategory }))}
+              required
+              className="w-full px-3 py-2 bg-gray-700/50 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent"
+            >
+              {REFERENCE_CATEGORIES.map((cat) => (
+                <option key={cat.value} value={cat.value} className="bg-gray-800">
+                  {cat.label}
+                </option>
+              ))}
+            </select>
           </div>
 
           <div>

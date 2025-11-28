@@ -100,7 +100,7 @@ export default function AddRemoveContainer() {
           </div>
 
           {/* Surcharges List */}
-          <SurchargesList />
+          <SurchargesList serviceType="containers" />
         </div>
       </div>
     </div>

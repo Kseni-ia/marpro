@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
-import { getAllReferences, toggleReferenceStatus, deleteReference, Reference } from '@/lib/constructions'
+import { getAllReferences, toggleReferenceStatus, deleteReference, Reference, REFERENCE_CATEGORIES, ReferenceCategory } from '@/lib/constructions'
 import { Edit, Eye, EyeOff, Plus, Trash2 } from 'lucide-react'
 import { useLanguage } from '@/contexts/LanguageContext'
 import AddReferenceModal from './AddReferenceModal'
@@ -14,6 +14,27 @@ export default function ConstructionsList() {
   const [loading, setLoading] = useState(true)
   const [showAddModal, setShowAddModal] = useState(false)
   const [selectedReference, setSelectedReference] = useState<Reference | null>(null)
+  const [filterCategory, setFilterCategory] = useState<ReferenceCategory | 'all'>('all')
+
+  const getCategoryLabel = (category: ReferenceCategory | undefined) => {
+    if (!category) return 'Bez kategorie'
+    const cat = REFERENCE_CATEGORIES.find(c => c.value === category)
+    return cat ? cat.label : 'Bez kategorie'
+  }
+
+  const getCategoryColor = (category: ReferenceCategory | undefined) => {
+    switch (category) {
+      case 'demolice': return 'bg-red-500/20 text-red-400 border-red-500/30'
+      case 'instalace': return 'bg-blue-500/20 text-blue-400 border-blue-500/30'
+      case 'stavebni_prace': return 'bg-green-500/20 text-green-400 border-green-500/30'
+      case 'odvoz_materialu': return 'bg-yellow-500/20 text-yellow-400 border-yellow-500/30'
+      default: return 'bg-gray-500/20 text-gray-400 border-gray-500/30'
+    }
+  }
+
+  const filteredReferences = filterCategory === 'all' 
+    ? references 
+    : references.filter(ref => ref.category === filterCategory)
 
   const fetchReferences = async () => {
     setLoading(true)
@@ -80,14 +101,40 @@ export default function ConstructionsList() {
         />
       )}
 
+      {/* Category Filter */}
+      <div className="flex gap-2 mb-6 flex-wrap">
+        <button
+          onClick={() => setFilterCategory('all')}
+          className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${filterCategory === 'all' ? 'bg-white/20 text-white border border-white/30' : 'bg-gray-800/50 text-gray-400 border border-gray-700/50 hover:bg-gray-700/50'}`}
+        >
+          Všechny
+        </button>
+        {REFERENCE_CATEGORIES.map((cat) => (
+          <button
+            key={cat.value}
+            onClick={() => setFilterCategory(cat.value)}
+            className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${filterCategory === cat.value ? getCategoryColor(cat.value) + ' border' : 'bg-gray-800/50 text-gray-400 border border-gray-700/50 hover:bg-gray-700/50'}`}
+          >
+            {cat.label}
+          </button>
+        ))}
+      </div>
+
       {/* Grid Layout - Modern Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 mb-6">
-        {references.map((reference) => (
+        {filteredReferences.map((reference) => (
           <div
             key={reference.id}
             onClick={() => setSelectedReference(reference)}
             className="group relative bg-gradient-to-br from-gray-800/60 to-gray-900/60 backdrop-blur-sm border border-gray-700/30 hover:border-red-500/50 rounded-xl p-5 transition-all duration-300 cursor-pointer shadow-lg hover:shadow-red-900/20 hover:scale-102"
           >
+            {/* Category Badge - Top Left */}
+            <div className="absolute top-3 left-3 z-10">
+              <span className={`px-2 py-1 rounded-full text-[10px] font-semibold shadow-lg border ${getCategoryColor(reference.category)}`}>
+                {getCategoryLabel(reference.category)}
+              </span>
+            </div>
+
             {/* Status Badge - Top Right */}
             <div className="absolute top-3 right-3 z-10">
               <span className={`px-2.5 py-1 rounded-full text-[10px] font-semibold shadow-lg ${
