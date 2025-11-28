@@ -256,7 +256,7 @@ export default function ContainerDetailsModal({ container, onClose, onUpdate }: 
                 <Edit2 className="w-3 h-3 text-red-400" />
               </div>
               <label className="block text-xs font-semibold text-gray-400 mb-2">
-                Price (CZK/hour)
+                Price (CZK)
               </label>
               {editingField === 'price' ? (
                 <div className="space-y-2">

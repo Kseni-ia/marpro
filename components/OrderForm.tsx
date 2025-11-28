@@ -457,6 +457,89 @@ export default function OrderForm({ serviceType, onClose }: OrderFormProps) {
             </div>
           )}
 
+          {/* Surcharges Section - Only for Containers */}
+          {serviceType === 'containers' && (
+            <div className="bg-gray-100 rounded-lg p-3 border border-gray-200">
+              <h3 className="text-sm font-bold text-gray-800 mb-2">
+                {t('surcharges.title')}
+              </h3>
+              <div className="space-y-2 text-xs">
+                {/* Each additional day */}
+                <div className="flex items-center justify-between py-1 border-b border-gray-200">
+                  <div className="flex items-center gap-2">
+                    <span className="text-gray-600">📅</span>
+                    <div>
+                      <span className="text-gray-800 font-medium">{t('surcharges.extraDay')}</span>
+                      <p className="text-gray-500 text-[10px]">{t('surcharges.extraDayNote')}</p>
+                    </div>
+                  </div>
+                  <div className="text-right">
+                    <span className="font-bold text-gray-800">100 Kč</span>
+                    <p className="text-gray-500 text-[10px]">{t('surcharges.vatNote')}</p>
+                  </div>
+                </div>
+
+                {/* Vehicle waiting */}
+                <div className="flex items-center justify-between py-1 border-b border-gray-200">
+                  <div className="flex items-center gap-2">
+                    <span className="text-gray-600">⏱</span>
+                    <div>
+                      <span className="text-gray-800 font-medium">{t('surcharges.waiting')}</span>
+                      <p className="text-gray-500 text-[10px]">{t('surcharges.waitingNote')}</p>
+                    </div>
+                  </div>
+                  <div className="text-right">
+                    <span className="font-bold text-gray-800">400 Kč</span>
+                    <p className="text-gray-500 text-[10px]">{t('surcharges.vatNote')}</p>
+                  </div>
+                </div>
+
+                {/* Weekends and holidays */}
+                <div className="flex items-center justify-between py-1 border-b border-gray-200">
+                  <div className="flex items-center gap-2">
+                    <span className="text-gray-600">🗓</span>
+                    <div>
+                      <span className="text-gray-800 font-medium">{t('surcharges.weekend')}</span>
+                      <p className="text-gray-500 text-[10px]">{t('surcharges.weekendNote')}</p>
+                    </div>
+                  </div>
+                  <div className="text-right">
+                    <span className="font-bold text-gray-800">300 Kč</span>
+                    <p className="text-gray-500 text-[10px]">{t('surcharges.vatNote')}</p>
+                  </div>
+                </div>
+
+                {/* Left bank / outside Prague */}
+                <div className="flex items-center justify-between py-1 border-b border-gray-200">
+                  <div className="flex items-center gap-2">
+                    <span className="text-gray-600">🚚</span>
+                    <div>
+                      <span className="text-gray-800 font-medium">{t('surcharges.leftBank')}</span>
+                      <p className="text-gray-500 text-[10px]">{t('surcharges.leftBankNote')}</p>
+                    </div>
+                  </div>
+                  <div className="text-right">
+                    <span className="font-bold text-gray-800">500 Kč</span>
+                    <p className="text-gray-500 text-[10px]">{t('surcharges.vatNote')}</p>
+                  </div>
+                </div>
+
+                {/* Distance beyond 20km */}
+                <div className="flex items-center justify-between py-1">
+                  <div className="flex items-center gap-2">
+                    <span className="text-gray-600">📍</span>
+                    <div>
+                      <span className="text-gray-800 font-medium">{t('surcharges.distance')}</span>
+                    </div>
+                  </div>
+                  <div className="text-right">
+                    <span className="font-bold text-gray-800">{t('surcharges.individual')}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
           <div className="flex gap-2">
             <button
               type="button"

@@ -9,22 +9,16 @@ export default function Footer() {
   // Social media links - add your actual URLs here
   const socialLinks = {
     instagram: 'https://instagram.com/yourprofile', 
-    tiktok: 'https://tiktok.com/@yourprofile',
+    tiktok: 'https://www.tiktok.com/@marpro_s.r.o?_r=1&_t=ZN-91m9xvxrfPy',
     youtube: 'https://youtube.com/yourchannel'
   }
 
-  // Company addresses - add your actual addresses here
+  // Company address
   const addresses = [
     {
-      city: 'Praha',
-      street: 'Ulice 123',
-      zip: '110 00',
-      country: 'Česká republika'
-    },
-    {
-      city: 'Brno', 
-      street: 'Ulice 456',
-      zip: '602 00',
+      city: 'Praha 10 - Strašnice',
+      street: 'Kolovratská 58/1',
+      zip: '100 00',
       country: 'Česká republika'
     }
   ]

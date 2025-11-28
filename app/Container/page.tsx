@@ -67,7 +67,7 @@ const Containers: React.FC = () => {
               volume={container.volume}
               dims={container.dims}
               description={container.description}
-              price={`${t('containers.price')} ${container.price.toLocaleString('cs-CZ')} CZK/hour ${t('containers.vat')}`}
+              price={`${t('containers.price')} ${container.price.toLocaleString('cs-CZ')} CZK ${t('containers.vat')}`}
               onOrder={handleOrder}
             />
           ))}

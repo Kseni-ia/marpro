@@ -293,6 +293,21 @@ const translations = {
     'footer.allRightsReserved': 'All rights reserved',
     'footer.privacy': 'Privacy Policy',
     'footer.terms': 'Terms of Service',
+    
+    // Surcharges (Příplatky)
+    'surcharges.title': 'Surcharges',
+    'surcharges.extraDay': 'Each additional day (more than 4)',
+    'surcharges.extraDayNote': 'Per day',
+    'surcharges.waiting': 'Each 1/2 hour of vehicle waiting',
+    'surcharges.waitingNote': 'Per 30 minutes',
+    'surcharges.weekend': 'Weekends and holidays',
+    'surcharges.weekendNote': 'Order surcharge',
+    'surcharges.leftBank': 'Left bank of Vltava or outside Prague',
+    'surcharges.leftBankNote': 'Flat rate surcharge',
+    'surcharges.distance': 'Delivery beyond 20 km',
+    'surcharges.distanceNote': 'Individual pricing',
+    'surcharges.individual': 'Individual',
+    'surcharges.vatNote': 'excl. VAT',
   },
   cs: {
     // Navigation
@@ -576,6 +591,21 @@ const translations = {
     'footer.allRightsReserved': 'Všechna práva vyhrazena',
     'footer.privacy': 'Ochrana soukromí',
     'footer.terms': 'Obchodní podmínky',
+    
+    // Surcharges (Příplatky)
+    'surcharges.title': 'Příplatky',
+    'surcharges.extraDay': 'Každý další den (více než 4)',
+    'surcharges.extraDayNote': 'Za den',
+    'surcharges.waiting': 'Každá 1/2 hodina čekání vozu',
+    'surcharges.waitingNote': 'Za 30 minut',
+    'surcharges.weekend': 'Víkendy a svátky',
+    'surcharges.weekendNote': 'Příplatek k zakázce',
+    'surcharges.leftBank': 'Doprava na levý břeh Vltavy nebo mimo Prahu',
+    'surcharges.leftBankNote': 'Paušální příplatek',
+    'surcharges.distance': 'Doprava dál než 20 km',
+    'surcharges.distanceNote': 'Individuální cena',
+    'surcharges.individual': 'Individuálně',
+    'surcharges.vatNote': 'Bez DPH',
   },
   ru: {
     // Navigation
@@ -859,6 +889,21 @@ const translations = {
     'footer.allRightsReserved': 'Все права защищены',
     'footer.privacy': 'Политика конфиденциальности',
     'footer.terms': 'Условия использования',
+    
+    // Surcharges (Příplatky)
+    'surcharges.title': 'Доплаты',
+    'surcharges.extraDay': 'Каждый дополнительный день (более 4)',
+    'surcharges.extraDayNote': 'За день',
+    'surcharges.waiting': 'Каждые 1/2 часа ожидания машины',
+    'surcharges.waitingNote': 'За 30 минут',
+    'surcharges.weekend': 'Выходные и праздники',
+    'surcharges.weekendNote': 'Доплата к заказу',
+    'surcharges.leftBank': 'Доставка на левый берег Влтавы или за Прагу',
+    'surcharges.leftBankNote': 'Фиксированная доплата',
+    'surcharges.distance': 'Доставка дальше 20 км',
+    'surcharges.distanceNote': 'Индивидуальная цена',
+    'surcharges.individual': 'Индивидуально',
+    'surcharges.vatNote': 'без НДС',
   }
 }
 
