@@ -41,6 +41,10 @@ export interface OrderFormData {
   lng?: number
   serviceType: 'containers' | 'excavators' | 'constructions'
   containerType?: string
+  containerVolume?: number // Container volume in m³
+  wasteTypeId?: string // Selected waste type ID
+  wasteTypeName?: string // Selected waste type name
+  calculatedPrice?: number // Dynamic price based on container + waste type
   excavatorType?: string
   constructionType?: string
   orderDate: Date

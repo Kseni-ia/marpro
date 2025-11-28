@@ -131,7 +131,7 @@ const Constructions: React.FC = () => {
         </p>
 
         {/* Compact Text-focused Services Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-6xl mx-auto mb-12">
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 max-w-[1800px] mx-auto mb-12">
           {constructionServices.map((service, index) => (
             <div
               key={index}
@@ -169,7 +169,7 @@ const Constructions: React.FC = () => {
         </div>
 
         {/* Reference Section */}
-        <div className="max-w-6xl mx-auto mb-12">
+        <div className="max-w-[1800px] mx-auto mb-12">
           <h2 className="text-2xl sm:text-3xl md:text-4xl text-gray-dark-text text-center mb-8 font-bold uppercase">
             Reference
           </h2>
@@ -180,7 +180,7 @@ const Constructions: React.FC = () => {
               <div className="text-gray-dark-textSecondary text-lg">Načítání referencí...</div>
             </div>
           ) : references.length > 0 ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-6">
               {references.map((reference) => (
                 <div
                   key={reference.id}

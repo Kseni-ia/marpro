@@ -81,7 +81,7 @@ export default function Home() {
             </div>
 
             {/* Desktop view - 3 columns with constructions */}
-            <div className="hidden md:grid md:grid-cols-3 gap-8 lg:gap-10 justify-items-center max-w-7xl mx-auto">
+            <div className="hidden md:grid md:grid-cols-3 gap-8 lg:gap-10 justify-items-center max-w-[1800px] mx-auto">
               <div 
                 id="containers"
                 className="bg-gradient-card-dark border-2 border-gray-dark-border rounded-[20px] cursor-pointer transition-all duration-[400ms] shadow-[0_10px_30px_rgba(0,0,0,0.3)] hover:shadow-[0_20px_40px_rgba(220,38,38,0.6)] relative overflow-hidden group hover:-translate-y-2.5 hover:scale-[1.02] hover:bg-gradient-card-hover-dark hover:border-gray-dark-border text-center w-[320px] h-[160px] flex flex-col justify-center items-center px-6 py-6"

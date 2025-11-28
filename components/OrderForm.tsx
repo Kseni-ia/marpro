@@ -6,6 +6,8 @@ import { OrderFormData } from '@/types/order'
 import { useModal } from '@/contexts/ModalContext'
 import { useLanguage } from '@/contexts/LanguageContext'
 import TimeReelPicker from './TimeReelPicker'
+import { WasteType, getActiveWasteTypes, getActiveSurcharges, Surcharge } from '@/lib/wasteTypes'
+import { Container, getActiveContainers } from '@/lib/containers'
 
 interface OrderFormProps {
   serviceType: 'containers' | 'excavators' | 'constructions'
@@ -31,6 +33,10 @@ export default function OrderForm({ serviceType, onClose }: OrderFormProps) {
     lng: undefined,
     serviceType,
     containerType: serviceType === 'containers' ? '3m³' : undefined,
+    containerVolume: serviceType === 'containers' ? 3 : undefined,
+    wasteTypeId: undefined,
+    wasteTypeName: undefined,
+    calculatedPrice: undefined,
     excavatorType: serviceType === 'excavators' ? 'TB145' : undefined,
     constructionType: serviceType === 'constructions' ? 'General' : undefined,
     orderDate: tomorrow,
@@ -42,7 +48,13 @@ export default function OrderForm({ serviceType, onClose }: OrderFormProps) {
   const [success, setSuccess] = useState(false)
   const [error, setError] = useState('')
   const { openModal, closeModal } = useModal()
-  const { t } = useLanguage()
+  const { t, language } = useLanguage()
+  
+  // Dynamic pricing state
+  const [wasteTypes, setWasteTypes] = useState<WasteType[]>([])
+  const [containers, setContainers] = useState<Container[]>([])
+  const [surcharges, setSurcharges] = useState<Surcharge[]>([])
+  const [loadingPricing, setLoadingPricing] = useState(false)
 
   // Handle modal state and body scroll prevention
   useEffect(() => {
@@ -58,6 +70,64 @@ export default function OrderForm({ serviceType, onClose }: OrderFormProps) {
       document.body.style.overflow = 'unset'
     }
   }, [openModal, closeModal])
+
+  // Fetch pricing data for containers
+  useEffect(() => {
+    if (serviceType === 'containers') {
+      const fetchPricingData = async () => {
+        setLoadingPricing(true)
+        try {
+          const [wasteTypesData, containersData, surchargesData] = await Promise.all([
+            getActiveWasteTypes(),
+            getActiveContainers(),
+            getActiveSurcharges()
+          ])
+          setWasteTypes(wasteTypesData)
+          setContainers(containersData)
+          setSurcharges(surchargesData)
+          
+          // Set first waste type as default if available
+          if (wasteTypesData.length > 0) {
+            const firstWasteType = wasteTypesData[0]
+            setFormData(prev => ({
+              ...prev,
+              wasteTypeId: firstWasteType.id,
+              wasteTypeName: firstWasteType.name[language] || firstWasteType.name.cs
+            }))
+          }
+        } catch (error) {
+          console.error('Error fetching pricing data:', error)
+        } finally {
+          setLoadingPricing(false)
+        }
+      }
+      fetchPricingData()
+    }
+  }, [serviceType, language])
+
+  // Calculate price when waste type or container volume changes
+  useEffect(() => {
+    if (serviceType === 'containers' && formData.wasteTypeId && formData.containerVolume) {
+      const selectedWasteType = wasteTypes.find(wt => wt.id === formData.wasteTypeId)
+      if (selectedWasteType) {
+        const pricing = selectedWasteType.pricing.find(p => p.volume === formData.containerVolume)
+        if (pricing) {
+          setFormData(prev => ({
+            ...prev,
+            calculatedPrice: pricing.price
+          }))
+        }
+      }
+    }
+  }, [formData.wasteTypeId, formData.containerVolume, wasteTypes, serviceType])
+
+  // Helper to get localized waste type name
+  const getWasteTypeName = (wasteType: WasteType) => {
+    return wasteType.name[language] || wasteType.name.cs || wasteType.name.en
+  }
+
+  // Get available volumes from containers
+  const availableVolumes = containers.map(c => c.volume).filter((v, i, a) => a.indexOf(v) === i).sort((a, b) => a - b)
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -323,21 +393,104 @@ export default function OrderForm({ serviceType, onClose }: OrderFormProps) {
           </div>
 
           {serviceType === 'containers' && (
-            <div>
-              <label htmlFor="containerType" className="block text-xs font-semibold text-gray-dark-textSecondary uppercase tracking-[0.3px] mb-1">
-                {t('order.containerType')} *
-              </label>
-              <select
-                id="containerType"
-                name="containerType"
-                value={formData.containerType}
-                onChange={handleChange}
-                className={`w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 outline-none transition-all text-gray-800 ${formData.containerType ? 'bg-gray-100' : 'bg-white'}`}
-                required
-              >
-                <option value="3m³">{t('order.container.3m3')}</option>
-                <option value="5m³">{t('order.container.5m3')}</option>
-              </select>
+            <div className="space-y-3">
+              {/* Container Volume and Waste Type Selection */}
+              <div className="grid grid-cols-2 gap-3">
+                {/* Container Volume */}
+                <div>
+                  <label htmlFor="containerVolume" className="block text-xs font-semibold text-gray-dark-textSecondary uppercase tracking-[0.3px] mb-1">
+                    {t('order.containerVolume') || 'Objem kontejneru'} *
+                  </label>
+                  <select
+                    id="containerVolume"
+                    name="containerVolume"
+                    value={formData.containerVolume || 3}
+                    onChange={(e) => {
+                      const volume = Number(e.target.value)
+                      setFormData(prev => ({
+                        ...prev,
+                        containerVolume: volume,
+                        containerType: `${volume}m³`
+                      }))
+                    }}
+                    className={`w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 outline-none transition-all text-gray-800 ${formData.containerVolume ? 'bg-gray-100' : 'bg-white'}`}
+                    required
+                    disabled={loadingPricing}
+                  >
+                    {loadingPricing ? (
+                      <option>Načítání...</option>
+                    ) : availableVolumes.length > 0 ? (
+                      availableVolumes.map(volume => (
+                        <option key={volume} value={volume}>{volume} m³</option>
+                      ))
+                    ) : (
+                      <>
+                        <option value={3}>3 m³</option>
+                        <option value={5}>5 m³</option>
+                        <option value={10}>10 m³</option>
+                        <option value={15}>15 m³</option>
+                      </>
+                    )}
+                  </select>
+                </div>
+
+                {/* Waste Type */}
+                <div>
+                  <label htmlFor="wasteType" className="block text-xs font-semibold text-gray-dark-textSecondary uppercase tracking-[0.3px] mb-1">
+                    {t('order.wasteType') || 'Typ odpadu'} *
+                  </label>
+                  <select
+                    id="wasteType"
+                    name="wasteTypeId"
+                    value={formData.wasteTypeId || ''}
+                    onChange={(e) => {
+                      const wasteType = wasteTypes.find(wt => wt.id === e.target.value)
+                      setFormData(prev => ({
+                        ...prev,
+                        wasteTypeId: e.target.value,
+                        wasteTypeName: wasteType ? getWasteTypeName(wasteType) : ''
+                      }))
+                    }}
+                    className={`w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 outline-none transition-all text-gray-800 ${formData.wasteTypeId ? 'bg-gray-100' : 'bg-white'}`}
+                    required
+                    disabled={loadingPricing}
+                  >
+                    {loadingPricing ? (
+                      <option>Načítání...</option>
+                    ) : wasteTypes.length > 0 ? (
+                      wasteTypes.map(wasteType => (
+                        <option key={wasteType.id} value={wasteType.id}>
+                          {getWasteTypeName(wasteType)}
+                        </option>
+                      ))
+                    ) : (
+                      <option value="">{t('order.selectWasteType') || 'Vyberte typ odpadu'}</option>
+                    )}
+                  </select>
+                </div>
+              </div>
+
+              {/* Dynamic Price Display */}
+              {formData.calculatedPrice && formData.calculatedPrice > 0 && (
+                <div className="bg-gradient-to-r from-green-900/30 to-green-800/20 border border-green-500/30 rounded-lg p-3">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-xs text-green-300 uppercase tracking-wide font-semibold">
+                        {t('order.estimatedPrice') || 'Orientační cena'}
+                      </p>
+                      <p className="text-xs text-gray-400 mt-0.5">
+                        {formData.containerVolume}m³ • {formData.wasteTypeName}
+                      </p>
+                    </div>
+                    <div className="text-right">
+                      <p className="text-2xl font-bold text-green-400">
+                        {formData.calculatedPrice.toLocaleString('cs-CZ')} Kč
+                      </p>
+                      <p className="text-[10px] text-gray-500">{t('surcharges.vatNote') || 'bez DPH'}</p>
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
           )}
 

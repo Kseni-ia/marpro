@@ -77,7 +77,7 @@ export default function TopNavigation() {
     <>
       {/* Top Navigation Bar */}
       <nav className={`fixed top-0 left-0 right-0 bg-transparent backdrop-blur-sm border-b border-gray-dark-border/20 transition-all duration-300 ${isModalOpen ? 'z-1000' : 'z-50'}`}>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-[1800px] mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-center items-center h-16">
             {/* Logo - fits within navigation bar */}
             <div className="absolute left-4 top-4 z-50">

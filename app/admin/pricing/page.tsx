@@ -1,15 +1,14 @@
 'use client'
 
-import React, { useEffect, useState } from 'react'
+import React, { useEffect } from 'react'
 import { useAuth } from '@/contexts/AuthContext'
 import { useRouter } from 'next/navigation'
 import { useLanguage } from '@/contexts/LanguageContext'
 import Image from 'next/image'
 import NavigationBar from '@/app/admin/NavigationBar'
-import ContainersList from './components/ContainersList'
-import WasteTypesList from '@/app/admin/pricing/components/WasteTypesList'
+import WasteTypesList from './components/WasteTypesList'
 
-export default function AddRemoveContainer() {
+export default function PricingManagement() {
   const { isAuthenticated, logout, loading: authLoading } = useAuth()
   const { t } = useLanguage()
   const router = useRouter()
@@ -59,26 +58,10 @@ export default function AddRemoveContainer() {
           {/* Header */}
           <div className="mb-8 text-center">
             <h1 className="text-2xl sm:text-3xl font-bold text-gray-dark-text uppercase tracking-wider mb-2">
-              {t('admin.containerManagement')}
+              Správa ceníku
             </h1>
             <p className="text-gray-dark-textSecondary text-sm sm:text-base">
-              {t('admin.containerManagementDesc')}
-            </p>
-          </div>
-
-          {/* Containers List */}
-          <ContainersList />
-
-          {/* Divider */}
-          <div className="my-12 border-t border-gray-700/50" />
-
-          {/* Waste Types / Pricing Section */}
-          <div className="mb-8 text-center">
-            <h2 className="text-xl sm:text-2xl font-bold text-gray-dark-text uppercase tracking-wider mb-2">
-              Ceník dle typu odpadu
-            </h2>
-            <p className="text-gray-dark-textSecondary text-sm sm:text-base">
-              Nastavte ceny kontejnerů podle typu odpadu
+              Nastavení typů odpadu a cen pro kontejnery
             </p>
           </div>
 

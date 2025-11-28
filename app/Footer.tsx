@@ -25,7 +25,7 @@ export default function Footer() {
 
   return (
     <footer id="contact" className="w-full py-12 mt-24 bg-gradient-to-t from-black/40 to-transparent backdrop-blur-md">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-[1800px] mx-auto px-4 sm:px-6 lg:px-8">
         {/* Main footer content */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
           
