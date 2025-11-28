@@ -60,7 +60,7 @@ const Containers: React.FC = () => {
           <div className="text-gray-dark-textSecondary">{t('containers.noAvailable')}</div>
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 md:gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 justify-items-center max-w-7xl mx-auto">
           {containers.map((container) => (
             <ContainerCard
               key={container.id}
@@ -68,6 +68,7 @@ const Containers: React.FC = () => {
               dims={container.dims}
               description={container.description}
               price={`${t('containers.price')} ${container.price.toLocaleString('cs-CZ')} CZK ${t('containers.vat')}`}
+              image={container.image}
               onOrder={handleOrder}
             />
           ))}

@@ -21,53 +21,78 @@ type ExcavatorCardProps = {
 
 const ExcavatorCard: React.FC<ExcavatorCardProps> = ({ model, type, description, price, svgPath, imageUrl, specs, onOrder }) => {
   const { t } = useLanguage()
+  
   return (
-    <div className="bg-gradient-card-dark border-2 border-gray-dark-border rounded-[15px] sm:rounded-[20px] p-4 sm:p-5 md:p-7 transition-all duration-[400ms] shadow-[0_8px_25px_rgba(0,0,0,0.3)] relative overflow-hidden group hover:-translate-y-2 hover:scale-[1.03] hover:shadow-[0_15px_35px_rgba(0,0,0,0.1)] dark:hover:shadow-[0_15px_35px_rgba(0,0,0,0.4)] hover:bg-gradient-card-hover-dark hover:border-gray-dark-border card-shine z-20">
-      <div className="absolute -top-full -right-full w-[200%] h-[200%] bg-gradient-radial-hover-dark transition-all duration-500 group-hover:-top-1/2 group-hover:-right-1/2 pointer-events-none"></div>
-      <div className="flex items-start flex-col">
-        <div>
-          <div className="flex items-baseline gap-1 leading-none">
-            <span className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-extrabold text-gray-dark-text">{model}</span>
+    <div className="group relative bg-white/5 backdrop-blur-md border border-white/10 rounded-[20px] p-6 transition-all duration-300 hover:bg-white/10 overflow-hidden flex flex-col h-full max-w-[350px] mx-auto w-full">
+      {/* Header: Model & Type */}
+      <div className="flex justify-between items-start mb-4">
+        <div className="flex flex-col">
+          <div className="flex items-baseline gap-1">
+            <span className="text-4xl font-bold text-white tracking-tight">
+              {model}
+            </span>
           </div>
-          <span className="text-gray-dark-textSecondary mt-1 block tracking-wide text-sm sm:text-base">{type}</span>
+          <span className="text-sm text-gray-400 font-medium">{type}</span>
         </div>
       </div>
-      <div className="my-4 sm:my-6 flex justify-center">
-        <Image 
-          src={imageUrl || svgPath} 
-          alt={`${model} excavator`} 
-          width={300} 
-          height={200} 
-          className="w-full h-[120px] sm:h-[160px] md:h-[200px] object-contain"
-        />
-      </div>
-      <div className="h-px w-full bg-gray-e8e dark:bg-gray-dark-border my-4"></div>
-      <div className="grid grid-cols-3 gap-2 sm:gap-4 mb-3 sm:mb-4">
-        <div className="text-center">
-          <div className="text-xs sm:text-sm text-gray-dark-textMuted">Bucket</div>
-          <div className="text-sm sm:text-base md:text-lg font-semibold text-gray-dark-text">{specs.bucketCapacity}</div>
-        </div>
-        <div className="text-center">
-          <div className="text-xs sm:text-sm text-gray-dark-textMuted">Max Reach</div>
-          <div className="text-sm sm:text-base md:text-lg font-semibold text-gray-dark-text">{specs.maxReach}</div>
-        </div>
-        <div className="text-center">
-          <div className="text-xs sm:text-sm text-gray-dark-textMuted">Weight</div>
-          <div className="text-sm sm:text-base md:text-lg font-semibold text-gray-dark-text">{specs.weight}</div>
+
+      {/* Excavator Image Area */}
+      <div className="flex-1 flex items-center justify-center py-4 relative min-h-[140px]">
+        <div className="relative w-full h-32 transition-transform duration-300 group-hover:scale-105">
+          <Image 
+            src={imageUrl || svgPath} 
+            alt={`${model} excavator`} 
+            fill
+            className="object-contain drop-shadow-2xl"
+          />
         </div>
       </div>
-      <p className="text-gray-dark-textSecondary leading-relaxed text-sm sm:text-base">{description}</p>
-      <div className="mt-4 sm:mt-5 flex flex-wrap items-center gap-3 sm:gap-4">
-        <div className="px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl border-2 border-gray-dark-border bg-gray-dark-card text-gray-dark-text font-medium shadow-[0_2px_8px_rgba(0,0,0,0.2)] text-sm sm:text-base">
+
+      {/* Specs Grid */}
+      <div className="grid grid-cols-3 gap-2 mb-4 py-3 border-y border-white/5">
+        <div className="text-center">
+          <div className="text-[10px] text-gray-500 uppercase tracking-wider mb-1">Bucket</div>
+          <div className="text-xs font-semibold text-white">{specs.bucketCapacity}</div>
+        </div>
+        <div className="text-center border-l border-r border-white/5">
+          <div className="text-[10px] text-gray-500 uppercase tracking-wider mb-1">Reach</div>
+          <div className="text-xs font-semibold text-white">{specs.maxReach}</div>
+        </div>
+        <div className="text-center">
+          <div className="text-[10px] text-gray-500 uppercase tracking-wider mb-1">Weight</div>
+          <div className="text-xs font-semibold text-white">{specs.weight}</div>
+        </div>
+      </div>
+
+      {/* Description */}
+      <div className="mb-6 min-h-[48px]">
+        <p className="text-gray-300 text-xs leading-relaxed text-center line-clamp-3">
+          {description}
+        </p>
+      </div>
+
+      {/* Price Box */}
+      <div className="mb-4 border border-white/10 rounded-xl py-3 px-4 text-center bg-white/5">
+        <span className="text-white font-bold text-sm">
           {price}
-        </div>
+        </span>
       </div>
-      <div className="mt-4 sm:mt-5 flex items-center justify-center relative z-10">
+
+      {/* Action Buttons */}
+      <div className="grid grid-cols-2 gap-3">
         <button 
           onClick={onOrder}
-          className="rounded-[14px] px-6 sm:px-8 py-2.5 sm:py-3 bg-gradient-button-dark text-gray-dark-text font-semibold shadow-[0_4px_12px_rgba(0,0,0,0.3)] hover:shadow-[0_8px_16px_rgba(0,0,0,0.1)] dark:hover:shadow-[0_8px_16px_rgba(0,0,0,0.4)] transition-all text-sm sm:text-base cursor-pointer"
+          className="py-2.5 px-4 rounded-xl bg-yellow-500 hover:bg-yellow-400 text-black font-bold text-xs transition-colors duration-200 text-center shadow-lg hover:shadow-yellow-500/20"
+          type="button"
         >
           {t('excavators.order')}
+        </button>
+        <button 
+          onClick={onOrder}
+          className="py-2.5 px-4 rounded-xl bg-transparent border border-white/20 hover:bg-white/5 text-white font-semibold text-xs transition-colors duration-200 text-center"
+          type="button"
+        >
+          Detail
         </button>
       </div>
     </div>

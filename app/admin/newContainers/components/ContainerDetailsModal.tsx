@@ -50,7 +50,7 @@ export default function ContainerDetailsModal({ container, onClose, onUpdate }: 
     description: container.description || '',
     price: container.price,
     isActive: container.isActive,
-    image: container.image || '/container-medium.svg'
+    image: container.image?.startsWith('/') ? container.image : '/container-medium.svg'
   })
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -65,14 +65,10 @@ export default function ContainerDetailsModal({ container, onClose, onUpdate }: 
       
       if (field === 'volume') updateData.volume = Number(formData.volume)
       if (field === 'dims') {
-        // Validate that all dimension fields are filled
-        if (!formData.length || !formData.width || !formData.height) {
-          alert('Please fill in all dimension fields (length, width, height)')
-          setLoading(false)
-          return
-        }
-        // Construct dimensions string from separate fields
-        updateData.dims = `${formData.length} × ${formData.width} × ${formData.height} m`
+        // Construct dimensions string from separate fields (optional)
+        updateData.dims = (formData.length && formData.width && formData.height) 
+          ? `${formData.length} × ${formData.width} × ${formData.height} m`
+          : ''
       }
       if (field === 'price') updateData.price = Number(formData.price)
       if (field === 'image') updateData.image = formData.image
@@ -106,7 +102,7 @@ export default function ContainerDetailsModal({ container, onClose, onUpdate }: 
       description: container.description || '',
       price: container.price,
       isActive: container.isActive,
-      image: container.image || '/container-medium.svg'
+      image: container.image?.startsWith('/') ? container.image : '/container-medium.svg'
     })
     setEditingField(null)
   }
@@ -345,7 +341,7 @@ export default function ContainerDetailsModal({ container, onClose, onUpdate }: 
               <div className="flex items-center gap-4">
                 <div className="bg-gray-700/50 rounded-xl p-3 h-20 w-20 flex items-center justify-center shadow-inner">
                   <Image 
-                    src={container.image || '/container-medium.svg'} 
+                    src={container.image?.startsWith('/') ? container.image : '/container-medium.svg'} 
                     alt={`${container.volume}m³ container`}
                     width={80}
                     height={60}
@@ -353,7 +349,7 @@ export default function ContainerDetailsModal({ container, onClose, onUpdate }: 
                   />
                 </div>
                 <span className="text-base text-white font-medium">
-                  {CONTAINER_IMAGES.find(img => img.path === (container.image || '/container-medium.svg'))?.name || 'Medium Container'}
+                  {CONTAINER_IMAGES.find(img => img.path === (container.image?.startsWith('/') ? container.image : '/container-medium.svg'))?.name || 'Medium Container'}
                 </span>
               </div>
             )}

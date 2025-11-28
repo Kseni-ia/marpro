@@ -61,7 +61,7 @@ const Excavators: React.FC = () => {
           <div className="text-gray-dark-textSecondary">{t('excavators.noAvailable')}</div>
         </div>
       ) : (
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6 md:gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 justify-items-center max-w-7xl mx-auto">
           {excavators.map((excavator) => (
             <ExcavatorCard
               key={excavator.id}

@@ -41,15 +41,10 @@ export default function AddContainerModal({ onClose, onSuccess }: AddContainerMo
     setLoading(true)
 
     try {
-      // Validate that all dimension fields are filled
-      if (!formData.length || !formData.width || !formData.height) {
-        alert(t('admin.fillAllDimensions'))
-        setLoading(false)
-        return
-      }
-
-      // Construct dimensions string from separate fields
-      const dims = `${formData.length} × ${formData.width} × ${formData.height} m`
+      // Construct dimensions string from separate fields (optional)
+      const dims = (formData.length && formData.width && formData.height) 
+        ? `${formData.length} × ${formData.width} × ${formData.height} m`
+        : ''
       
       await addContainer({
         volume: Number(formData.volume),
@@ -129,7 +124,7 @@ export default function AddContainerModal({ onClose, onSuccess }: AddContainerMo
             
             <div>
               <label className="block text-xs font-medium text-gray-dark-text mb-1">
-                {t('admin.dimensions')} *
+                {t('admin.dimensions')}
               </label>
               <div className="flex items-center gap-2">
                 <input
@@ -137,7 +132,6 @@ export default function AddContainerModal({ onClose, onSuccess }: AddContainerMo
                   name="length"
                   value={formData.length}
                   onChange={handleChange}
-                  required
                   min="0.1"
                   step="0.1"
                   className="w-20 px-3 py-2 bg-gray-dark-card border border-gray-dark-border rounded-lg text-gray-dark-text text-sm focus:outline-none focus:border-red-500 text-center"
@@ -149,7 +143,6 @@ export default function AddContainerModal({ onClose, onSuccess }: AddContainerMo
                   name="width"
                   value={formData.width}
                   onChange={handleChange}
-                  required
                   min="0.1"
                   step="0.1"
                   className="w-20 px-3 py-2 bg-gray-dark-card border border-gray-dark-border rounded-lg text-gray-dark-text text-sm focus:outline-none focus:border-red-500 text-center"
@@ -161,7 +154,6 @@ export default function AddContainerModal({ onClose, onSuccess }: AddContainerMo
                   name="height"
                   value={formData.height}
                   onChange={handleChange}
-                  required
                   min="0.1"
                   step="0.1"
                   className="w-20 px-3 py-2 bg-gray-dark-card border border-gray-dark-border rounded-lg text-gray-dark-text text-sm focus:outline-none focus:border-red-500 text-center"

@@ -113,7 +113,7 @@ export default function ContainersList() {
             {/* Container Image */}
             <div className="flex justify-center items-center h-16 mb-4 bg-gray-700/20 rounded-lg">
               <Image 
-                src={container.image || '/container-medium.svg'} 
+                src={container.image?.startsWith('/') ? container.image : '/container-medium.svg'} 
                 alt={`${container.volume}m³ container`}
                 width={120}
                 height={50}
