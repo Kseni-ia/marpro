@@ -19,7 +19,7 @@ export default function OrderForm({ serviceType, onClose }: OrderFormProps) {
   // Get tomorrow's date as default
   const tomorrow = new Date()
   tomorrow.setDate(tomorrow.getDate() + 1)
-  
+
   const [formData, setFormData] = useState<OrderFormData>({
     firstName: '',
     lastName: '',
@@ -42,7 +42,6 @@ export default function OrderForm({ serviceType, onClose }: OrderFormProps) {
     constructionType: serviceType === 'constructions' ? 'General' : undefined,
     orderDate: tomorrow,
     time: '09:00',
-    endTime: '10:00',
     message: ''
   })
   const [loading, setLoading] = useState(false)
@@ -50,7 +49,7 @@ export default function OrderForm({ serviceType, onClose }: OrderFormProps) {
   const [error, setError] = useState('')
   const { openModal, closeModal } = useModal()
   const { t, language } = useLanguage()
-  
+
   // Dynamic pricing state
   const [wasteTypes, setWasteTypes] = useState<WasteType[]>([])
   const [containers, setContainers] = useState<Container[]>([])
@@ -63,7 +62,7 @@ export default function OrderForm({ serviceType, onClose }: OrderFormProps) {
   useEffect(() => {
     // Open modal when component mounts
     openModal()
-    
+
     // Prevent body scroll
     document.body.style.overflow = 'hidden'
 
@@ -96,7 +95,7 @@ export default function OrderForm({ serviceType, onClose }: OrderFormProps) {
           ])
           setWasteTypes(wasteTypesData)
           setContainers(containersData)
-          
+
           // Set first waste type as default if available
           if (wasteTypesData.length > 0) {
             const firstWasteType = wasteTypesData[0]
@@ -121,7 +120,7 @@ export default function OrderForm({ serviceType, onClose }: OrderFormProps) {
         try {
           const excavatorsData = await getActiveExcavators()
           setExcavators(excavatorsData)
-          
+
           // Set first excavator as default if available
           if (excavatorsData.length > 0) {
             const firstExcavator = excavatorsData[0]
@@ -178,14 +177,7 @@ export default function OrderForm({ serviceType, onClose }: OrderFormProps) {
       dateTime.setHours(parseInt(hours), parseInt(minutes), 0, 0)
 
       // Calculate duration based on start and end time
-      let durationHours = 1 // Default
-      if (formData.endTime) {
-        const [startHours, startMinutes] = formData.time.split(':')
-        const [endHours, endMinutes] = formData.endTime.split(':')
-        const startTotalMinutes = parseInt(startHours) * 60 + parseInt(startMinutes)
-        const endTotalMinutes = parseInt(endHours) * 60 + parseInt(endMinutes)
-        durationHours = Math.max(1, (endTotalMinutes - startTotalMinutes) / 60)
-      }
+      let durationHours = 1 // Default - fixed to 1 hour as per requirements
 
       // Prepare customer data for booking
       const bookingData = {
@@ -193,7 +185,7 @@ export default function OrderForm({ serviceType, onClose }: OrderFormProps) {
         dateTime: dateTime.toISOString(),
         durationHours
       }
-      
+
       console.log('Sending booking data:', bookingData)
       console.log('Duration calculated:', durationHours, 'hours')
 
@@ -276,7 +268,7 @@ export default function OrderForm({ serviceType, onClose }: OrderFormProps) {
       </div>
     )
   }
-  
+
   return (
     <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4 z-[9999]">
       <div className="bg-gradient-card-dark border-2 border-gray-dark-border rounded-[20px] p-4 max-w-lg w-full max-h-[95vh] overflow-y-auto shadow-[0_25px_50px_RGBA(0,0,0,0.4)]">
@@ -390,7 +382,7 @@ export default function OrderForm({ serviceType, onClose }: OrderFormProps) {
                 required
               />
             </div>
-            
+
             <div>
               <label htmlFor="zip" className="block text-xs font-semibold text-gray-dark-textSecondary uppercase tracking-[0.3px] mb-1">
                 {t('order.zip')} *
@@ -406,7 +398,7 @@ export default function OrderForm({ serviceType, onClose }: OrderFormProps) {
                 required
               />
             </div>
-            
+
             <div>
               <label htmlFor="country" className="block text-xs font-semibold text-gray-dark-textSecondary uppercase tracking-[0.3px] mb-1">
                 {t('order.country')} *
@@ -640,34 +632,10 @@ export default function OrderForm({ serviceType, onClose }: OrderFormProps) {
               onChange={(time) => {
                 setFormData(prev => ({ ...prev, time }))
               }}
-              onEndTimeChange={(endTime) => {
-                setFormData(prev => ({ ...prev, endTime }))
-              }}
               minTime="06:00"
               maxTime="20:00"
               serviceType={serviceType}
             />
-            
-            <TimeReelPicker
-              label={`${t('order.endTime')} *`}
-              date={formData.orderDate}
-              value={formData.endTime || ''}
-              onChange={(time) => {
-                setFormData(prev => ({ ...prev, endTime: time }))
-              }}
-              startTime={formData.time}
-              isEndTime={true}
-              minTime="06:00"
-              maxTime="20:00"
-              serviceType={serviceType}
-              error={!!(formData.time && formData.endTime && formData.endTime <= formData.time)}
-            />
-
-            {formData.time && formData.endTime && formData.endTime <= formData.time && (
-              <div className="bg-red-900/20 border border-red-400/30 text-red-400 px-3 py-2 rounded-md text-xs">
-                {t('order.endTimeError')}
-              </div>
-            )}
           </div>
 
           <div>
@@ -699,17 +667,17 @@ export default function OrderForm({ serviceType, onClose }: OrderFormProps) {
               </h3>
               <div className="space-y-2 text-xs">
                 {surcharges.map((surcharge, index) => (
-                  <div 
-                    key={surcharge.id} 
+                  <div
+                    key={surcharge.id}
                     className={`flex items-center justify-between py-1 ${index < surcharges.length - 1 ? 'border-b border-gray-200' : ''}`}
                   >
                     <div className="flex items-center gap-2">
                       <span className="text-gray-600">
-                        {surcharge.name.cs.includes('Víkend') ? '🗓' : 
-                         surcharge.name.cs.includes('čekání') ? '⏱' : 
-                         surcharge.name.cs.includes('den') ? '📅' : 
-                         surcharge.name.cs.includes('břeh') || surcharge.name.cs.includes('Doprava') ? '🚚' : 
-                         surcharge.name.cs.includes('čas') ? '⏱' : '📍'}
+                        {surcharge.name.cs.includes('Víkend') ? '🗓' :
+                          surcharge.name.cs.includes('čekání') ? '⏱' :
+                            surcharge.name.cs.includes('den') ? '📅' :
+                              surcharge.name.cs.includes('břeh') || surcharge.name.cs.includes('Doprava') ? '🚚' :
+                                surcharge.name.cs.includes('čas') ? '⏱' : '📍'}
                       </span>
                       <div>
                         <span className="text-gray-800 font-medium">{surcharge.name.cs}</span>
