@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState, Fragment } from 'react'
+import React, { useState, Fragment, useRef, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { Calendar, LogOut, Home, ChevronRight, ChevronLeft, Package, Truck, FileText, Hammer, Menu, X, Tractor } from 'lucide-react'
 import { useLanguage } from '@/contexts/LanguageContext'
@@ -15,141 +15,147 @@ export default function NavigationBar({ onScheduleClick, onLogout }: NavigationB
   const { t } = useLanguage()
   const [isOpen, setIsOpen] = useState(false)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const sidebarRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (sidebarRef.current && !sidebarRef.current.contains(event.target as Node) && isOpen) {
+        setIsOpen(false)
+      }
+    }
+
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside)
+    }
+  }, [isOpen])
 
   return (
     <Fragment>
       {/* Desktop/Tablet: Left Sidebar */}
-      <div className={`hidden md:flex fixed left-4 top-20 bottom-4 bg-black/95 backdrop-blur-md border border-red-900/30 rounded-2xl flex-col py-4 z-20 transition-all duration-300 ${
-        isOpen ? 'w-56' : 'w-16'
-      }`}>
-      {/* Toggle Button */}
-      <button
-        type="button"
-        onClick={(e) => {
-          e.preventDefault()
-          e.stopPropagation()
-          setIsOpen(!isOpen)
-        }}
-        className="w-10 h-10 rounded-lg bg-red-950/40 text-white hover:bg-red-900/60 hover:text-white hover:border-red-600 flex items-center justify-center mb-6 transition-all duration-300 border-2 border-red-900/50 mx-auto"
-        title={isOpen ? 'Close menu' : 'Open menu'}
-      >
-        {isOpen ? <ChevronLeft className="w-5 h-5" /> : <ChevronRight className="w-5 h-5" />}
-      </button>
-
-      {/* Divider */}
-      <div className={`h-px bg-red-900/30 mb-6 transition-all duration-300 mx-auto ${
-        isOpen ? 'w-48' : 'w-12'
-      }`} />
-
-      {/* Home Button */}
-      <div className="w-full px-3 mb-4">
+      <div
+        ref={sidebarRef}
+        className={`hidden md:flex fixed left-4 top-20 bottom-4 bg-black/95 backdrop-blur-md border border-red-900/30 rounded-2xl flex-col py-4 z-50 transition-all duration-300 ${isOpen ? 'w-56' : 'w-16'
+          }`}>
+        {/* Toggle Button */}
         <button
-          onClick={() => router.push('/admin/dashboard')}
-          className={`rounded-xl bg-red-950/40 text-white hover:bg-red-900/60 hover:text-white hover:border-red-600 flex items-center transition-all duration-300 border-2 border-red-900/50 ${
-            isOpen ? 'w-full justify-start gap-3 px-4 h-12' : 'w-10 h-10 justify-center mx-auto'
-          }`}
-          title={t('admin.home')}
+          type="button"
+          onClick={(e) => {
+            e.preventDefault()
+            e.stopPropagation()
+            setIsOpen(!isOpen)
+          }}
+          className="w-10 h-10 rounded-lg bg-red-950/40 text-white hover:bg-red-900/60 hover:text-white hover:border-red-600 flex items-center justify-center mb-6 transition-all duration-300 border-2 border-red-900/50 mx-auto"
+          title={isOpen ? 'Close menu' : 'Open menu'}
         >
-          <Home className="w-5 h-5 flex-shrink-0" />
-          {isOpen && <span className="text-sm font-medium">{t('admin.home')}</span>}
+          {isOpen ? <ChevronLeft className="w-5 h-5" /> : <ChevronRight className="w-5 h-5" />}
         </button>
+
+        {/* Divider */}
+        <div className={`h-px bg-red-900/30 mb-6 transition-all duration-300 mx-auto ${isOpen ? 'w-48' : 'w-12'
+          }`} />
+
+        {/* Home Button */}
+        <div className="w-full px-3 mb-4">
+          <button
+            onClick={() => router.push('/admin/dashboard')}
+            className={`rounded-xl bg-red-950/40 text-white hover:bg-red-900/60 hover:text-white hover:border-red-600 flex items-center transition-all duration-300 border-2 border-red-900/50 ${isOpen ? 'w-full justify-start gap-3 px-4 h-12' : 'w-10 h-10 justify-center mx-auto'
+              }`}
+            title={t('admin.home')}
+          >
+            <Home className="w-5 h-5 flex-shrink-0" />
+            {isOpen && <span className="text-sm font-medium">{t('admin.home')}</span>}
+          </button>
+        </div>
+
+        {/* Schedule Button */}
+        <div className="w-full px-3 mb-4">
+          <button
+            onClick={onScheduleClick}
+            className={`rounded-xl bg-red-950/40 text-white hover:bg-red-900/60 hover:text-white hover:border-red-600 flex items-center transition-all duration-300 border-2 border-red-900/50 ${isOpen ? 'w-full justify-start gap-3 px-4 h-12' : 'w-10 h-10 justify-center mx-auto'
+              }`}
+            title={t('admin.schedule')}
+          >
+            <Calendar className="w-5 h-5 flex-shrink-0" />
+            {isOpen && <span className="text-sm font-medium">{t('admin.schedule')}</span>}
+          </button>
+        </div>
+
+        {/* New Containers Button */}
+        <div className="w-full px-3 mb-4">
+          <button
+            onClick={() => router.push('/admin/newContainers')}
+            className={`rounded-xl bg-red-950/40 text-white hover:bg-red-900/60 hover:text-white hover:border-red-600 flex items-center transition-all duration-300 border-2 border-red-900/50 ${isOpen ? 'w-full justify-start gap-3 px-4 h-12' : 'w-10 h-10 justify-center mx-auto'
+              }`}
+            title={t('admin.newContainers')}
+          >
+            <Truck className="w-5 h-5 flex-shrink-0" />
+            {isOpen && <span className="text-sm font-medium">{t('admin.newContainers')}</span>}
+          </button>
+        </div>
+
+        {/* New Excavators Button */}
+        <div className="w-full px-3 mb-4">
+          <button
+            onClick={() => router.push('/admin/newExcavators')}
+            className={`rounded-xl bg-red-950/40 text-white hover:bg-red-900/60 hover:text-white hover:border-red-600 flex items-center transition-all duration-300 border-2 border-red-900/50 ${isOpen ? 'w-full justify-start gap-3 px-4 h-12' : 'w-10 h-10 justify-center mx-auto'
+              }`}
+            title={t('admin.newExcavators')}
+          >
+            <Tractor className="w-5 h-5 flex-shrink-0" />
+            {isOpen && <span className="text-sm font-medium">{t('admin.newExcavators')}</span>}
+          </button>
+        </div>
+
+        {/* New Constructions Button */}
+        <div className="w-full px-3 mb-4">
+          <button
+            onClick={() => router.push('/admin/newConstructions')}
+            className={`rounded-xl bg-red-950/40 text-white hover:bg-red-900/60 hover:text-white hover:border-red-600 flex items-center transition-all duration-300 border-2 border-red-900/50 ${isOpen ? 'w-full justify-start gap-3 px-4 h-12' : 'w-10 h-10 justify-center mx-auto'
+              }`}
+            title="Správa staveb"
+          >
+            <Hammer className="w-5 h-5 flex-shrink-0" />
+            {isOpen && <span className="text-sm font-medium">Stavby</span>}
+          </button>
+        </div>
+
+        {/* Work Applications Button */}
+        <div className="w-full px-3 mb-4">
+          <button
+            onClick={() => router.push('/admin/workApplications')}
+            className={`rounded-xl bg-red-950/40 text-white hover:bg-red-900/60 hover:text-white hover:border-red-600 flex items-center transition-all duration-300 border-2 border-red-900/50 ${isOpen ? 'w-full justify-start gap-3 px-4 h-12' : 'w-10 h-10 justify-center mx-auto'
+              }`}
+            title={t('admin.workApplications')}
+          >
+            <FileText className="w-5 h-5 flex-shrink-0" />
+            {isOpen && <span className="text-sm font-medium">{t('admin.workApplications')}</span>}
+          </button>
+        </div>
+
+        {/* Spacer to push logout to bottom */}
+        <div className="flex-1" />
+
+        {/* Divider */}
+        <div className={`h-px bg-red-900/30 mb-4 transition-all duration-300 mx-auto ${isOpen ? 'w-48' : 'w-12'
+          }`} />
+
+        {/* Logout Button */}
+        <div className="w-full px-3 mb-2">
+          <button
+            onClick={onLogout}
+            className={`rounded-xl bg-red-950/40 text-white hover:bg-red-600/40 hover:text-white hover:border-red-500 flex items-center transition-all duration-300 border-2 border-red-900/50 ${isOpen ? 'w-full justify-start gap-3 px-4 h-12' : 'w-10 h-10 justify-center mx-auto'
+              }`}
+            title={t('admin.logout')}
+          >
+            <LogOut className="w-5 h-5 flex-shrink-0" />
+            {isOpen && <span className="text-sm font-medium">{t('admin.logout')}</span>}
+          </button>
+        </div>
       </div>
-
-      {/* Schedule Button */}
-      <div className="w-full px-3 mb-4">
-        <button
-          onClick={onScheduleClick}
-          className={`rounded-xl bg-red-950/40 text-white hover:bg-red-900/60 hover:text-white hover:border-red-600 flex items-center transition-all duration-300 border-2 border-red-900/50 ${
-            isOpen ? 'w-full justify-start gap-3 px-4 h-12' : 'w-10 h-10 justify-center mx-auto'
-          }`}
-          title={t('admin.schedule')}
-        >
-          <Calendar className="w-5 h-5 flex-shrink-0" />
-          {isOpen && <span className="text-sm font-medium">{t('admin.schedule')}</span>}
-        </button>
-      </div>
-
-      {/* New Containers Button */}
-      <div className="w-full px-3 mb-4">
-        <button
-          onClick={() => router.push('/admin/newContainers')}
-          className={`rounded-xl bg-red-950/40 text-white hover:bg-red-900/60 hover:text-white hover:border-red-600 flex items-center transition-all duration-300 border-2 border-red-900/50 ${
-            isOpen ? 'w-full justify-start gap-3 px-4 h-12' : 'w-10 h-10 justify-center mx-auto'
-          }`}
-          title={t('admin.newContainers')}
-        >
-          <Truck className="w-5 h-5 flex-shrink-0" />
-          {isOpen && <span className="text-sm font-medium">{t('admin.newContainers')}</span>}
-        </button>
-      </div>
-
-      {/* New Excavators Button */}
-      <div className="w-full px-3 mb-4">
-        <button
-          onClick={() => router.push('/admin/newExcavators')}
-          className={`rounded-xl bg-red-950/40 text-white hover:bg-red-900/60 hover:text-white hover:border-red-600 flex items-center transition-all duration-300 border-2 border-red-900/50 ${
-            isOpen ? 'w-full justify-start gap-3 px-4 h-12' : 'w-10 h-10 justify-center mx-auto'
-          }`}
-          title={t('admin.newExcavators')}
-        >
-          <Tractor className="w-5 h-5 flex-shrink-0" />
-          {isOpen && <span className="text-sm font-medium">{t('admin.newExcavators')}</span>}
-        </button>
-      </div>
-
-      {/* New Constructions Button */}
-      <div className="w-full px-3 mb-4">
-        <button
-          onClick={() => router.push('/admin/newConstructions')}
-          className={`rounded-xl bg-red-950/40 text-white hover:bg-red-900/60 hover:text-white hover:border-red-600 flex items-center transition-all duration-300 border-2 border-red-900/50 ${
-            isOpen ? 'w-full justify-start gap-3 px-4 h-12' : 'w-10 h-10 justify-center mx-auto'
-          }`}
-          title="Správa staveb"
-        >
-          <Hammer className="w-5 h-5 flex-shrink-0" />
-          {isOpen && <span className="text-sm font-medium">Stavby</span>}
-        </button>
-      </div>
-
-      {/* Work Applications Button */}
-      <div className="w-full px-3 mb-4">
-        <button
-          onClick={() => router.push('/admin/workApplications')}
-          className={`rounded-xl bg-red-950/40 text-white hover:bg-red-900/60 hover:text-white hover:border-red-600 flex items-center transition-all duration-300 border-2 border-red-900/50 ${
-            isOpen ? 'w-full justify-start gap-3 px-4 h-12' : 'w-10 h-10 justify-center mx-auto'
-          }`}
-          title={t('admin.workApplications')}
-        >
-          <FileText className="w-5 h-5 flex-shrink-0" />
-          {isOpen && <span className="text-sm font-medium">{t('admin.workApplications')}</span>}
-        </button>
-      </div>
-
-      {/* Spacer to push logout to bottom */}
-      <div className="flex-1" />
-
-      {/* Divider */}
-      <div className={`h-px bg-red-900/30 mb-4 transition-all duration-300 mx-auto ${
-        isOpen ? 'w-48' : 'w-12'
-      }`} />
-
-      {/* Logout Button */}
-      <div className="w-full px-3 mb-2">
-        <button
-          onClick={onLogout}
-          className={`rounded-xl bg-red-950/40 text-white hover:bg-red-600/40 hover:text-white hover:border-red-500 flex items-center transition-all duration-300 border-2 border-red-900/50 ${
-            isOpen ? 'w-full justify-start gap-3 px-4 h-12' : 'w-10 h-10 justify-center mx-auto'
-          }`}
-          title={t('admin.logout')}
-        >
-          <LogOut className="w-5 h-5 flex-shrink-0" />
-          {isOpen && <span className="text-sm font-medium">{t('admin.logout')}</span>}
-        </button>
-      </div>
-    </div>
 
       {/* Mobile: Bottom Navigation Bar */}
-      <div className="md:hidden fixed bottom-0 left-0 right-0 bg-black/95 backdrop-blur-md border-t border-red-900/30 z-20">
+      <div className="md:hidden fixed bottom-0 left-0 right-0 bg-black/95 backdrop-blur-md border-t border-red-900/30 z-50">
         <div className="flex items-center justify-around px-4 py-3">
           {/* Dashboard Button */}
           <button
@@ -182,13 +188,13 @@ export default function NavigationBar({ onScheduleClick, onLogout }: NavigationB
 
       {/* Mobile: Right Side Navigation Menu */}
       {mobileMenuOpen && (
-        <div className="md:hidden fixed inset-0 z-30">
+        <div className="md:hidden fixed inset-0 z-[60]">
           {/* Backdrop */}
-          <div 
+          <div
             className="absolute inset-0 bg-black/50 backdrop-blur-sm"
             onClick={() => setMobileMenuOpen(false)}
           />
-          
+
           {/* Right Side Menu */}
           <div className="absolute right-0 top-0 bottom-0 w-64 bg-black/95 backdrop-blur-md border-l border-red-900/30 flex flex-col">
             {/* Header */}

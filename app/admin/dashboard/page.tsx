@@ -84,12 +84,12 @@ export default function AdminDashboard() {
   const handleStatusUpdate = async (orderId: string, newStatus: Order['status']) => {
     try {
       await updateOrderStatus(orderId, newStatus)
-      setOrders(orders.map(order => 
-        order.id === orderId 
+      setOrders(orders.map(order =>
+        order.id === orderId
           ? { ...order, status: newStatus, updatedAt: new Date() }
           : order
       ))
-      
+
       // Automatically send completion email when order is marked as completed
       if (newStatus === 'completed') {
         console.log('📧 Order marked as completed, sending completion email...')
@@ -99,9 +99,9 @@ export default function AdminDashboard() {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ orderId })
           })
-          
+
           const data = await response.json()
-          
+
           if (data.success) {
             console.log('✅ Completion email sent successfully to customer!')
             alert('✅ Order completed and customer notified via email!')
@@ -114,7 +114,7 @@ export default function AdminDashboard() {
           alert('⚠️ Order completed but email system encountered an error.')
         }
       }
-      
+
       setSelectedOrder(null)
     } catch (error) {
       console.error('Error updating order status:', error)
@@ -151,7 +151,7 @@ export default function AdminDashboard() {
 
       // Update order with processing details
       await updateOrderStatus(
-        processingOrder.id, 
+        processingOrder.id,
         'in_progress',
         finalEndTime,
         finalEndDate,
@@ -159,16 +159,16 @@ export default function AdminDashboard() {
       )
 
       // Update local state
-      setOrders(orders.map(order => 
-        order.id === processingOrder.id 
-          ? { 
-              ...order, 
-              status: 'in_progress' as const,
-              endTime: finalEndTime,
-              endDate: finalEndDate,
-              reservationType,
-              updatedAt: new Date() 
-            }
+      setOrders(orders.map(order =>
+        order.id === processingOrder.id
+          ? {
+            ...order,
+            status: 'in_progress' as const,
+            endTime: finalEndTime,
+            endDate: finalEndDate,
+            reservationType,
+            updatedAt: new Date()
+          }
           : order
       ))
 
@@ -194,8 +194,8 @@ export default function AdminDashboard() {
   }
 
 
-  const filteredOrders = filter === 'all' 
-    ? orders 
+  const filteredOrders = filter === 'all'
+    ? orders
     : orders.filter(order => order.status === filter)
 
   const getStatusColor = (status: Order['status']) => {
@@ -219,11 +219,11 @@ export default function AdminDashboard() {
   }
 
   const formatDateTime = (date: Date, time: string) => {
-    const dateStr = date.toLocaleDateString('en-US', { 
-      weekday: 'short', 
-      year: 'numeric', 
-      month: 'short', 
-      day: 'numeric' 
+    const dateStr = date.toLocaleDateString('en-US', {
+      weekday: 'short',
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric'
     })
     return `${dateStr} at ${time}`
   }
@@ -244,29 +244,29 @@ export default function AdminDashboard() {
     <div className="min-h-screen bg-gradient-main-dark relative">
       {/* Logo Container - fits within layout */}
       <div className="absolute top-4 left-4 z-10 pointer-events-none">
-        <Image 
-          src="/logoDF.svg" 
-          alt="MARPRO" 
+        <Image
+          src="/logoDF.svg"
+          alt="MARPRO"
           width={60}
           height={60}
           className="h-6 w-auto transition-all duration-300 object-contain sm:h-7 md:h-8"
           style={{ objectPosition: 'left top' }}
         />
       </div>
-      
+
       {/* Left Navigation Bar */}
-      <NavigationBar 
+      <NavigationBar
         onScheduleClick={() => setShowEquipmentSchedule(true)}
         onLogout={handleLogout}
       />
-      
+
       {/* Header */}
       <div className="relative md:ml-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="py-3 sm:py-4 pt-16 sm:pt-12 md:pt-16">
+        <div className="w-full max-w-[1920px] mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="py-3 sm:py-4 pt-16 sm:pt-12 md:pt-8 lg:pt-6">
             {/* Title centered */}
             <div className="flex justify-center items-center">
-              <h1 
+              <h1
                 className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-dark-text uppercase tracking-wider border-2 border-red-500 rounded-2xl p-2 relative overflow-hidden transition-all duration-300"
                 onMouseMove={(e) => {
                   const rect = e.currentTarget.getBoundingClientRect()
@@ -283,7 +283,7 @@ export default function AdminDashboard() {
               >
                 {t('admin.dashboard')}
                 {/* Animated gradient overlay that follows mouse */}
-                <div 
+                <div
                   className="absolute inset-0 opacity-0 hover:opacity-100 transition-opacity duration-300 pointer-events-none"
                   style={{
                     background: `radial-gradient(circle at ${mousePosition.x}% ${mousePosition.y}%, rgba(220, 38, 38, 0.3) 0%, transparent 60%)`
@@ -295,7 +295,7 @@ export default function AdminDashboard() {
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 pb-24 md:pb-8 md:ml-16">
+      <div className="w-full max-w-[1920px] mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 pb-24 md:pb-8 md:ml-16">
         {/* Stats */}
         <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-2 sm:gap-3 mb-4 sm:mb-6">
           <div className="bg-gradient-card-dark border-2 border-gray-dark-border rounded-lg p-2 sm:p-3 shadow-[0_10px_30px_rgba(0,0,0,0.3)] text-center">
@@ -324,55 +324,50 @@ export default function AdminDashboard() {
 
 
         {/* Filters */}
-        <div className="bg-gradient-card-dark border-2 border-gray-dark-border rounded-lg p-3 sm:p-4 mb-4 sm:mb-6 shadow-[0_10px_30px_rgba(0,0,0,0.3)]">
+        <div className="bg-gradient-card-dark border-2 border-gray-dark-border rounded-lg p-3 sm:p-4 mb-4 sm:mb-6 shadow-[0_10px_30px_rgba(0,0,0,0.3)] sticky top-4 z-30 backdrop-blur-md">
           <div className="grid grid-cols-3 sm:flex sm:flex-wrap gap-2">
             <button
               onClick={() => setFilter('pending')}
-              className={`px-2 sm:px-4 py-1.5 sm:py-2 rounded-lg text-xs sm:text-sm font-medium transition-all ${
-                filter === 'pending'
-                  ? 'bg-gradient-to-r from-red-600 to-red-700 text-white shadow-lg'
-                  : 'bg-gray-dark-bg text-gray-dark-textSecondary hover:bg-gray-dark-accent border border-gray-dark-border'
-              }`}
+              className={`px-2 sm:px-4 py-1.5 sm:py-2 rounded-lg text-xs sm:text-sm font-medium transition-all ${filter === 'pending'
+                ? 'bg-gradient-to-r from-red-600 to-red-700 text-white shadow-lg'
+                : 'bg-gray-dark-bg text-gray-dark-textSecondary hover:bg-gray-dark-accent border border-gray-dark-border'
+                }`}
             >
               {t('admin.pending')}
             </button>
             <button
               onClick={() => setFilter('in_progress')}
-              className={`px-2 sm:px-4 py-1.5 sm:py-2 rounded-lg text-xs sm:text-sm font-medium transition-all ${
-                filter === 'in_progress'
-                  ? 'bg-gradient-to-r from-red-600 to-red-700 text-white shadow-lg'
-                  : 'bg-gray-dark-bg text-gray-dark-textSecondary hover:bg-gray-dark-accent border border-gray-dark-border'
-              }`}
+              className={`px-2 sm:px-4 py-1.5 sm:py-2 rounded-lg text-xs sm:text-sm font-medium transition-all ${filter === 'in_progress'
+                ? 'bg-gradient-to-r from-red-600 to-red-700 text-white shadow-lg'
+                : 'bg-gray-dark-bg text-gray-dark-textSecondary hover:bg-gray-dark-accent border border-gray-dark-border'
+                }`}
             >
               {t('admin.inProgress')}
             </button>
             <button
               onClick={() => setFilter('completed')}
-              className={`px-2 sm:px-4 py-1.5 sm:py-2 rounded-lg text-xs sm:text-sm font-medium transition-all ${
-                filter === 'completed'
-                  ? 'bg-gradient-to-r from-red-600 to-red-700 text-white shadow-lg'
-                  : 'bg-gray-dark-bg text-gray-dark-textSecondary hover:bg-gray-dark-accent border border-gray-dark-border'
-              }`}
+              className={`px-2 sm:px-4 py-1.5 sm:py-2 rounded-lg text-xs sm:text-sm font-medium transition-all ${filter === 'completed'
+                ? 'bg-gradient-to-r from-red-600 to-red-700 text-white shadow-lg'
+                : 'bg-gray-dark-bg text-gray-dark-textSecondary hover:bg-gray-dark-accent border border-gray-dark-border'
+                }`}
             >
               {t('admin.completed')}
             </button>
             <button
               onClick={() => setFilter('cancelled')}
-              className={`px-2 sm:px-4 py-1.5 sm:py-2 rounded-lg text-xs sm:text-sm font-medium transition-all ${
-                filter === 'cancelled'
-                  ? 'bg-gradient-to-r from-red-600 to-red-700 text-white shadow-lg'
-                  : 'bg-gray-dark-bg text-gray-dark-textSecondary hover:bg-gray-dark-accent border border-gray-dark-border'
-              }`}
+              className={`px-2 sm:px-4 py-1.5 sm:py-2 rounded-lg text-xs sm:text-sm font-medium transition-all ${filter === 'cancelled'
+                ? 'bg-gradient-to-r from-red-600 to-red-700 text-white shadow-lg'
+                : 'bg-gray-dark-bg text-gray-dark-textSecondary hover:bg-gray-dark-accent border border-gray-dark-border'
+                }`}
             >
               {t('admin.cancelled')}
             </button>
             <button
               onClick={() => setFilter('all')}
-              className={`px-2 sm:px-4 py-1.5 sm:py-2 rounded-lg text-xs sm:text-sm font-medium transition-all col-span-2 sm:col-auto ${
-                filter === 'all'
-                  ? 'bg-gradient-to-r from-red-600 to-red-700 text-white shadow-lg'
-                  : 'bg-gray-dark-bg text-gray-dark-textSecondary hover:bg-gray-dark-accent border border-gray-dark-border'
-              }`}
+              className={`px-2 sm:px-4 py-1.5 sm:py-2 rounded-lg text-xs sm:text-sm font-medium transition-all col-span-2 sm:col-auto ${filter === 'all'
+                ? 'bg-gradient-to-r from-red-600 to-red-700 text-white shadow-lg'
+                : 'bg-gray-dark-bg text-gray-dark-textSecondary hover:bg-gray-dark-accent border border-gray-dark-border'
+                }`}
             >
               {t('admin.all')}
             </button>
@@ -380,10 +375,10 @@ export default function AdminDashboard() {
         </div>
 
         {/* Orders Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-3 sm:gap-4">
           {filteredOrders.map((order) => (
-            <div 
-              key={order.id} 
+            <div
+              key={order.id}
               className={`bg-gradient-card-dark border-2 border-gray-dark-border rounded-[15px] cursor-pointer transition-all duration-[400ms] shadow-[0_10px_30px_rgba(0,0,0,0.3)] relative overflow-hidden group hover:-translate-y-2.5 hover:scale-[1.02] hover:shadow-[0_20px_40px_rgba(0,0,0,0.4)] hover:bg-gradient-card-hover-dark ${getStatusBgColor(order.status)}`}
               onClick={() => setSelectedOrder(order)}
             >
@@ -420,32 +415,32 @@ export default function AdminDashboard() {
                       <span className="font-semibold text-gray-dark-textSecondary">Service:</span>
                       <span className="font-medium text-gray-dark-text capitalize">{order.serviceType}</span>
                     </div>
-                    
+
                     {order.containerType && (
                       <div className="flex items-center justify-between pt-0.5">
                         <span className="font-semibold text-gray-dark-textSecondary">Type:</span>
                         <span className="font-medium text-gray-dark-text">{order.containerType}</span>
                       </div>
                     )}
-                    
+
                     {order.excavatorType && (
                       <div className="flex items-center justify-between pt-0.5">
                         <span className="font-semibold text-gray-dark-textSecondary">Type:</span>
                         <span className="font-medium text-gray-dark-text">{order.excavatorType}</span>
                       </div>
                     )}
-                    
+
                     <div className="flex items-center justify-between pt-1 mt-1 border-t border-gray-dark-border/50">
                       <span className="font-semibold text-gray-dark-textSecondary">Time:</span>
                       <span className="font-medium text-gray-dark-text">{order.time}</span>
                     </div>
-                    
+
                     {order.endTime && order.status === 'in_progress' && (
                       <div className="flex items-center justify-between pt-0.5">
                         <span className="font-semibold text-gray-dark-textSecondary">End:</span>
                         <span className="font-medium text-blue-400">
-                          {order.reservationType === 'time' ? order.endTime : 
-                           order.endDate ? order.endDate.toLocaleDateString() : 'N/A'}
+                          {order.reservationType === 'time' ? order.endTime :
+                            order.endDate ? order.endDate.toLocaleDateString() : 'N/A'}
                         </span>
                       </div>
                     )}
@@ -530,7 +525,12 @@ export default function AdminDashboard() {
 
       {/* Order Detail Modal */}
       {selectedOrder && (
-        <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4 z-50">
+        <div
+          className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4 z-50"
+          onClick={(e) => {
+            if (e.target === e.currentTarget) setSelectedOrder(null)
+          }}
+        >
           <div className="bg-gradient-card-dark border-2 border-gray-dark-border rounded-[15px] sm:rounded-[20px] max-w-2xl w-full max-h-[85vh] sm:max-h-[90vh] overflow-y-auto shadow-[0_25px_50px_rgba(0,0,0,0.4)]">
             <div className="p-4 sm:p-6">
               {/* Header */}
@@ -543,7 +543,7 @@ export default function AdminDashboard() {
                   ✕
                 </button>
               </div>
-              
+
               <div className="space-y-3 sm:space-y-4">
                 {/* Customer & Order Information Combined */}
                 <div className="bg-gray-dark-bg/70 rounded-[12px] sm:rounded-[15px] p-3 sm:p-4 border border-gray-dark-border backdrop-blur-sm">
@@ -572,7 +572,7 @@ export default function AdminDashboard() {
                         </div>
                       </div>
                     </div>
-                    
+
                     {/* Order Info */}
                     <div>
                       <h3 className="text-sm sm:text-base font-bold text-gray-dark-text mb-2 sm:mb-3 uppercase tracking-[0.3px] sm:tracking-[0.5px] border-b border-gray-dark-border pb-1">Service</h3>
@@ -607,7 +607,7 @@ export default function AdminDashboard() {
                     </div>
                   </div>
                 </div>
-                
+
                 {/* Message & Status Row */}
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 sm:gap-4">
                   {selectedOrder.message && (
@@ -616,7 +616,7 @@ export default function AdminDashboard() {
                       <p className="text-xs sm:text-sm text-gray-dark-textMuted italic">{selectedOrder.message}</p>
                     </div>
                   )}
-                  
+
                   <div className="bg-gray-dark-bg/60 rounded-[10px] sm:rounded-[12px] p-3 sm:p-4 border border-gray-dark-border backdrop-blur-sm">
                     <div className="flex items-center justify-between mb-1.5 sm:mb-2">
                       <span className="text-[11px] sm:text-xs font-semibold text-gray-dark-textSecondary uppercase">Status:</span>
@@ -636,7 +636,7 @@ export default function AdminDashboard() {
                     </div>
                   </div>
                 </div>
-                
+
                 {/* Status Update Actions */}
                 <div className="bg-gray-dark-bg/70 rounded-[12px] sm:rounded-[15px] p-3 sm:p-4 border border-gray-dark-border backdrop-blur-sm">
                   <h3 className="text-sm sm:text-base font-bold text-gray-dark-text mb-2 sm:mb-3 uppercase tracking-[0.3px] sm:tracking-[0.5px] border-b border-gray-dark-border pb-1">{t('admin.updateStatus')}</h3>
@@ -645,11 +645,10 @@ export default function AdminDashboard() {
                       <button
                         key={status}
                         onClick={() => handleStatusUpdate(selectedOrder.id, status as Order['status'])}
-                        className={`px-2 sm:px-3 py-1.5 sm:py-2 rounded-[8px] sm:rounded-[10px] text-[10px] sm:text-xs font-semibold transition-all duration-300 ${
-                          selectedOrder.status === status
-                            ? 'bg-gradient-to-r from-red-600 to-red-700 text-white shadow-[0_4px_12px_rgba(239,68,68,0.3)]'
-                            : 'bg-gray-dark-bg text-gray-dark-textSecondary border border-gray-dark-border hover:bg-gray-dark-accent hover:shadow-[0_4px_12px_rgba(0,0,0,0.2)] hover:-translate-y-0.5'
-                        }`}
+                        className={`px-2 sm:px-3 py-1.5 sm:py-2 rounded-[8px] sm:rounded-[10px] text-[10px] sm:text-xs font-semibold transition-all duration-300 ${selectedOrder.status === status
+                          ? 'bg-gradient-to-r from-red-600 to-red-700 text-white shadow-[0_4px_12px_rgba(239,68,68,0.3)]'
+                          : 'bg-gray-dark-bg text-gray-dark-textSecondary border border-gray-dark-border hover:bg-gray-dark-accent hover:shadow-[0_4px_12px_rgba(0,0,0,0.2)] hover:-translate-y-0.5'
+                          }`}
                       >
                         {status.replace('_', ' ').toUpperCase()}
                       </button>
@@ -664,7 +663,16 @@ export default function AdminDashboard() {
 
       {/* Process Order Modal */}
       {processingOrder && (
-        <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4 z-50">
+        <div
+          className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4 z-50"
+          onClick={(e) => {
+            if (e.target === e.currentTarget) {
+              setProcessingOrder(null)
+              setSelectedExcavator(null)
+              setSelectedContainer(null)
+            }
+          }}
+        >
           <div className="bg-gradient-card-dark border-2 border-gray-dark-border rounded-[15px] sm:rounded-[20px] max-w-md w-full shadow-[0_25px_50px_rgba(0,0,0,0.4)]">
             <div className="p-4 sm:p-6">
               {/* Header */}
@@ -681,7 +689,7 @@ export default function AdminDashboard() {
                   ✕
                 </button>
               </div>
-              
+
               {/* Order Info */}
               <div className="bg-gray-dark-bg/70 rounded-[12px] sm:rounded-[15px] p-3 sm:p-4 border border-gray-dark-border mb-3 sm:mb-4 backdrop-blur-sm">
                 <h3 className="text-xs sm:text-sm font-bold text-gray-dark-text mb-1.5 sm:mb-2 uppercase tracking-[0.3px] sm:tracking-[0.5px]">
@@ -715,16 +723,15 @@ export default function AdminDashboard() {
                         <div
                           key={excavator.id}
                           onClick={() => setSelectedExcavator(excavator)}
-                          className={`p-2 sm:p-3 rounded-lg border cursor-pointer transition-all duration-200 ${
-                            selectedExcavator?.id === excavator.id
-                              ? 'border-red-500 bg-red-500/10 shadow-[0_0_10px_rgba(239,68,68,0.3)]'
-                              : 'border-gray-dark-border hover:border-gray-dark-accent hover:bg-gray-dark-bg/50'
-                          }`}
+                          className={`p-2 sm:p-3 rounded-lg border cursor-pointer transition-all duration-200 ${selectedExcavator?.id === excavator.id
+                            ? 'border-red-500 bg-red-500/10 shadow-[0_0_10px_rgba(239,68,68,0.3)]'
+                            : 'border-gray-dark-border hover:border-gray-dark-accent hover:bg-gray-dark-bg/50'
+                            }`}
                         >
                           <div className="flex items-center gap-3">
                             <div className="w-12 h-12 flex-shrink-0">
-                              <Image 
-                                src={excavator.svgPath || '/TB145.svg'} 
+                              <Image
+                                src={excavator.svgPath || '/TB145.svg'}
                                 alt={`${excavator.model} excavator`}
                                 width={48}
                                 height={48}
@@ -750,61 +757,60 @@ export default function AdminDashboard() {
                 </div>
               )}
 
-                {/* Container Selection - Only show for container orders */}
-                {processingOrder.serviceType === 'containers' && (
-                  <div className="bg-gray-dark-bg/70 rounded-[12px] sm:rounded-[15px] p-3 sm:p-4 border border-gray-dark-border mb-3 sm:mb-4 backdrop-blur-sm">
-                    <h3 className="text-xs sm:text-sm font-bold text-gray-dark-text mb-2 sm:mb-3 uppercase tracking-[0.3px] sm:tracking-[0.5px]">
-                      Select Container
-                    </h3>
-                    {containersLoading ? (
-                      <div className="flex items-center justify-center py-4">
-                        <div className="text-gray-dark-textSecondary text-xs sm:text-sm">Loading containers...</div>
-                      </div>
-                    ) : containers.length === 0 ? (
-                      <div className="flex items-center justify-center py-4">
-                        <div className="text-gray-dark-textSecondary text-xs sm:text-sm">No containers available</div>
-                      </div>
-                    ) : (
-                      <div className="space-y-2 max-h-60 overflow-y-auto">
-                        {containers.map((container) => (
-                          <div
-                            key={container.id}
-                            onClick={() => setSelectedContainer(container)}
-                            className={`p-2 sm:p-3 rounded-lg border cursor-pointer transition-all duration-200 ${
-                              selectedContainer?.id === container.id
-                                ? 'border-red-500 bg-red-500/10 shadow-[0_0_10px_rgba(239,68,68,0.3)]'
-                                : 'border-gray-dark-border hover:border-gray-dark-accent hover:bg-gray-dark-bg/50'
+              {/* Container Selection - Only show for container orders */}
+              {processingOrder.serviceType === 'containers' && (
+                <div className="bg-gray-dark-bg/70 rounded-[12px] sm:rounded-[15px] p-3 sm:p-4 border border-gray-dark-border mb-3 sm:mb-4 backdrop-blur-sm">
+                  <h3 className="text-xs sm:text-sm font-bold text-gray-dark-text mb-2 sm:mb-3 uppercase tracking-[0.3px] sm:tracking-[0.5px]">
+                    Select Container
+                  </h3>
+                  {containersLoading ? (
+                    <div className="flex items-center justify-center py-4">
+                      <div className="text-gray-dark-textSecondary text-xs sm:text-sm">Loading containers...</div>
+                    </div>
+                  ) : containers.length === 0 ? (
+                    <div className="flex items-center justify-center py-4">
+                      <div className="text-gray-dark-textSecondary text-xs sm:text-sm">No containers available</div>
+                    </div>
+                  ) : (
+                    <div className="space-y-2 max-h-60 overflow-y-auto">
+                      {containers.map((container) => (
+                        <div
+                          key={container.id}
+                          onClick={() => setSelectedContainer(container)}
+                          className={`p-2 sm:p-3 rounded-lg border cursor-pointer transition-all duration-200 ${selectedContainer?.id === container.id
+                            ? 'border-red-500 bg-red-500/10 shadow-[0_0_10px_rgba(239,68,68,0.3)]'
+                            : 'border-gray-dark-border hover:border-gray-dark-accent hover:bg-gray-dark-bg/50'
                             }`}
-                          >
-                            <div className="flex items-center gap-3">
-                              <div className="w-12 h-12 flex-shrink-0">
-                                <Image
-                                  src={container.image || '/container-medium.svg'}
-                                  alt={`${container.volume}m³ container`}
-                                  width={48}
-                                  height={48}
-                                  className="w-full h-full object-contain"
-                                />
+                        >
+                          <div className="flex items-center gap-3">
+                            <div className="w-12 h-12 flex-shrink-0">
+                              <Image
+                                src={container.image || '/container-medium.svg'}
+                                alt={`${container.volume}m³ container`}
+                                width={48}
+                                height={48}
+                                className="w-full h-full object-contain"
+                              />
+                            </div>
+                            <div className="flex-1 min-w-0">
+                              <div className="text-xs sm:text-sm font-bold text-gray-dark-text uppercase">
+                                {container.volume}m³
                               </div>
-                              <div className="flex-1 min-w-0">
-                                <div className="text-xs sm:text-sm font-bold text-gray-dark-text uppercase">
-                                  {container.volume}m³
-                                </div>
-                                <div className="text-[10px] sm:text-xs text-gray-dark-textSecondary">
-                                  {container.dims}
-                                </div>
-                                <div className="text-[10px] sm:text-xs text-gray-dark-textMuted">
-                                  {container.price.toLocaleString('cs-CZ')} CZK
-                                </div>
+                              <div className="text-[10px] sm:text-xs text-gray-dark-textSecondary">
+                                {container.dims}
+                              </div>
+                              <div className="text-[10px] sm:text-xs text-gray-dark-textMuted">
+                                {container.price.toLocaleString('cs-CZ')} CZK
                               </div>
                             </div>
                           </div>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-                )}
-              
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              )}
+
               <div className="bg-gray-dark-bg/70 rounded-[15px] p-4 border border-gray-dark-border backdrop-blur-sm">
                 <label className="block text-sm font-semibold text-gray-dark-textSecondary uppercase mb-2">
                   Reservation Type
@@ -819,7 +825,7 @@ export default function AdminDashboard() {
                   <option value="weeks">Full Week(s)</option>
                   <option value="months">Full Month(s)</option>
                 </select>
-                
+
                 {reservationType === 'time' && (
                   <div>
                     <label className="block text-xs sm:text-sm font-semibold text-gray-dark-textSecondary uppercase mb-1.5 sm:mb-2">
@@ -834,7 +840,7 @@ export default function AdminDashboard() {
                     />
                   </div>
                 )}
-                
+
                 {reservationType !== 'time' && (
                   <div>
                     <label className="block text-xs sm:text-sm font-semibold text-gray-dark-textSecondary uppercase mb-1.5 sm:mb-2">
@@ -849,15 +855,15 @@ export default function AdminDashboard() {
                     />
                   </div>
                 )}
-                
+
                 <p className="text-[10px] sm:text-xs text-gray-dark-textSecondary mt-1.5 sm:mt-2">
-                  {reservationType === 'time' 
+                  {reservationType === 'time'
                     ? `Equipment reserved from ${processingOrder?.time} to ${endTime}`
                     : `Equipment reserved until ${endDate ? new Date(endDate).toLocaleDateString() : 'selected date'} at 11:59 PM`
                   }
                 </p>
               </div>
-              
+
               <div className="flex gap-2 mt-3 sm:mt-4">
                 <button
                   onClick={() => {
@@ -872,17 +878,16 @@ export default function AdminDashboard() {
                 <button
                   onClick={() => handleProcessOrder()}
                   disabled={(processingOrder.serviceType === 'excavators' && !selectedExcavator) || (processingOrder.serviceType === 'containers' && !selectedContainer)}
-                  className={`flex-1 px-3 sm:px-4 py-1.5 sm:py-2 rounded-[8px] sm:rounded-[10px] text-xs sm:text-sm font-semibold transition-all duration-300 ${
-                    (processingOrder.serviceType === 'excavators' && !selectedExcavator) || (processingOrder.serviceType === 'containers' && !selectedContainer)
-                      ? 'bg-gray-600 text-gray-400 cursor-not-allowed'
-                      : 'bg-gradient-to-r from-blue-600 to-blue-700 text-white hover:from-blue-700 hover:to-blue-800'
-                  }`}
+                  className={`flex-1 px-3 sm:px-4 py-1.5 sm:py-2 rounded-[8px] sm:rounded-[10px] text-xs sm:text-sm font-semibold transition-all duration-300 ${(processingOrder.serviceType === 'excavators' && !selectedExcavator) || (processingOrder.serviceType === 'containers' && !selectedContainer)
+                    ? 'bg-gray-600 text-gray-400 cursor-not-allowed'
+                    : 'bg-gradient-to-r from-blue-600 to-blue-700 text-white hover:from-blue-700 hover:to-blue-800'
+                    }`}
                 >
-                  {(processingOrder.serviceType === 'excavators' && !selectedExcavator) 
-                    ? 'Select Excavator' 
+                  {(processingOrder.serviceType === 'excavators' && !selectedExcavator)
+                    ? 'Select Excavator'
                     : (processingOrder.serviceType === 'containers' && !selectedContainer)
-                    ? 'Select Container'
-                    : 'Process Order'
+                      ? 'Select Container'
+                      : 'Process Order'
                   }
                 </button>
               </div>
