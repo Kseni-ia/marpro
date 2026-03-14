@@ -1,26 +1,70 @@
 'use client'
 
-import React, { useState, useEffect } from 'react'
-import { useRouter } from 'next/navigation'
+import React, { useRef, useState, useEffect } from 'react'
 import Image from 'next/image'
 import { ChevronLeft, ChevronRight, X } from 'lucide-react'
 import BlurUpBackground from '@/components/BlurUpBackground'
 import TopNavigation from '@/components/TopNavigation'
 import Footer from '@/app/Footer'
-import { useLanguage } from '@/contexts/LanguageContext'
 import OrderForm from '@/components/OrderForm'
 import WorkWithUs from './work/WorkWithUs'
-import { getAllReferences, Reference, ReferenceCategory, REFERENCE_CATEGORIES } from '@/lib/constructions'
+import { getAllReferences, Reference } from '@/lib/constructions'
+import { getReferenceImageUrl } from '@/lib/referenceImageUrl'
+
+const MIN_ZOOM = 1
+const MAX_ZOOM = 3
+const ZOOM_STEP = 0.25
+const CONSTRUCTION_INTRO =
+  'Nabizime profesionalni stavebni a instalacni prace pro bytove, komercni i prumyslove projekty. Zajistujeme realizaci na klic, rekonstrukce, technicke instalace i koordinaci navazujicich cinnosti s durazem na kvalitu provedeni, spolehlivost a dlouhodobou funkcnost.'
 
 const Constructions: React.FC = () => {
-  const router = useRouter()
-  const { t } = useLanguage()
   const [showOrderForm, setShowOrderForm] = useState(false)
   const [references, setReferences] = useState<Reference[]>([])
   const [loading, setLoading] = useState(true)
   const [selectedReference, setSelectedReference] = useState<Reference | null>(null)
   const [currentImageIndex, setCurrentImageIndex] = useState(0)
-  const [selectedCategory, setSelectedCategory] = useState<ReferenceCategory | null>(null)
+  const [imageZoom, setImageZoom] = useState(MIN_ZOOM)
+  const [imageOffset, setImageOffset] = useState({ x: 0, y: 0 })
+  const dragStateRef = useRef<{
+    isDragging: boolean
+    pointerId: number | null
+    startX: number
+    startY: number
+    originX: number
+    originY: number
+  }>({
+    isDragging: false,
+    pointerId: null,
+    startX: 0,
+    startY: 0,
+    originX: 0,
+    originY: 0
+  })
+
+  const clampZoom = (zoom: number) => Math.min(MAX_ZOOM, Math.max(MIN_ZOOM, zoom))
+
+  const zoomIn = () => {
+    setImageZoom((prev) => clampZoom(prev + ZOOM_STEP))
+  }
+
+  const zoomOut = () => {
+    setImageZoom((prev) => clampZoom(prev - ZOOM_STEP))
+  }
+
+  const resetZoom = () => {
+    setImageZoom(MIN_ZOOM)
+    setImageOffset({ x: 0, y: 0 })
+  }
+
+  const resetImageTransform = () => {
+    setImageZoom(MIN_ZOOM)
+    setImageOffset({ x: 0, y: 0 })
+  }
+
+  const stopDragging = () => {
+    dragStateRef.current.isDragging = false
+    dragStateRef.current.pointerId = null
+  }
 
   // Fetch references from Firebase
   useEffect(() => {
@@ -48,16 +92,26 @@ const Constructions: React.FC = () => {
       switch (e.key) {
         case 'Escape':
           setSelectedReference(null)
+          resetImageTransform()
           break
         case 'ArrowLeft':
           setCurrentImageIndex((prev) => 
             prev === 0 ? selectedReference.imageUrls!.length - 1 : prev - 1
           )
+          resetImageTransform()
           break
         case 'ArrowRight':
           setCurrentImageIndex((prev) => 
             prev === selectedReference.imageUrls!.length - 1 ? 0 : prev + 1
           )
+          resetImageTransform()
+          break
+        case '+':
+        case '=':
+          zoomIn()
+          break
+        case '-':
+          zoomOut()
           break
       }
     }
@@ -71,55 +125,15 @@ const Constructions: React.FC = () => {
     return () => {
       document.removeEventListener('keydown', handleKeyDown)
       document.body.style.overflow = 'unset'
+      stopDragging()
     }
   }, [selectedReference, currentImageIndex])
 
-  // Get references for selected category
-  const getCategoryReferences = (category: ReferenceCategory) => {
-    return references.filter(ref => ref.category === category)
-  }
-
-  // Get category label
-  const getCategoryLabel = (category: ReferenceCategory) => {
-    const cat = REFERENCE_CATEGORIES.find(c => c.value === category)
-    return cat ? cat.label : category
-  }
-
-  // Compact Czech Construction Services - Text-focused
-  const constructionServices = [
-    {
-      icon: '🏢',
-      title: 'Demolice',
-      categoryKey: 'demolice' as ReferenceCategory,
-      description: 'Provádíme kompletní a částečné demolice všech typů objektů včetně průmyslových budov, rodinných domů a interiérových prostor. Naše práce zahrnuje bezpečnou likvidaci stavebních materiálů, ekologickou recyklaci sutě a kompletní úklid pozemku po demolici. Zajišťujeme veškeré potřebné povolení, zajištění staveniště a profesionální projektový management.',
-      features: ['Bezpečnost', 'Ekologie', 'Rychlost'],
-      color: 'text-red-500'
-    },
-    {
-      icon: '🔧',
-      title: 'Instalace',
-      categoryKey: 'instalace' as ReferenceCategory,
-      description: 'Nabízíme profesionální instalatérské práce včetně vodovodních a kanalizačních systémů, elektroinstalací pro domácnosti i průmysl, a kompletní HVAC systémy pro vytápění, ventilaci a klimatizaci. Naši certifikovaní technici zajišťují kvalitní provedení, záruční servis a pravidelnou údržbu všech instalovaných systémů.',
-      features: ['Kvalita', 'Spolehlivost', 'Servis'],
-      color: 'text-blue-500'
-    },
-    {
-      icon: '🏗️',
-      title: 'Stavební práce',
-      categoryKey: 'stavebni_prace' as ReferenceCategory,
-      description: 'Realizujeme komplexní stavební úpravy, rekonstrukce a modernizace objektů. Naše služby zahrnují stavby na klíč, rekonstrukce bytů a domů, průmyslové stavby, zemní práce, betonáž, zednické práce a finální úpravy. Používáme moderní technologie a kvalitní materiály pro dlouhou životnost staveb.',
-      features: ['Moderní technologie', 'Preciznost', 'Flexibilita'],
-      color: 'text-green-500'
-    },
-    {
-      icon: '🚛',
-      title: 'Odvoz materiálu',
-      categoryKey: 'odvoz_materialu' as ReferenceCategory,
-      description: 'Zajišťujeme ekologický odvoz a likvidaci stavebního odpadu, sutě a nebezpečných materiálů v souladu s legislativními požadavky. Naše vozový park umožňuje rychlý odvoz materiálu přímo ze staveniště, třídění odpadu pro recyklaci a přepravu na autorizované skládky. Vystavujeme potřebné doklady o nakládání s odpady.',
-      features: ['Ekologický přístup', 'Efektivita', 'Legislativa'],
-      color: 'text-yellow-500'
+  useEffect(() => {
+    if (imageZoom <= MIN_ZOOM && (imageOffset.x !== 0 || imageOffset.y !== 0)) {
+      setImageOffset({ x: 0, y: 0 })
     }
-  ]
+  }, [imageZoom, imageOffset.x, imageOffset.y])
 
   return (
     <>
@@ -143,45 +157,39 @@ const Constructions: React.FC = () => {
         </h1>
         
         <p className="text-gray-dark-textSecondary text-center text-base sm:text-lg md:text-xl mb-8 max-w-4xl mx-auto">
-          Kompletní stavební služby včetně demolice, instalací a odvozu materiálu
+          Kompletní stavebni a instalacni servis pro moderni realizace a rekonstrukce
         </p>
 
-        {/* Compact Text-focused Services Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 max-w-[1800px] mx-auto mb-12">
-          {constructionServices.map((service, index) => (
-            <div
-              key={index}
-              className="group cursor-pointer transition-all duration-300 hover:translate-x-2 border border-gray-dark-border/50 rounded-lg p-5 bg-gradient-card-dark/50 hover:border-gray-dark-border/80"
-              onClick={() => setSelectedCategory(service.categoryKey)}
-            >
-              <div className="flex items-start gap-4">
-                <div className={`text-2xl sm:text-3xl ${service.color} flex-shrink-0 mt-1`}>
-                  {service.icon}
-                </div>
-                <div className="flex-1">
-                  <h3 className={`text-xl sm:text-2xl font-bold ${service.color} mb-2 group-hover:underline`}>
-                    {service.title}
-                  </h3>
-                  <p className="text-gray-dark-textSecondary text-sm sm:text-base leading-relaxed mb-3">
-                    {service.description}
-                  </p>
-                  <div className="flex flex-wrap gap-2 items-center">
-                    {service.features.map((feature, featureIndex) => (
-                      <span
-                        key={featureIndex}
-                        className={`text-xs font-medium ${service.color} opacity-80`}
-                      >
-                        • {feature}
-                      </span>
-                    ))}
-                    <span className={`text-xs font-semibold ${service.color} ml-auto group-hover:underline`}>
-                      Reference →
-                    </span>
-                  </div>
+        <div className="max-w-5xl mx-auto mb-12">
+          <div className="rounded-[28px] border border-white/10 bg-gradient-to-br from-slate-900/70 via-slate-800/55 to-red-950/45 backdrop-blur-md px-6 py-8 sm:px-8 sm:py-10 shadow-[0_20px_60px_rgba(0,0,0,0.35)]">
+            <div className="flex items-start gap-4 sm:gap-5">
+              <div className="flex h-14 w-14 flex-shrink-0 items-center justify-center rounded-2xl bg-blue-500/15 text-3xl text-blue-400 shadow-[inset_0_0_0_1px_rgba(96,165,250,0.25)]">
+                🔧
+              </div>
+              <div className="flex-1">
+                <h2 className="text-2xl sm:text-3xl font-bold text-white mb-3">
+                  Instalace a realizace staveb
+                </h2>
+                <p className="text-gray-200/90 text-base sm:text-lg leading-relaxed max-w-4xl">
+                  {CONSTRUCTION_INTRO}
+                </p>
+                <div className="mt-5 flex flex-wrap gap-2 text-sm">
+                  <span className="rounded-full border border-blue-400/20 bg-blue-500/10 px-3 py-1 text-blue-300">
+                    Kvalita provedeni
+                  </span>
+                  <span className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-gray-200">
+                    Spolehlivost
+                  </span>
+                  <span className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-gray-200">
+                    Rekonstrukce
+                  </span>
+                  <span className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-gray-200">
+                    Realizace na klic
+                  </span>
                 </div>
               </div>
             </div>
-          ))}
+          </div>
         </div>
 
         {/* Reference Section */}
@@ -206,11 +214,12 @@ const Constructions: React.FC = () => {
                   <div className="aspect-video bg-gray-dark-bg/50 relative cursor-pointer" onClick={() => {
                     setSelectedReference(reference)
                     setCurrentImageIndex(0)
+                    resetImageTransform()
                   }}>
                     {(reference.imageUrls && reference.imageUrls.length > 0) ? (
                       <div className="relative w-full h-full">
                         <Image
-                          src={reference.imageUrls[0]}
+                          src={getReferenceImageUrl(reference.imageUrls[0])}
                           alt={reference.title}
                           width={400}
                           height={300}
@@ -299,128 +308,16 @@ const Constructions: React.FC = () => {
           />
         )}
 
-        {/* Category Gallery Modal */}
-        {selectedCategory && (
-          <div className="fixed inset-0 bg-black/90 z-[9998] flex items-center justify-center p-4 overflow-y-auto">
-            <div className="relative w-full max-w-6xl">
-              {/* Close Button */}
-              <button
-                onClick={() => setSelectedCategory(null)}
-                className="absolute -top-2 -right-2 z-10 bg-red-600 hover:bg-red-700 text-white p-2 rounded-full transition-colors shadow-lg"
-                title="Zavřít"
-              >
-                <X className="w-6 h-6" />
-              </button>
-
-              {/* Category Header */}
-              <div className="text-center mb-8">
-                <h2 className="text-3xl sm:text-4xl font-bold text-white mb-2">
-                  {getCategoryLabel(selectedCategory)}
-                </h2>
-                <p className="text-gray-400">
-                  {getCategoryReferences(selectedCategory).length} {getCategoryReferences(selectedCategory).length === 1 ? 'reference' : getCategoryReferences(selectedCategory).length < 5 ? 'reference' : 'referencí'}
-                </p>
-              </div>
-
-              {/* References Grid */}
-              {getCategoryReferences(selectedCategory).length > 0 ? (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {getCategoryReferences(selectedCategory).map((reference) => (
-                    <div
-                      key={reference.id}
-                      className="group bg-gradient-to-br from-gray-800/80 to-gray-900/80 border border-gray-700/50 rounded-xl overflow-hidden transition-all duration-300 hover:border-red-600/50 hover:shadow-lg hover:shadow-red-600/20 hover:scale-[1.02] backdrop-blur-sm cursor-pointer"
-                      onClick={() => {
-                        setSelectedReference(reference)
-                        setCurrentImageIndex(0)
-                      }}
-                    >
-                      {/* Reference Image */}
-                      <div className="aspect-video bg-gray-dark-bg/50 relative">
-                        {(reference.imageUrls && reference.imageUrls.length > 0) ? (
-                          <div className="relative w-full h-full">
-                            <Image
-                              src={reference.imageUrls[0]}
-                              alt={reference.title}
-                              width={400}
-                              height={300}
-                              className="w-full h-full object-cover"
-                              onError={(e) => {
-                                e.currentTarget.src = '/placeholder-image.jpg'
-                              }}
-                            />
-                            
-                            {/* Image count indicator */}
-                            {reference.imageUrls.length > 1 && (
-                              <div className="absolute bottom-2 right-2 bg-black/60 text-white text-xs px-2 py-1 rounded-full">
-                                +{reference.imageUrls.length - 1} foto
-                              </div>
-                            )}
-                            
-                            {/* Hover overlay */}
-                            <div className="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-colors flex items-center justify-center">
-                              <span className="text-white opacity-0 group-hover:opacity-100 transition-opacity font-semibold">
-                                Zobrazit galerii
-                              </span>
-                            </div>
-                          </div>
-                        ) : (
-                          <div className="w-full h-full flex items-center justify-center text-gray-500">
-                            <div className="text-center">
-                              <div className="text-2xl mb-1">📷</div>
-                              <div className="text-xs">Žádné obrázky</div>
-                            </div>
-                          </div>
-                        )}
-                      </div>
-
-                      {/* Reference Content */}
-                      <div className="p-4">
-                        <h3 className="text-lg font-bold text-white mb-2 group-hover:text-red-400 transition-colors">
-                          {reference.title}
-                        </h3>
-                        <p className="text-gray-400 text-sm leading-relaxed line-clamp-3">
-                          {reference.description}
-                        </p>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                <div className="flex items-center justify-center py-20 border-2 border-dashed border-gray-600/50 rounded-lg">
-                  <div className="text-center">
-                    <div className="text-gray-400 text-lg mb-4">
-                      Žádné reference v této kategorii
-                    </div>
-                    <div className="text-gray-500 text-sm">
-                      Reference budou přidány administrátorem
-                    </div>
-                  </div>
-                </div>
-              )}
-
-              {/* Order Button */}
-              <div className="text-center mt-8">
-                <button 
-                  onClick={() => {
-                    setSelectedCategory(null)
-                    setShowOrderForm(true)
-                  }}
-                  className="rounded-[14px] px-8 py-4 bg-gradient-to-r from-red-600 to-red-700 text-white font-semibold shadow-lg hover:shadow-red-600/30 transition-all hover:scale-105"
-                >
-                  Objednat {getCategoryLabel(selectedCategory)}
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
-
         {/* Image Viewer Modal */}
         {selectedReference && (
           <div className="fixed inset-0 bg-black/90 z-[9999] flex items-center justify-center p-4">
             <div className="relative w-full max-w-4xl max-h-[90vh]">
               {/* Close Button */}
               <button
-                onClick={() => setSelectedReference(null)}
+                onClick={() => {
+                  setSelectedReference(null)
+                  resetImageTransform()
+                }}
                 className="absolute top-4 right-4 z-10 bg-black/50 hover:bg-black/70 text-white p-2 rounded-full transition-colors"
                 title="Zavřít"
               >
@@ -431,18 +328,24 @@ const Constructions: React.FC = () => {
               {selectedReference.imageUrls && selectedReference.imageUrls.length > 1 && (
                 <>
                   <button
-                    onClick={() => setCurrentImageIndex((prev) => 
-                      prev === 0 ? selectedReference.imageUrls!.length - 1 : prev - 1
-                    )}
+                    onClick={() => {
+                      setCurrentImageIndex((prev) => 
+                        prev === 0 ? selectedReference.imageUrls!.length - 1 : prev - 1
+                      )
+                      resetImageTransform()
+                    }}
                     className="absolute left-4 top-1/2 -translate-y-1/2 z-10 bg-black/50 hover:bg-black/70 text-white p-3 rounded-full transition-colors"
                     title="Předchozí"
                   >
                     <ChevronLeft className="w-6 h-6" />
                   </button>
                   <button
-                    onClick={() => setCurrentImageIndex((prev) => 
-                      prev === selectedReference.imageUrls!.length - 1 ? 0 : prev + 1
-                    )}
+                    onClick={() => {
+                      setCurrentImageIndex((prev) => 
+                        prev === selectedReference.imageUrls!.length - 1 ? 0 : prev + 1
+                      )
+                      resetImageTransform()
+                    }}
                     className="absolute right-4 top-1/2 -translate-y-1/2 z-10 bg-black/50 hover:bg-black/70 text-white p-3 rounded-full transition-colors"
                     title="Další"
                   >
@@ -451,14 +354,107 @@ const Constructions: React.FC = () => {
                 </>
               )}
 
+              <div className="absolute left-4 top-4 z-10 flex items-center gap-2">
+                <button
+                  onClick={zoomOut}
+                  disabled={imageZoom <= MIN_ZOOM}
+                  className="bg-black/50 hover:bg-black/70 disabled:opacity-40 disabled:cursor-not-allowed text-white px-3 py-2 rounded-full transition-colors"
+                  title="Oddálit"
+                >
+                  -
+                </button>
+                <button
+                  onClick={resetZoom}
+                  disabled={imageZoom === MIN_ZOOM}
+                  className="bg-black/50 hover:bg-black/70 disabled:opacity-40 disabled:cursor-not-allowed text-white px-3 py-2 rounded-full transition-colors text-sm"
+                  title="Reset zoomu"
+                >
+                  {Math.round(imageZoom * 100)}%
+                </button>
+                <button
+                  onClick={zoomIn}
+                  disabled={imageZoom >= MAX_ZOOM}
+                  className="bg-black/50 hover:bg-black/70 disabled:opacity-40 disabled:cursor-not-allowed text-white px-3 py-2 rounded-full transition-colors"
+                  title="Přiblížit"
+                >
+                  +
+                </button>
+              </div>
+
               {/* Current Image */}
-              <div className="relative w-full h-full flex items-center justify-center mb-4">
+              <div
+                className="relative w-full h-full flex items-center justify-center mb-4 overflow-hidden"
+                onWheel={(e) => {
+                  e.preventDefault()
+                  if (e.deltaY < 0) {
+                    zoomIn()
+                    return
+                  }
+
+                  zoomOut()
+                }}
+              >
                 <Image
-                  src={selectedReference.imageUrls?.[currentImageIndex] || '/placeholder-image.jpg'}
+                  src={getReferenceImageUrl(selectedReference.imageUrls?.[currentImageIndex])}
                   alt={`${selectedReference.title} ${currentImageIndex + 1}`}
                   width={1200}
                   height={800}
-                  className="max-w-full max-h-[60vh] object-contain"
+                  draggable={false}
+                  className={`max-w-full max-h-[60vh] object-contain transition-transform duration-200 select-none ${imageZoom > MIN_ZOOM ? 'cursor-grab active:cursor-grabbing touch-none' : 'cursor-zoom-in'}`}
+                  style={{ transform: `translate(${imageOffset.x}px, ${imageOffset.y}px) scale(${imageZoom})` }}
+                  onDoubleClick={() => {
+                    if (imageZoom === MIN_ZOOM) {
+                      setImageZoom(2)
+                      setImageOffset({ x: 0, y: 0 })
+                      return
+                    }
+
+                    resetImageTransform()
+                  }}
+                  onPointerDown={(e) => {
+                    if (imageZoom <= MIN_ZOOM) {
+                      return
+                    }
+
+                    e.preventDefault()
+                    e.currentTarget.setPointerCapture(e.pointerId)
+
+                    dragStateRef.current = {
+                      isDragging: true,
+                      pointerId: e.pointerId,
+                      startX: e.clientX,
+                      startY: e.clientY,
+                      originX: imageOffset.x,
+                      originY: imageOffset.y
+                    }
+                  }}
+                  onPointerMove={(e) => {
+                    if (
+                      !dragStateRef.current.isDragging ||
+                      dragStateRef.current.pointerId !== e.pointerId ||
+                      imageZoom <= MIN_ZOOM
+                    ) {
+                      return
+                    }
+
+                    e.preventDefault()
+                    setImageOffset({
+                      x: dragStateRef.current.originX + e.clientX - dragStateRef.current.startX,
+                      y: dragStateRef.current.originY + e.clientY - dragStateRef.current.startY
+                    })
+                  }}
+                  onPointerUp={(e) => {
+                    if (dragStateRef.current.pointerId === e.pointerId) {
+                      e.currentTarget.releasePointerCapture(e.pointerId)
+                    }
+                    stopDragging()
+                  }}
+                  onPointerCancel={(e) => {
+                    if (dragStateRef.current.pointerId === e.pointerId) {
+                      e.currentTarget.releasePointerCapture(e.pointerId)
+                    }
+                    stopDragging()
+                  }}
                   onError={(e) => {
                     e.currentTarget.src = '/placeholder-image.jpg'
                   }}
@@ -479,7 +475,10 @@ const Constructions: React.FC = () => {
                       {selectedReference.imageUrls.map((_, index) => (
                         <button
                           key={index}
-                          onClick={() => setCurrentImageIndex(index)}
+                          onClick={() => {
+                            setCurrentImageIndex(index)
+                            resetImageTransform()
+                          }}
                           className={`w-2 h-2 rounded-full transition-colors ${
                             index === currentImageIndex ? 'bg-white' : 'bg-white/50 hover:bg-white/70'
                           }`}

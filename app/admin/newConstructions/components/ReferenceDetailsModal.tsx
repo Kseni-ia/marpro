@@ -1,9 +1,10 @@
 'use client'
 
 import React, { useState } from 'react'
-import { X, Trash2, Plus } from 'lucide-react'
+import { X, Trash2 } from 'lucide-react'
 import { updateReference, deleteReference, Reference, REFERENCE_CATEGORIES, ReferenceCategory } from '@/lib/constructions'
 import { uploadMultipleImages, validateMultipleImages } from '@/lib/imageUpload'
+import { getReferenceImageUrl } from '@/lib/referenceImageUrl'
 
 interface ReferenceDetailsModalProps {
   reference: Reference
@@ -200,7 +201,7 @@ export default function ReferenceDetailsModal({ reference, onClose, onUpdate }: 
                 {formData.imageUrls.map((url, index) => (
                   <div key={index} className="relative group">
                     <img 
-                      src={url} 
+                      src={getReferenceImageUrl(url)}
                       alt={`Fotografie ${index + 1}`}
                       className="w-full h-24 object-cover rounded-lg border border-gray-600"
                       onError={(e) => {
@@ -236,7 +237,7 @@ export default function ReferenceDetailsModal({ reference, onClose, onUpdate }: 
               className="w-full px-3 py-2 bg-gray-700/50 border border-gray-600 rounded-lg text-gray-300 file:mr-4 file:py-1 file:px-3 file:rounded file:border-0 file:text-sm file:font-medium file:bg-red-600 file:text-white hover:file:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed"
             />
             <p className="text-xs text-gray-500 mt-1">
-              Povolené formáty: JPEG, PNG, GIF, WebP (max 500KB na soubor, max 10 fotografií celkem)
+              Povolené formáty: JPEG, PNG, GIF, WebP (max 10 MB na soubor, max 10 fotografií celkem). Nové fotografie budou po nahrání automaticky vylepšeny a opatřeny watermarkem.
             </p>
           </div>
 

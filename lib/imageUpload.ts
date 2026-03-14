@@ -1,25 +1,78 @@
-import { ref, uploadBytes, getDownloadURL } from 'firebase/storage'
-import { storage } from './firebase'
+interface CloudinarySignaturePayload {
+  apiKey: string
+  cloudName: string
+  folder: string
+  signature: string
+  tags: string
+  timestamp: number
+  uniqueFilename: string
+  useFilename: string
+}
+
+const MAX_IMAGE_SIZE_BYTES = 10 * 1024 * 1024
+const ALLOWED_IMAGE_TYPES = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp']
+
+const getSignaturePayload = async (folder: string): Promise<CloudinarySignaturePayload> => {
+  const response = await fetch('/api/cloudinary/reference-signature', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ folder })
+  })
+
+  const data = await response.json()
+
+  if (!response.ok) {
+    throw new Error(data?.error || 'Failed to initialize Cloudinary upload')
+  }
+
+  return data as CloudinarySignaturePayload
+}
 
 export const uploadImage = async (file: File, folder: string = 'references'): Promise<string> => {
   try {
-    // Create a unique filename with timestamp
-    const timestamp = Date.now()
-    const filename = `${timestamp}_${file.name}`
-    
-    // Create storage reference
-    const storageRef = ref(storage, `${folder}/${filename}`)
-    
-    // Upload file
-    await uploadBytes(storageRef, file)
-    
-    // Get download URL
-    const downloadURL = await getDownloadURL(storageRef)
-    
-    return downloadURL
+    const validation = validateImageFile(file)
+    if (!validation.isValid) {
+      throw new Error(validation.error || 'Invalid image file')
+    }
+
+    const signaturePayload = await getSignaturePayload(folder)
+    const formData = new FormData()
+
+    formData.append('file', file)
+    formData.append('api_key', signaturePayload.apiKey)
+    formData.append('folder', signaturePayload.folder)
+    formData.append('signature', signaturePayload.signature)
+    formData.append('tags', signaturePayload.tags)
+    formData.append('timestamp', signaturePayload.timestamp.toString())
+    formData.append('unique_filename', signaturePayload.uniqueFilename)
+    formData.append('use_filename', signaturePayload.useFilename)
+
+    const response = await fetch(
+      `https://api.cloudinary.com/v1_1/${signaturePayload.cloudName}/image/upload`,
+      {
+        method: 'POST',
+        body: formData
+      }
+    )
+
+    const data = await response.json()
+
+    if (!response.ok) {
+      throw new Error(data?.error?.message || data?.error || 'Cloudinary upload failed')
+    }
+
+    if (!data.secure_url) {
+      throw new Error('Cloudinary did not return an image URL')
+    }
+
+    return data.secure_url as string
   } catch (error) {
     console.error('Error uploading image:', error)
-    throw new Error('Failed to upload image')
+    throw new Error(
+      error instanceof Error ? error.message : 'Failed to upload image'
+    )
   }
 }
 
@@ -30,20 +83,18 @@ export const uploadMultipleImages = async (files: File[], folder: string = 'refe
 
 export function validateImageFile(file: File): { isValid: boolean; error?: string } {
   // Check file type
-  const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp']
-  if (!allowedTypes.includes(file.type)) {
+  if (!ALLOWED_IMAGE_TYPES.includes(file.type)) {
     return {
       isValid: false,
       error: 'Nepodporovaný formát souboru. Povolené formáty: JPEG, PNG, GIF, WebP.'
     }
   }
 
-  // Check file size (500KB limit)
-  const maxSize = 500 * 1024 // 500KB in bytes
-  if (file.size > maxSize) {
+  // Check file size (10MB limit)
+  if (file.size > MAX_IMAGE_SIZE_BYTES) {
     return {
       isValid: false,
-      error: 'Soubor je příliš velký. Maximální velikost souboru je 500 KB. Prosím, nahrajte menší obrázek.'
+      error: 'Soubor je příliš velký. Maximální velikost souboru je 10 MB.'
     }
   }
 

@@ -79,8 +79,69 @@ Value: [Your Resend API key from https://resend.com/api-keys]
 ```
 
 ```
+Variable name: RESEND_FROM_EMAIL
+Value: Marpro <noreply@tzb-marpro.cz>
+```
+
+```
+Variable name: RESEND_ADMIN_FROM_EMAIL
+Value: Marpro Orders <orders@tzb-marpro.cz>
+```
+
+```
 Variable name: ADMIN_EMAIL
 Value: sergeevnakseniia9@gmail.com
+```
+
+#### Cloudinary Reference Images
+```
+Variable name: CLOUDINARY_CLOUD_NAME
+Value: [Your Cloudinary cloud name]
+```
+
+```
+Variable name: CLOUDINARY_API_KEY
+Value: [Your Cloudinary API key]
+```
+
+```
+Variable name: CLOUDINARY_API_SECRET
+Value: [Your Cloudinary API secret]
+```
+
+```
+Variable name: CLOUDINARY_REFERENCE_FOLDER
+Value: references
+```
+
+```
+Variable name: NEXT_PUBLIC_CLOUDINARY_WATERMARK_PUBLIC_ID
+Value: [Your uploaded logo public ID, for example marpro/logo-watermark]
+```
+
+```
+Variable name: NEXT_PUBLIC_CLOUDINARY_WATERMARK_GRAVITY
+Value: south_east
+```
+
+```
+Variable name: NEXT_PUBLIC_CLOUDINARY_WATERMARK_OFFSET_X
+Value: 24
+```
+
+```
+Variable name: NEXT_PUBLIC_CLOUDINARY_WATERMARK_OFFSET_Y
+Value: 24
+```
+
+```
+Variable name: NEXT_PUBLIC_CLOUDINARY_WATERMARK_OPACITY
+Value: 45
+```
+
+```
+Variable name: NEXT_PUBLIC_CLOUDINARY_WATERMARK_WIDTH_RATIO
+Value: 0.18
 ```
 
 ### Step 3: Set Variable Scopes

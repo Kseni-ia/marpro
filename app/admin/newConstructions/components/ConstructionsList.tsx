@@ -7,6 +7,7 @@ import { useLanguage } from '@/contexts/LanguageContext'
 import AddReferenceModal from './AddReferenceModal'
 import ReferenceDetailsModal from './ReferenceDetailsModal'
 import Image from 'next/image'
+import { getReferenceImageUrl } from '@/lib/referenceImageUrl'
 
 export default function ConstructionsList() {
   const { t } = useLanguage()
@@ -156,7 +157,7 @@ export default function ConstructionsList() {
                       className={`${reference.imageUrls.length === 1 ? 'col-span-2 row-span-2' : reference.imageUrls.length === 2 ? 'col-span-1 row-span-2' : ''} relative bg-gray-700/50 rounded-lg overflow-hidden`}
                     >
                       <Image
-                        src={url}
+                        src={getReferenceImageUrl(url)}
                         alt={`${reference.title} ${index + 1}`}
                         width={200}
                         height={150}
