@@ -12,6 +12,7 @@ import GoogleAnalytics from '@/components/GoogleAnalytics'
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
+  metadataBase: new URL('https://tzb-marpro.cz'),
   title: 'Marpro',
   description: 'Marpro - Containers, Excavators, Constructions',
 }
