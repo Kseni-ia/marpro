@@ -6,5 +6,29 @@
 [build.environment]
   NODE_VERSION = "18"
 
+[[redirects]]
+  from = "https://marprostav.cz/*"
+  to = "https://tzb-marpro.cz/:splat"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "https://www.marprostav.cz/*"
+  to = "https://tzb-marpro.cz/:splat"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "https://marpro-stav.cz/*"
+  to = "https://tzb-marpro.cz/:splat"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "https://www.marpro-stav.cz/*"
+  to = "https://tzb-marpro.cz/:splat"
+  status = 301
+  force = true
+
 [[plugins]]
   package = "@netlify/plugin-nextjs"
