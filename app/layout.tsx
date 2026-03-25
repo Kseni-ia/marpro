@@ -8,14 +8,15 @@ import { ModalProvider } from '@/contexts/ModalContext'
 import { LoadingProvider } from '@/contexts/LoadingContext'
 import LoadingManager from '@/components/LoadingManager'
 import GoogleAnalytics from '@/components/GoogleAnalytics'
+import {
+  defaultMetadata,
+  organizationStructuredData,
+  websiteStructuredData,
+} from '@/lib/seo'
 
 const inter = Inter({ subsets: ['latin'] })
 
-export const metadata: Metadata = {
-  metadataBase: new URL('https://tzb-marpro.cz'),
-  title: 'Marpro',
-  description: 'Marpro - Containers, Excavators, Constructions',
-}
+export const metadata: Metadata = defaultMetadata
 
 export default function RootLayout({
   children,
@@ -23,8 +24,20 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en">
+    <html lang="cs">
       <body className={`${inter.className} bg-gray-dark-bg`}>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(organizationStructuredData),
+          }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(websiteStructuredData),
+          }}
+        />
         <GoogleAnalytics gaId="G-7ZSNC2QFYH" />
         <LoadingProvider>
           <ClientThemeProvider>
