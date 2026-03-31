@@ -3,22 +3,24 @@
 import React, { useState } from 'react'
 import Containers from '@/app/Container/ContainerPageClient'
 import Excavators from '@/app/Excavator/ExcavatorPageClient'
-import Constructions from '@/app/Construction/ConstructionPageClient'
+import InstallationPageClient from '@/app/Installation/InstallationPageClient'
 import AnimatedLogo from '@/components/AnimatedLogo'
 import BlurUpBackground from '@/components/BlurUpBackground'
 import Footer from '@/app/Footer'
 import TopNavigation from '@/components/TopNavigation'
 import { useLanguage } from '@/contexts/LanguageContext'
 import { useModal } from '@/contexts/ModalContext'
+import { getInstallationCopy } from '@/lib/installationCopy'
 import { useRouter } from 'next/navigation'
 
-type Section = 'home' | 'containers' | 'excavators' | 'constructions'
+type Section = 'home' | 'containers' | 'excavators' | 'installations'
 
 export default function HomePageClient() {
   const [activeSection, setActiveSection] = useState<Section>('home')
-  const { t } = useLanguage()
+  const { t, language } = useLanguage()
   const { isModalOpen } = useModal()
   const router = useRouter()
+  const installationCopy = getInstallationCopy(language)
 
   const navigateToSection = (path: string) => {
     router.push(path)
@@ -30,8 +32,8 @@ export default function HomePageClient() {
         return <Containers />
       case 'excavators':
         return <Excavators />
-      case 'constructions':
-        return <Constructions />
+      case 'installations':
+        return <InstallationPageClient />
       default:
         return (
           <div className="text-center ">
@@ -67,15 +69,15 @@ export default function HomePageClient() {
               </div>
 
               <div
-                id="constructions"
+                id="installations"
                 className="w-full max-w-xs bg-gradient-card-dark border-2 border-gray-dark-border rounded-[15px] p-5 cursor-pointer transition-all duration-[400ms] shadow-[0_10px_40px_rgba(220,38,38,0.4)] relative overflow-hidden group hover:-translate-y-2.5 hover:scale-[1.02] hover:shadow-[0_20px_40px_rgba(220,38,38,0.6)] hover:bg-gradient-card-hover-dark hover:border-gray-dark-border"
-                onClick={() => navigateToSection('/Construction')}
+                onClick={() => navigateToSection('/Installation')}
               >
                 <h3 className="text-gray-dark-text text-xl mb-3 font-bold uppercase tracking-[1px]">
-                  {t('nav.constructions')}
+                  {installationCopy.title}
                 </h3>
                 <p className="text-gray-dark-textSecondary text-sm">
-                  {t('constructions.view')}
+                  {installationCopy.cardDescription}
                 </p>
               </div>
             </div>
@@ -108,15 +110,15 @@ export default function HomePageClient() {
               </div>
 
               <div
-                id="constructions"
+                id="installations"
                 className="bg-gradient-card-dark border-2 border-gray-dark-border rounded-[20px] cursor-pointer transition-all duration-[400ms] shadow-[0_10px_30px_rgba(0,0,0,0.3)] hover:shadow-[0_20px_40px_rgba(220,38,38,0.6)] relative overflow-hidden group hover:-translate-y-2.5 hover:scale-[1.02] hover:bg-gradient-card-hover-dark hover:border-gray-dark-border text-center w-[320px] h-[160px] flex flex-col justify-center items-center px-6 py-6"
-                onClick={() => navigateToSection('/Construction')}
+                onClick={() => navigateToSection('/Installation')}
               >
                 <h3 className="text-gray-dark-text text-2xl font-bold uppercase tracking-[2px] mb-3 leading-tight">
-                  {t('nav.constructions').toUpperCase()}
+                  {installationCopy.title.toUpperCase()}
                 </h3>
                 <p className="text-gray-dark-textSecondary text-sm leading-tight">
-                  {t('constructions.view')}
+                  {installationCopy.cardDescription}
                 </p>
               </div>
             </div>
