@@ -31,6 +31,8 @@ export default function ReferenceGalleryModal({
   const [currentImageIndex, setCurrentImageIndex] = useState(0)
   const [imageZoom, setImageZoom] = useState(MIN_ZOOM)
   const [imageOffset, setImageOffset] = useState({ x: 0, y: 0 })
+  const [touchStartX, setTouchStartX] = useState<number | null>(null)
+  const [touchEndX, setTouchEndX] = useState<number | null>(null)
   const dragStateRef = useRef<DragState>({
     isDragging: false,
     pointerId: null,
@@ -42,6 +44,7 @@ export default function ReferenceGalleryModal({
 
   const imageCount = reference.imageUrls?.length ?? 0
   const hasMultipleImages = imageCount > 1
+  const SWIPE_THRESHOLD = 50
 
   const clampZoom = (zoom: number) => Math.min(MAX_ZOOM, Math.max(MIN_ZOOM, zoom))
 
@@ -66,6 +69,25 @@ export default function ReferenceGalleryModal({
   const stopDragging = () => {
     dragStateRef.current.isDragging = false
     dragStateRef.current.pointerId = null
+  }
+
+  const handleSwipe = () => {
+    if (!hasMultipleImages || imageZoom > MIN_ZOOM || touchStartX === null || touchEndX === null) {
+      return
+    }
+
+    const swipeDistance = touchStartX - touchEndX
+
+    if (Math.abs(swipeDistance) < SWIPE_THRESHOLD) {
+      return
+    }
+
+    if (swipeDistance > 0) {
+      changeImage(1)
+      return
+    }
+
+    changeImage(-1)
   }
 
   useEffect(() => {
@@ -125,12 +147,11 @@ export default function ReferenceGalleryModal({
     >
       <div className="relative h-[100dvh] w-screen overflow-hidden">
         <button
-          onClick={() => {
+          onClick={(event) => {
+            event.stopPropagation()
             onClose()
             resetImageTransform()
           }}
-          onMouseDown={(event) => event.stopPropagation()}
-          onClickCapture={(event) => event.stopPropagation()}
           className="absolute right-4 top-4 z-20 rounded-full bg-black/60 p-2 text-white transition-colors hover:bg-black/80"
           title="Zavřít"
         >
@@ -140,18 +161,20 @@ export default function ReferenceGalleryModal({
         {hasMultipleImages && (
           <>
             <button
-              onClick={() => changeImage(-1)}
-              onMouseDown={(event) => event.stopPropagation()}
-              onClickCapture={(event) => event.stopPropagation()}
+              onClick={(event) => {
+                event.stopPropagation()
+                changeImage(-1)
+              }}
               className="absolute left-4 top-1/2 z-20 -translate-y-1/2 rounded-full bg-black/60 p-3 text-white transition-colors hover:bg-black/80"
               title="Předchozí"
             >
               <ChevronLeft className="h-6 w-6" />
             </button>
             <button
-              onClick={() => changeImage(1)}
-              onMouseDown={(event) => event.stopPropagation()}
-              onClickCapture={(event) => event.stopPropagation()}
+              onClick={(event) => {
+                event.stopPropagation()
+                changeImage(1)
+              }}
               className="absolute right-4 top-1/2 z-20 -translate-y-1/2 rounded-full bg-black/60 p-3 text-white transition-colors hover:bg-black/80"
               title="Další"
             >
@@ -202,6 +225,26 @@ export default function ReferenceGalleryModal({
             }
 
             zoomOut()
+          }}
+          onTouchStart={(event) => {
+            if (imageZoom > MIN_ZOOM) {
+              return
+            }
+
+            setTouchEndX(null)
+            setTouchStartX(event.targetTouches[0].clientX)
+          }}
+          onTouchMove={(event) => {
+            if (imageZoom > MIN_ZOOM || touchStartX === null) {
+              return
+            }
+
+            setTouchEndX(event.targetTouches[0].clientX)
+          }}
+          onTouchEnd={() => {
+            handleSwipe()
+            setTouchStartX(null)
+            setTouchEndX(null)
           }}
         >
           <div
@@ -283,16 +326,12 @@ export default function ReferenceGalleryModal({
           </div>
         </div>
 
-        <div
-          className="absolute inset-x-0 bottom-0 z-20 bg-gradient-to-t from-black via-black/85 to-transparent px-6 pb-6 pt-20 text-center text-white"
-          onMouseDown={(event) => event.stopPropagation()}
-          onClick={(event) => event.stopPropagation()}
-        >
-          <h3 className="mb-2 text-xl font-bold sm:text-2xl">{reference.title}</h3>
-          <p className="mx-auto max-w-3xl text-sm leading-relaxed text-white/80 sm:text-base">
-            {reference.description}
-          </p>
-          {hasMultipleImages && (
+        {hasMultipleImages && (
+          <div
+            className="absolute inset-x-0 bottom-0 z-20 bg-gradient-to-t from-black via-black/85 to-transparent px-6 pb-6 pt-20 text-center text-white"
+            onMouseDown={(event) => event.stopPropagation()}
+            onClick={(event) => event.stopPropagation()}
+          >
             <div className="mt-4 flex items-center justify-center gap-2">
               <div className="flex gap-1.5">
                 {reference.imageUrls.map((_, index) => (
@@ -311,8 +350,8 @@ export default function ReferenceGalleryModal({
                 ))}
               </div>
             </div>
-          )}
-        </div>
+          </div>
+        )}
       </div>
     </div>
   )
