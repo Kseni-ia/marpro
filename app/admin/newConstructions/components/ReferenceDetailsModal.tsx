@@ -201,11 +201,11 @@ export default function ReferenceDetailsModal({ reference, onClose, onUpdate }: 
                 {formData.imageUrls.map((url, index) => (
                   <div key={index} className="relative group">
                     <img 
-                      src={getReferenceImageUrl(url)}
+                      src={getReferenceImageUrl(url, 'admin')}
                       alt={`Fotografie ${index + 1}`}
                       className="w-full h-24 object-cover rounded-lg border border-gray-600"
                       onError={(e) => {
-                        e.currentTarget.src = '/placeholder-image.jpg'
+                        e.currentTarget.src = '/placeholder-image.svg'
                       }}
                     />
                     <button

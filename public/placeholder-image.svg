@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" role="img" aria-labelledby="title desc">
+  <title id="title">Image placeholder</title>
+  <desc id="desc">Neutral placeholder used when a project photo is unavailable.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#111827" />
+      <stop offset="100%" stop-color="#1f2937" />
+    </linearGradient>
+    <linearGradient id="frame" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#475569" />
+      <stop offset="100%" stop-color="#64748b" />
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="800" fill="url(#bg)" rx="36" />
+  <rect x="140" y="120" width="920" height="560" rx="28" fill="none" stroke="url(#frame)" stroke-width="24" />
+  <path d="M310 540l145-170c18-21 51-23 72-4l88 79 138-166c20-24 58-24 78 1l159 200c18 23 2 57-27 57H338c-30 0-46-35-28-57Z" fill="#334155" />
+  <circle cx="454" cy="312" r="56" fill="#94a3b8" />
+</svg>

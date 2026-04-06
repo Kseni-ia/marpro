@@ -2,7 +2,7 @@
 
 import Image from 'next/image'
 import { Reference } from '@/lib/constructions'
-import { getReferenceImageUrl } from '@/lib/referenceImageUrl'
+import { getReferenceImageUrl, isCloudinaryImageUrl } from '@/lib/referenceImageUrl'
 
 type ReferencesGridProps = {
   loading: boolean
@@ -39,13 +39,15 @@ export default function ReferencesGrid({
                 {reference.imageUrls && reference.imageUrls.length > 0 ? (
                   <div className="relative h-full w-full">
                     <Image
-                      src={getReferenceImageUrl(reference.imageUrls[0])}
+                      src={getReferenceImageUrl(reference.imageUrls[0], 'grid')}
                       alt={reference.title}
-                      width={400}
-                      height={300}
+                      width={800}
+                      height={600}
+                      sizes="(min-width: 1536px) 20vw, (min-width: 1280px) 25vw, (min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw"
+                      unoptimized={isCloudinaryImageUrl(reference.imageUrls[0])}
                       className="h-full w-full object-cover"
                       onError={(event) => {
-                        event.currentTarget.src = '/placeholder-image.jpg'
+                        event.currentTarget.src = '/placeholder-image.svg'
                       }}
                     />
 

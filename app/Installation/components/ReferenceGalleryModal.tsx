@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from 'react'
 import Image from 'next/image'
 import { ChevronLeft, ChevronRight, X } from 'lucide-react'
 import { Reference } from '@/lib/constructions'
-import { getReferenceImageUrl } from '@/lib/referenceImageUrl'
+import { getReferenceImageUrl, isCloudinaryImageUrl } from '@/lib/referenceImageUrl'
 
 const MIN_ZOOM = 1
 const MAX_ZOOM = 3
@@ -45,6 +45,7 @@ export default function ReferenceGalleryModal({
   const imageCount = reference.imageUrls?.length ?? 0
   const hasMultipleImages = imageCount > 1
   const SWIPE_THRESHOLD = 50
+  const currentImageUrl = reference.imageUrls?.[currentImageIndex]
 
   const clampZoom = (zoom: number) => Math.min(MAX_ZOOM, Math.max(MIN_ZOOM, zoom))
 
@@ -253,10 +254,12 @@ export default function ReferenceGalleryModal({
             onClick={(event) => event.stopPropagation()}
           >
             <Image
-              src={getReferenceImageUrl(reference.imageUrls[currentImageIndex])}
+              src={getReferenceImageUrl(currentImageUrl, 'gallery')}
               alt={`${reference.title} ${currentImageIndex + 1}`}
               width={1800}
               height={1200}
+              sizes="100vw"
+              unoptimized={isCloudinaryImageUrl(currentImageUrl)}
               draggable={false}
               className={`max-h-[100dvh] max-w-[100vw] h-auto w-auto select-none object-contain transition-transform duration-200 ${
                 imageZoom > MIN_ZOOM
@@ -320,7 +323,7 @@ export default function ReferenceGalleryModal({
                 stopDragging()
               }}
               onError={(event) => {
-                event.currentTarget.src = '/placeholder-image.jpg'
+                event.currentTarget.src = '/placeholder-image.svg'
               }}
             />
           </div>

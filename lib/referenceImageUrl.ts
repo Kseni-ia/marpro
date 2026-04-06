@@ -4,6 +4,16 @@ const DEFAULT_WATERMARK_GRAVITY = 'south_east'
 const DEFAULT_WATERMARK_OFFSET = 24
 const DEFAULT_WATERMARK_OPACITY = 45
 const DEFAULT_WATERMARK_WIDTH_RATIO = 0.18
+const DEFAULT_REFERENCE_FALLBACK = '/placeholder-image.svg'
+
+export type ReferenceImageVariant = 'admin' | 'gallery' | 'grid'
+
+const REFERENCE_VARIANT_TRANSFORMATIONS: Record<ReferenceImageVariant, string[]> = {
+  admin: ['c_fill', 'g_auto', 'w_420', 'h_320', 'q_auto:eco'],
+  gallery: ['c_limit', 'w_1800', 'h_1800', 'q_auto:good'],
+  grid: ['c_fill', 'g_auto', 'w_800', 'h_600', 'q_auto:eco'],
+}
+
 const ALLOWED_GRAVITIES = new Set([
   'north',
   'north_east',
@@ -39,8 +49,19 @@ const getGravity = () => {
   return ALLOWED_GRAVITIES.has(gravity) ? gravity : DEFAULT_WATERMARK_GRAVITY
 }
 
-const buildReferenceTransformations = () => {
-  const baseTransformations = ['f_auto', 'q_auto', 'e_auto_enhance']
+export const isCloudinaryImageUrl = (sourceUrl?: string | null) =>
+  Boolean(
+    sourceUrl &&
+      sourceUrl.includes('res.cloudinary.com') &&
+      sourceUrl.includes(CLOUDINARY_UPLOAD_SEGMENT)
+  )
+
+const buildReferenceTransformations = (variant: ReferenceImageVariant) => {
+  const baseTransformations = [
+    ...REFERENCE_VARIANT_TRANSFORMATIONS[variant],
+    'f_auto',
+    'dpr_auto',
+  ]
   const watermarkPublicId = process.env.NEXT_PUBLIC_CLOUDINARY_WATERMARK_PUBLIC_ID?.trim()
 
   if (!watermarkPublicId) {
@@ -56,9 +77,12 @@ const buildReferenceTransformations = () => {
   return `${baseTransformations.join(',')}/${overlayTransforms.join('/')}`
 }
 
-export const getReferenceImageUrl = (sourceUrl?: string | null) => {
-  if (!sourceUrl || !sourceUrl.includes('res.cloudinary.com') || !sourceUrl.includes(CLOUDINARY_UPLOAD_SEGMENT)) {
-    return sourceUrl || '/placeholder-image.jpg'
+export const getReferenceImageUrl = (
+  sourceUrl?: string | null,
+  variant: ReferenceImageVariant = 'gallery'
+) => {
+  if (!isCloudinaryImageUrl(sourceUrl)) {
+    return sourceUrl || DEFAULT_REFERENCE_FALLBACK
   }
 
   const [prefix, suffix] = sourceUrl.split(CLOUDINARY_UPLOAD_SEGMENT)
@@ -73,7 +97,7 @@ export const getReferenceImageUrl = (sourceUrl?: string | null) => {
     return sourceUrl
   }
 
-  const transformedUrl = `${prefix}${CLOUDINARY_UPLOAD_SEGMENT}${buildReferenceTransformations()}/${normalizedPath}`
+  const transformedUrl = `${prefix}${CLOUDINARY_UPLOAD_SEGMENT}${buildReferenceTransformations(variant)}/${normalizedPath}`
 
   return queryString ? `${transformedUrl}?${queryString}` : transformedUrl
 }
