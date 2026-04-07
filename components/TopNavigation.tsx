@@ -6,6 +6,7 @@ import Image from 'next/image'
 import { useLanguage } from '@/contexts/LanguageContext'
 import { useModal } from '@/contexts/ModalContext'
 import { getInstallationCopy } from '@/lib/installationCopy'
+import { getPriceListCopy } from '@/lib/priceListCopy'
 import WorkApplicationForm from './WorkApplicationForm'
 import { Menu, X } from 'lucide-react'
 
@@ -14,6 +15,7 @@ export default function TopNavigation() {
   const { t, language } = useLanguage()
   const { isModalOpen } = useModal()
   const installationCopy = getInstallationCopy(language)
+  const priceListCopy = getPriceListCopy(language)
   const [showWorkForm, setShowWorkForm] = useState(false)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
@@ -127,6 +129,12 @@ export default function TopNavigation() {
                 {installationCopy.title}
               </button>
               <button 
+                onClick={() => navigateToSection('/Cenik')}
+                className="text-gray-dark-textSecondary/90 hover:text-red-400 transition-all duration-300 font-medium hover:scale-105 hover:drop-shadow-[0_0_10px_rgba(220,38,38,0.3)]"
+              >
+                {priceListCopy.navLabel}
+              </button>
+              <button 
                 onClick={handleWorkWithUs}
                 className="text-gray-dark-textSecondary/90 hover:text-red-400 transition-all duration-300 font-medium hover:scale-105 hover:drop-shadow-[0_0_10px_rgba(220,38,38,0.3)]"
               >
@@ -183,6 +191,12 @@ export default function TopNavigation() {
                   className="text-gray-300 hover:text-white hover:bg-gradient-to-r hover:from-red-600/20 hover:to-red-500/10 transition-all duration-300 font-medium py-3.5 px-5 text-left border-b border-gray-700/30 hover:border-red-500/30"
                 >
                   {installationCopy.title}
+                </button>
+                <button 
+                  onClick={() => navigateToSection('/Cenik')}
+                  className="text-gray-300 hover:text-white hover:bg-gradient-to-r hover:from-red-600/20 hover:to-red-500/10 transition-all duration-300 font-medium py-3.5 px-5 text-left border-b border-gray-700/30 hover:border-red-500/30"
+                >
+                  {priceListCopy.navLabel}
                 </button>
                 <button 
                   onClick={() => { setMobileMenuOpen(false); handleWorkWithUs(); }}

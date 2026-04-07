@@ -2,7 +2,7 @@
 
 import React, { useState, Fragment, useRef, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import { Calendar, LogOut, Home, ChevronRight, ChevronLeft, Package, Truck, FileText, Hammer, Menu, X, Tractor } from 'lucide-react'
+import { Calendar, LogOut, Home, ChevronRight, ChevronLeft, Package, Truck, FileText, Hammer, Menu, X, Tractor, DollarSign } from 'lucide-react'
 import { useLanguage } from '@/contexts/LanguageContext'
 
 interface NavigationBarProps {
@@ -133,6 +133,18 @@ export default function NavigationBar({ onScheduleClick, onLogout }: NavigationB
           </button>
         </div>
 
+        <div className="w-full px-3 mb-4">
+          <button
+            onClick={() => router.push('/admin/cenik')}
+            className={`rounded-xl bg-red-950/40 text-white hover:bg-red-900/60 hover:text-white hover:border-red-600 flex items-center transition-all duration-300 border-2 border-red-900/50 ${isOpen ? 'w-full justify-start gap-3 px-4 h-12' : 'w-10 h-10 justify-center mx-auto'
+              }`}
+            title="Ceník služeb"
+          >
+            <DollarSign className="w-5 h-5 flex-shrink-0" />
+            {isOpen && <span className="text-sm font-medium">Ceník služeb</span>}
+          </button>
+        </div>
+
         {/* Spacer to push logout to bottom */}
         <div className="flex-1" />
 
@@ -256,6 +268,17 @@ export default function NavigationBar({ onScheduleClick, onLogout }: NavigationB
               >
                 <FileText className="w-5 h-5 flex-shrink-0" />
                 <span className="text-sm font-medium">{t('admin.workApplications')}</span>
+              </button>
+
+              <button
+                onClick={() => {
+                  router.push('/admin/cenik')
+                  setMobileMenuOpen(false)
+                }}
+                className="w-full rounded-xl bg-red-950/40 text-white hover:bg-red-900/60 hover:text-white hover:border-red-600 flex items-center gap-3 px-4 h-12 transition-all duration-300 border-2 border-red-900/50"
+              >
+                <DollarSign className="w-5 h-5 flex-shrink-0" />
+                <span className="text-sm font-medium">Ceník služeb</span>
               </button>
             </div>
 
