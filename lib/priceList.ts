@@ -16,15 +16,16 @@ export interface PriceListPreset {
   name: string
 }
 
-export type PriceListCurrency = 'Kč' | 'Kč/h'
+export type PriceListCurrency = 'Kč' | 'Kč/h' | 'Kč/km'
 
 export type PriceListItemInput = Omit<PriceListItem, 'id' | 'createdAt'>
 
 const PRICE_LIST_COLLECTION = 'priceListItems'
 
 const DEFAULT_PRICE_LIST_CURRENCY: PriceListCurrency = 'Kč'
-const PRICE_SUFFIX_PATTERN = /\s*Kč(?:\s*\/\s*(?:h|hod))?\s*$/i
+const PRICE_SUFFIX_PATTERN = /\s*Kč(?:\s*\/\s*(?:h|hod|km))?\s*$/i
 const HOURLY_PRICE_PATTERN = /Kč\s*\/\s*(?:h|hod)|Kč\/h/i
+const DISTANCE_PRICE_PATTERN = /Kč\s*\/\s*km|Kč\/km/i
 const NUMBER_GROUP_PATTERN = /\d[\d ]*/g
 
 export const PRICE_LIST_PRESETS: PriceListPreset[] = [
@@ -34,14 +35,18 @@ export const PRICE_LIST_PRESETS: PriceListPreset[] = [
   },
 ]
 
-export const PRICE_LIST_CURRENCIES: PriceListCurrency[] = ['Kč', 'Kč/h']
+export const PRICE_LIST_CURRENCIES: PriceListCurrency[] = ['Kč', 'Kč/h', 'Kč/km']
 
 export const normalizePriceListCurrency = (
   price: string,
   currency?: string | null
 ): PriceListCurrency => {
-  if (currency === 'Kč' || currency === 'Kč/h') {
+  if (currency === 'Kč' || currency === 'Kč/h' || currency === 'Kč/km') {
     return currency
+  }
+
+  if (DISTANCE_PRICE_PATTERN.test(price)) {
+    return 'Kč/km'
   }
 
   return HOURLY_PRICE_PATTERN.test(price) ? 'Kč/h' : DEFAULT_PRICE_LIST_CURRENCY
@@ -57,6 +62,29 @@ const formatDigitGroup = (digitGroup: string) => {
 
 export const formatPriceListAmount = (price: string) =>
   sanitizePriceListAmount(price).replace(NUMBER_GROUP_PATTERN, formatDigitGroup)
+
+export const normalizePriceListItemInput = <T extends Partial<PriceListItemInput>>(
+  item: T
+): T => {
+  const normalizedItem = { ...item } as T
+
+  if (typeof item.name === 'string') {
+    normalizedItem.name = item.name.trim() as T['name']
+  }
+
+  if (typeof item.price === 'string') {
+    normalizedItem.price = formatPriceListAmount(item.price) as T['price']
+  }
+
+  if (typeof item.priceCurrency === 'string') {
+    normalizedItem.priceCurrency = normalizePriceListCurrency(
+      typeof normalizedItem.price === 'string' ? normalizedItem.price : '',
+      item.priceCurrency
+    ) as T['priceCurrency']
+  }
+
+  return normalizedItem
+}
 
 export const formatPriceListPrice = ({
   price,
@@ -103,8 +131,10 @@ export const getActivePriceListItems = async (): Promise<PriceListItem[]> => {
 }
 
 export const createPriceListItem = async (item: PriceListItemInput): Promise<string> => {
+  const normalizedItem = normalizePriceListItemInput(item)
+
   const docRef = await addDoc(collection(db, PRICE_LIST_COLLECTION), {
-    ...item,
+    ...normalizedItem,
     createdAt: new Date(),
   })
 
@@ -115,7 +145,7 @@ export const updatePriceListItem = async (
   itemId: string,
   item: Partial<PriceListItemInput>
 ): Promise<void> => {
-  await updateDoc(doc(db, PRICE_LIST_COLLECTION, itemId), item)
+  await updateDoc(doc(db, PRICE_LIST_COLLECTION, itemId), normalizePriceListItemInput(item))
 }
 
 export const deletePriceListItem = async (itemId: string): Promise<void> => {

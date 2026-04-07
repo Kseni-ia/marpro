@@ -5,6 +5,7 @@ import { X } from 'lucide-react'
 import {
   createPriceListItem,
   formatPriceListAmount,
+  normalizePriceListItemInput,
   normalizePriceListCurrency,
   PRICE_LIST_CURRENCIES,
   PriceListItem,
@@ -41,11 +42,19 @@ export default function PriceListItemModal({
     setLoading(true)
     setError('')
 
+    const normalizedFormData = normalizePriceListItemInput(formData)
+
+    if (!normalizedFormData.name || !normalizedFormData.price) {
+      setError('Vyplňte název služby i cenu.')
+      setLoading(false)
+      return
+    }
+
     try {
       if (isEditing && item) {
-        await updatePriceListItem(item.id, formData)
+        await updatePriceListItem(item.id, normalizedFormData)
       } else {
-        await createPriceListItem(formData)
+        await createPriceListItem(normalizedFormData)
       }
 
       onSuccess()
@@ -114,7 +123,13 @@ export default function PriceListItemModal({
               onChange={(event) =>
                 setFormData((prev) => ({
                   ...prev,
-                  price: formatPriceListAmount(event.target.value),
+                  price: event.target.value,
+                }))
+              }
+              onBlur={() =>
+                setFormData((prev) => ({
+                  ...prev,
+                  price: formatPriceListAmount(prev.price),
                 }))
               }
               className={inputClass}
