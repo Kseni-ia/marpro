@@ -49,7 +49,7 @@ const getGravity = () => {
   return ALLOWED_GRAVITIES.has(gravity) ? gravity : DEFAULT_WATERMARK_GRAVITY
 }
 
-export const isCloudinaryImageUrl = (sourceUrl?: string | null) =>
+export const isCloudinaryImageUrl = (sourceUrl?: string | null): sourceUrl is string =>
   Boolean(
     sourceUrl &&
       sourceUrl.includes('res.cloudinary.com') &&
@@ -80,9 +80,13 @@ const buildReferenceTransformations = (variant: ReferenceImageVariant) => {
 export const getReferenceImageUrl = (
   sourceUrl?: string | null,
   variant: ReferenceImageVariant = 'gallery'
-) => {
+): string => {
+  if (!sourceUrl) {
+    return DEFAULT_REFERENCE_FALLBACK
+  }
+
   if (!isCloudinaryImageUrl(sourceUrl)) {
-    return sourceUrl || DEFAULT_REFERENCE_FALLBACK
+    return sourceUrl
   }
 
   const [prefix, suffix] = sourceUrl.split(CLOUDINARY_UPLOAD_SEGMENT)
