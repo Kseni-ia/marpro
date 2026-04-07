@@ -12,6 +12,7 @@ import { useLanguage } from '@/contexts/LanguageContext'
 import { getActiveExcavators, Excavator } from '@/lib/excavators'
 import ExcavatorCard from '@/app/Excavator/components/ExcavatorCard'
 import { getActiveContainers, Container } from '@/lib/containers'
+import { isFramedContainerImage, resolveContainerImage } from '@/lib/containerImages'
 
 export default function AdminDashboard() {
   const { isAuthenticated, logout, loading: authLoading } = useAuth()
@@ -773,7 +774,11 @@ export default function AdminDashboard() {
                     </div>
                   ) : (
                     <div className="space-y-2 max-h-60 overflow-y-auto">
-                      {containers.map((container) => (
+                      {containers.map((container) => {
+                        const imageSrc = resolveContainerImage(container.image)
+                        const framedImage = isFramedContainerImage(container.image)
+
+                        return (
                         <div
                           key={container.id}
                           onClick={() => setSelectedContainer(container)}
@@ -783,13 +788,13 @@ export default function AdminDashboard() {
                             }`}
                         >
                           <div className="flex items-center gap-3">
-                            <div className="w-12 h-12 flex-shrink-0">
+                            <div className="w-12 h-12 flex-shrink-0 overflow-hidden rounded-lg">
                               <Image
-                                src={container.image || '/container-medium.svg'}
+                                src={imageSrc}
                                 alt={`${container.volume}m³ container`}
                                 width={48}
                                 height={48}
-                                className="w-full h-full object-contain"
+                                className={`h-full w-full ${framedImage ? 'scale-[1.32] object-cover' : 'object-contain'}`}
                               />
                             </div>
                             <div className="flex-1 min-w-0">
@@ -805,7 +810,8 @@ export default function AdminDashboard() {
                             </div>
                           </div>
                         </div>
-                      ))}
+                        )
+                      })}
                     </div>
                   )}
                 </div>

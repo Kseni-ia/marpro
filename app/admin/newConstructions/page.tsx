@@ -54,18 +54,19 @@ export default function AddRemoveConstruction() {
       
       {/* Main Content Area */}
       <div className="relative md:ml-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 pt-16 sm:pt-12 md:pt-16 pb-24 md:pb-8">
-          {/* Header */}
-          <div className="mb-8 text-center">
-            <h1 className="text-2xl sm:text-3xl font-bold text-gray-dark-text uppercase tracking-wider mb-2">
+        <div className="mx-auto max-w-6xl px-4 py-5 pb-20 pt-16 sm:px-6 sm:pt-12 md:pt-16 lg:px-8 md:pb-8">
+          <div className="mb-6 rounded-[26px] border border-white/8 bg-white/[0.025] px-5 py-5 shadow-[0_20px_40px_rgba(0,0,0,0.12)]">
+            <p className="mb-2 text-[11px] font-semibold uppercase tracking-[0.24em] text-red-300/80">
+              Admin
+            </p>
+            <h1 className="text-xl font-semibold tracking-tight text-gray-dark-text sm:text-2xl">
               Správa staveb
             </h1>
-            <p className="text-gray-dark-textSecondary text-sm sm:text-base">
+            <p className="mt-2 text-sm leading-6 text-gray-dark-textSecondary">
               Správa demoličních a instalačních služeb a referencí
             </p>
           </div>
 
-          {/* Constructions List */}
           <ConstructionsList />
         </div>
       </div>

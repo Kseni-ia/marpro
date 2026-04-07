@@ -3,6 +3,8 @@
 import React from 'react'
 import { useLanguage } from '@/contexts/LanguageContext'
 import Image from 'next/image'
+import { getContainerAccent } from '@/lib/containerAccent'
+import { isFramedContainerImage, resolveContainerImage } from '@/lib/containerImages'
 
 type ContainerCardProps = {
   volume: number
@@ -15,37 +17,63 @@ type ContainerCardProps = {
 
 const ContainerCard: React.FC<ContainerCardProps> = ({ volume, dims, description, price, image, onOrder }) => {
   const { t } = useLanguage()
+  const accent = getContainerAccent(volume)
+  const imageSrc = resolveContainerImage(image)
+  const framedImage = isFramedContainerImage(image)
   
   return (
-    <div className="group relative bg-white/5 backdrop-blur-md border border-white/10 rounded-[20px] p-6 transition-all duration-300 hover:bg-white/10 overflow-hidden flex flex-col h-full max-w-[350px] mx-auto w-full">
+    <div
+      className="group relative mx-auto flex h-full w-full max-w-[350px] flex-col overflow-hidden rounded-[20px] border bg-white/5 p-6 backdrop-blur-md transition-all duration-300 hover:bg-white/10"
+      style={{
+        borderColor: accent.border,
+        boxShadow: `0 20px 45px rgba(0,0,0,0.18), inset 0 1px 0 ${accent.border}`,
+      }}
+    >
       {/* Header: Volume & Dims */}
-      <div className="flex justify-between items-start mb-4">
+      <div className="mb-4 flex items-start justify-between gap-3">
         <div className="flex flex-col">
           <div className="flex items-baseline gap-1">
-            <span className="text-5xl font-bold text-white tracking-tight">
+            <span
+              className="text-5xl font-bold tracking-tight"
+              style={{ color: accent.text }}
+            >
               {volume}
             </span>
-            <span className="text-xl font-medium text-gray-400">m³</span>
+            <span className="text-xl font-medium" style={{ color: accent.primary }}>m³</span>
           </div>
           <span className="text-sm text-gray-400 font-medium">kontejner</span>
         </div>
         
         {dims && (
-          <div className="text-sm font-medium text-gray-400">
+          <div
+            className="rounded-full px-3 py-1 text-sm font-medium"
+            style={{
+              color: accent.text,
+              backgroundColor: accent.tintStrong,
+              border: `1px solid ${accent.border}`,
+            }}
+          >
             {dims}
           </div>
         )}
       </div>
 
       {/* Container Image Area */}
-      <div className="flex-1 flex items-center justify-center py-4 relative min-h-[120px]">
-        <div className="relative w-full h-28 transition-transform duration-300 group-hover:scale-105">
-          {image && image.startsWith('/') ? (
-            <Image 
-              src={image} 
+      <div className="relative flex min-h-[120px] flex-1 items-center justify-center py-4">
+        <div
+          className="relative h-28 w-full overflow-hidden rounded-[18px] border p-3 transition-transform duration-300 group-hover:scale-105"
+          style={{
+            borderColor: accent.border,
+            background: `linear-gradient(145deg, rgba(255,255,255,0.04) 0%, ${accent.tint} 100%)`,
+          }}
+        >
+          {imageSrc ? (
+            <Image
+              src={imageSrc}
               alt={`${volume}m³ container`}
               fill
-              className="object-contain"
+              sizes="(min-width: 1536px) 280px, (min-width: 1280px) 22vw, (min-width: 1024px) 30vw, (min-width: 640px) 45vw, 90vw"
+              className={framedImage ? 'object-cover scale-[1.34]' : 'object-contain'}
             />
           ) : (
             // Fallback SVG
@@ -71,14 +99,20 @@ const ContainerCard: React.FC<ContainerCardProps> = ({ volume, dims, description
 
       {/* Description */}
       <div className="mb-6 min-h-[48px]">
-        <p className="text-gray-300 text-xs leading-relaxed text-center line-clamp-3">
+        <p className="line-clamp-3 text-center text-xs leading-relaxed text-gray-300">
           {description}
         </p>
       </div>
 
       {/* Price Box */}
-      <div className="mb-4 border border-white/10 rounded-xl py-3 px-4 text-center bg-white/5">
-        <span className="text-white font-bold text-sm">
+      <div
+        className="mb-4 rounded-xl px-4 py-3 text-center"
+        style={{
+          border: `1px solid ${accent.border}`,
+          backgroundColor: accent.tintStrong,
+        }}
+      >
+        <span className="font-bold text-sm" style={{ color: accent.text }}>
           {price}
         </span>
       </div>
@@ -87,14 +121,17 @@ const ContainerCard: React.FC<ContainerCardProps> = ({ volume, dims, description
       <div className="grid grid-cols-2 gap-3">
         <button 
           onClick={onOrder}
-          className="py-2.5 px-4 rounded-xl bg-yellow-500 hover:bg-yellow-400 text-black font-bold text-xs transition-colors duration-200 text-center"
+          className="rounded-xl bg-yellow-500 px-4 py-2.5 text-center text-xs font-bold text-black transition-colors duration-200 hover:bg-yellow-400"
           type="button"
         >
           {t('containers.order')}
         </button>
         <button 
           onClick={onOrder}
-          className="py-2.5 px-4 rounded-xl bg-transparent border border-white/20 hover:bg-white/5 text-white font-semibold text-xs transition-colors duration-200 text-center"
+          className="rounded-xl border border-white/20 bg-transparent px-4 py-2.5 text-center text-xs font-semibold text-white transition-colors duration-200 hover:bg-white/5"
+          style={{
+            borderColor: accent.borderStrong,
+          }}
           type="button"
         >
           Detail

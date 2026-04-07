@@ -47,8 +47,8 @@ export default function CenikPageClient() {
             {copy.subtitle}
           </p>
 
-          <div className="overflow-hidden rounded-[28px] border border-white/10 bg-slate-950/65 shadow-[0_24px_70px_rgba(0,0,0,0.35)] backdrop-blur-md">
-            <div className="hidden border-b border-white/10 bg-white/[0.03] px-6 py-4 md:grid md:grid-cols-[minmax(0,1.7fr)_minmax(180px,0.55fr)] md:gap-6">
+          <div className="overflow-hidden rounded-[24px] border border-white/10 bg-white/5 shadow-[0_20px_45px_rgba(0,0,0,0.18)] backdrop-blur-md mt-8">
+            <div className="hidden border-b border-white/10 bg-white/5 px-6 py-4 md:grid md:grid-cols-[minmax(0,1.7fr)_minmax(180px,0.55fr)] md:gap-6">
               <div className="text-sm font-semibold uppercase tracking-[0.18em] text-gray-400">
                 {copy.serviceLabel}
               </div>
@@ -62,17 +62,17 @@ export default function CenikPageClient() {
             ) : items.length === 0 ? (
               <div className="px-6 py-10 text-center text-gray-dark-textSecondary">{copy.emptyState}</div>
             ) : (
-              <div className="divide-y divide-white/8">
+              <div className="divide-y divide-white/10">
                 {items.map((item) => (
                   <div
                     key={item.id}
-                    className="grid gap-4 px-5 py-5 md:grid-cols-[minmax(0,1.7fr)_minmax(180px,0.55fr)] md:gap-6 md:px-6"
+                    className="grid gap-4 px-5 py-5 md:grid-cols-[minmax(0,1.7fr)_minmax(180px,0.55fr)] md:gap-6 md:px-6 transition-colors duration-300 hover:bg-white/10 group cursor-pointer"
                   >
-                    <div>
-                      <h2 className="text-lg font-semibold text-white">{item.name}</h2>
+                    <div className="flex items-center">
+                      <h2 className="text-lg font-semibold text-white group-hover:text-white transition-colors">{item.name}</h2>
                     </div>
-                    <div className="flex items-start md:justify-end">
-                      <span className="inline-flex rounded-full border border-red-500/20 bg-red-500/12 px-4 py-2 text-base font-semibold text-red-100">
+                    <div className="flex items-start md:justify-end items-center">
+                      <span className="inline-flex rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-base font-bold text-yellow-500 shadow-sm transition-all group-hover:bg-white/10 group-hover:border-white/20">
                         {formatPriceListPrice(item)}
                       </span>
                     </div>

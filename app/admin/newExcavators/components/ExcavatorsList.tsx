@@ -7,6 +7,7 @@ import { useLanguage } from '@/contexts/LanguageContext'
 import AddExcavatorModal from './AddExcavatorModal'
 import ExcavatorDetailsModal from './ExcavatorDetailsModal'
 import Image from 'next/image'
+import { getExcavatorAccent } from '@/lib/excavatorAccent'
 
 export default function ExcavatorsList() {
   const { t } = useLanguage()
@@ -56,6 +57,14 @@ export default function ExcavatorsList() {
     )
   }
 
+  const formatPrice = (price: number) => `${price.toLocaleString('cs-CZ')} CZK/h`
+  const getTypeLabel = (type: string) => {
+    if (type === 'mini') return t('admin.mini')
+    if (type === 'standard') return t('admin.standard')
+    if (type === 'large') return t('admin.large')
+    return type
+  }
+
   return (
     <>
       {showAddModal && (
@@ -75,132 +84,177 @@ export default function ExcavatorsList() {
         />
       )}
 
-      {/* Grid Layout - Modern Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 mb-6">
-        {excavators.map((excavator) => (
-          <div
-            key={excavator.id}
-            onClick={() => setSelectedExcavator(excavator)}
-            className="group relative bg-gradient-to-br from-gray-800/60 to-gray-900/60 backdrop-blur-sm border border-gray-700/30 hover:border-red-500/50 rounded-xl p-5 transition-all duration-300 cursor-pointer shadow-lg hover:shadow-red-900/20 hover:scale-102"
-          >
-            {/* Status Badge - Top Right */}
-            <div className="absolute top-3 right-3 z-10">
-              <span className={`px-2.5 py-1 rounded-full text-[10px] font-semibold shadow-lg ${
-                excavator.isActive 
-                  ? 'bg-green-500/20 text-green-400 border border-green-500/30' 
-                  : 'bg-red-500/20 text-red-400 border border-red-500/30'
-              }`}>
-                {excavator.isActive ? t('admin.visible') : t('admin.hidden')}
-              </span>
-            </div>
+      <div className="grid grid-cols-1 xl:grid-cols-2 2xl:grid-cols-3 gap-4 mb-5">
+        {excavators.map((excavator) => {
+          const accent = getExcavatorAccent(excavator.type)
 
-            {/* Model Header */}
-            <div className="mb-1">
-              <span className="text-3xl font-bold bg-gradient-to-br from-white to-gray-300 bg-clip-text text-transparent">
-                {excavator.model}
-              </span>
-            </div>
-            <p className="text-gray-400 text-xs mb-4">{excavator.type}</p>
-
-            {/* Specs */}
-            <div className="space-y-1.5 mb-4">
-              <div className="flex items-center justify-between text-xs">
-                <span className="text-gray-500">Weight:</span>
-                <span className="text-gray-300 font-medium">{excavator.specs.weight}</span>
-              </div>
-              <div className="flex items-center justify-between text-xs">
-                <span className="text-gray-500">Bucket:</span>
-                <span className="text-gray-300 font-medium">{excavator.specs.bucketCapacity}</span>
-              </div>
-              <div className="flex items-center justify-between text-xs">
-                <span className="text-gray-500">Reach:</span>
-                <span className="text-gray-300 font-medium">{excavator.specs.maxReach}</span>
-              </div>
-            </div>
-
-            {/* Excavator Image */}
-            <div className="flex justify-center items-center h-16 mb-4 bg-gray-700/20 rounded-lg">
-              <Image 
-                src={excavator.svgPath || '/TB145.svg'} 
-                alt={`${excavator.model} excavator`}
-                width={120}
-                height={50}
-                className="w-full h-full object-contain"
+          return (
+            <div
+              key={excavator.id}
+              onClick={() => setSelectedExcavator(excavator)}
+              className="group cursor-pointer rounded-[24px] border p-4 shadow-[0_18px_36px_rgba(0,0,0,0.18)] transition-all duration-300 hover:-translate-y-1"
+              style={{
+                borderColor: accent.border,
+                background: `linear-gradient(145deg, ${accent.tint} 0%, rgba(255,255,255,0.035) 22%, rgba(255,255,255,0.025) 100%)`,
+              }}
+            >
+              <div
+                className="mb-4 h-px w-full"
+                style={{
+                  background: `linear-gradient(90deg, transparent 0%, ${accent.borderStrong} 28%, transparent 100%)`,
+                }}
               />
-            </div>
 
-            {/* Description */}
-            {excavator.description.en && (
-              <p className="text-gray-400 text-xs mb-3 line-clamp-2 min-h-[32px]">
-                {excavator.description.en}
-              </p>
-            )}
+              <div className="mb-4 flex items-start justify-between gap-3">
+                <div>
+                  <div className="flex items-baseline gap-2">
+                    <span className="text-3xl font-semibold tracking-tight" style={{ color: accent.text }}>
+                      {excavator.model}
+                    </span>
+                  </div>
+                  <p className="mt-1 text-xs text-gray-500">{getTypeLabel(excavator.type)}</p>
+                </div>
 
-            {/* Price */}
-            <div className="bg-gradient-to-r from-gray-700/40 to-gray-800/40 px-3 py-2 rounded-lg mb-4 border border-gray-600/30">
-              <p className="text-white font-semibold text-sm">
-                {excavator.price.toLocaleString('cs-CZ')} <span className="text-gray-400 text-xs font-normal">CZK/hour excl. VAT</span>
-              </p>
-            </div>
-
-            {/* Action Buttons */}
-            <div className="grid grid-cols-3 gap-2" onClick={(e) => e.stopPropagation()}>
-              <button
-                onClick={() => handleToggleStatus(excavator.id, excavator.isActive)}
-                className={`px-2 py-2 border rounded-lg transition-all duration-300 flex items-center justify-center gap-1 text-[10px] font-semibold shadow-md ${
+                <span className={`inline-flex items-center gap-2 rounded-full px-2.5 py-1 text-[11px] font-medium ${
                   excavator.isActive
-                    ? 'bg-gray-700/40 text-gray-300 hover:bg-gray-600/60 border-gray-600/50 hover:border-gray-500'
-                    : 'bg-green-900/40 text-green-400 hover:bg-green-800/60 border-green-900/50 hover:border-green-600 hover:shadow-green-500/30'
-                }`}
-                title={excavator.isActive ? t('admin.hide') : t('admin.show')}
+                    ? 'bg-emerald-500/12 text-emerald-300 ring-1 ring-inset ring-emerald-500/25'
+                    : 'bg-red-500/12 text-red-300 ring-1 ring-inset ring-red-500/25'
+                }`}>
+                  <span className={`h-2 w-2 rounded-full ${excavator.isActive ? 'bg-emerald-400' : 'bg-red-400'}`} />
+                  {excavator.isActive ? t('admin.visible') : t('admin.hidden')}
+                </span>
+              </div>
+
+              <div className="mb-3 flex flex-wrap items-center gap-2 text-sm">
+                <span
+                  className="rounded-full px-3 py-1 text-sm text-gray-100"
+                  style={{ backgroundColor: accent.tint, border: `1px solid ${accent.border}` }}
+                >
+                  {excavator.specs.weight}
+                </span>
+                <span
+                  className="rounded-full px-3 py-1 text-sm text-gray-100"
+                  style={{ backgroundColor: accent.tint, border: `1px solid ${accent.border}` }}
+                >
+                  {excavator.specs.bucketCapacity}
+                </span>
+                <span
+                  className="rounded-full px-3 py-1 text-sm text-gray-100"
+                  style={{ backgroundColor: accent.tint, border: `1px solid ${accent.border}` }}
+                >
+                  {excavator.specs.maxReach}
+                </span>
+                <span
+                  className="rounded-full px-3 py-1 text-sm font-medium"
+                  style={{
+                    backgroundColor: accent.tintStrong,
+                    border: `1px solid ${accent.borderStrong}`,
+                    color: accent.text,
+                  }}
+                >
+                  {formatPrice(excavator.price)}
+                </span>
+              </div>
+
+              <div
+                className="mb-3 flex min-h-[128px] items-center justify-center rounded-[20px] border px-3 py-4"
+                style={{
+                  borderColor: accent.border,
+                  background: `linear-gradient(145deg, rgba(255,255,255,0.04) 0%, ${accent.tint} 100%)`,
+                }}
               >
-                {excavator.isActive ? (
-                  <>
-                    <EyeOff className="w-3.5 h-3.5" />
-                    <span className="hidden sm:inline">{t('admin.hide')}</span>
-                  </>
+                <Image
+                  src={excavator.svgPath || '/TB145.svg'}
+                  alt={`${excavator.model} excavator`}
+                  width={200}
+                  height={96}
+                  className="h-full max-h-[96px] w-full object-contain"
+                />
+              </div>
+
+              <div className="mb-4 min-h-[44px]">
+                {excavator.description.en ? (
+                  <p className="text-xs leading-5 text-gray-300/90 line-clamp-2">
+                    {excavator.description.en}
+                  </p>
                 ) : (
-                  <>
-                    <Eye className="w-3.5 h-3.5" />
-                    <span className="hidden sm:inline">{t('admin.show')}</span>
-                  </>
+                  <p className="text-xs text-gray-500">Popis není vyplněný.</p>
                 )}
-              </button>
-              
-              <button
-                onClick={() => setSelectedExcavator(excavator)}
-                className="px-2 py-2 bg-blue-950/40 text-blue-400 hover:bg-blue-900/60 border border-blue-900/50 hover:border-blue-600 rounded-lg transition-all duration-300 flex items-center justify-center gap-1 text-[10px] font-semibold shadow-md hover:shadow-blue-500/30"
-                title={t('admin.edit')}
+              </div>
+
+              <div
+                className="grid grid-cols-3 gap-2 border-t border-white/8 pt-4"
+                onClick={(e) => e.stopPropagation()}
+                style={{ borderColor: accent.border }}
               >
-                <Edit className="w-3.5 h-3.5" />
-                <span className="hidden sm:inline">{t('admin.edit')}</span>
-              </button>
-              
-              <button
-                onClick={() => handleDelete(excavator.id, excavator.model)}
-                className="px-2 py-2 bg-red-950/40 text-red-400 hover:bg-red-900/60 border border-red-900/50 hover:border-red-600 rounded-lg transition-all duration-300 flex items-center justify-center gap-1 text-[10px] font-semibold shadow-md hover:shadow-red-500/30"
-                title={t('admin.delete')}
-              >
-                <Trash2 className="w-3.5 h-3.5" />
-                <span className="hidden sm:inline">Del</span>
-              </button>
+                <button
+                  onClick={() => handleToggleStatus(excavator.id, excavator.isActive)}
+                  className={`flex items-center justify-center gap-1.5 rounded-xl px-2.5 py-2.5 text-[11px] font-medium transition-all duration-300 ${
+                    excavator.isActive
+                      ? 'border border-white/10 bg-white/[0.04] text-gray-200 hover:bg-white/[0.07]'
+                      : 'border border-emerald-500/25 bg-emerald-500/10 text-emerald-200 hover:bg-emerald-500/15'
+                  }`}
+                  title={excavator.isActive ? t('admin.hide') : t('admin.show')}
+                >
+                  {excavator.isActive ? (
+                    <>
+                      <EyeOff className="w-3.5 h-3.5" />
+                      <span className="hidden sm:inline">{t('admin.hide')}</span>
+                    </>
+                  ) : (
+                    <>
+                      <Eye className="w-3.5 h-3.5" />
+                      <span className="hidden sm:inline">{t('admin.show')}</span>
+                    </>
+                  )}
+                </button>
+
+                <button
+                  onClick={() => setSelectedExcavator(excavator)}
+                  className="flex items-center justify-center gap-1.5 rounded-xl border border-sky-500/20 bg-sky-500/10 px-2.5 py-2.5 text-[11px] font-medium text-sky-200 transition-all duration-300 hover:bg-sky-500/15"
+                  title={t('admin.edit')}
+                >
+                  <Edit className="w-3.5 h-3.5" />
+                  <span className="hidden sm:inline">{t('admin.edit')}</span>
+                </button>
+
+                <button
+                  onClick={() => handleDelete(excavator.id, excavator.model)}
+                  className="flex items-center justify-center gap-1.5 rounded-xl border border-red-500/20 bg-red-500/10 px-2.5 py-2.5 text-[11px] font-medium text-red-200 transition-all duration-300 hover:bg-red-500/15"
+                  title={t('admin.delete')}
+                >
+                  <Trash2 className="w-3.5 h-3.5" />
+                  <span className="hidden sm:inline">{t('admin.delete')}</span>
+                </button>
+              </div>
             </div>
-          </div>
-        ))}
+          )
+        })}
       </div>
 
-      {/* Add New Excavator Button - Moved to bottom */}
-      <button 
+      {excavators.length === 0 && (
+        <div className="mb-5 rounded-[24px] border border-dashed border-white/12 bg-white/[0.025] px-5 py-10 text-center">
+          <h3 className="text-lg font-semibold text-white">{t('admin.addNewExcavator')}</h3>
+          <p className="mt-2 text-sm text-gray-400">{t('admin.addNewExcavatorDesc')}</p>
+        </div>
+      )}
+
+      <button
         onClick={() => setShowAddModal(true)}
-        className="w-full bg-gradient-to-br from-gray-800/40 to-gray-900/40 backdrop-blur-sm border-2 border-dashed border-gray-600/50 hover:border-red-500/70 rounded-xl p-4 transition-all duration-300 flex items-center justify-center gap-3 text-gray-400 hover:text-white group shadow-lg hover:shadow-red-900/20 hover:scale-[1.01]"
+        className="group flex w-full items-center justify-between gap-3 rounded-[24px] border border-dashed border-white/12 bg-white/[0.03] px-5 py-4 text-left text-gray-300 transition-all duration-300 hover:border-red-500/35 hover:bg-white/[0.05]"
       >
-        <div className="w-12 h-12 bg-gradient-to-br from-red-950/50 to-red-900/30 rounded-xl flex items-center justify-center group-hover:from-red-900/70 group-hover:to-red-800/50 transition-all duration-300 shadow-lg">
-          <Plus className="w-6 h-6 text-red-400 group-hover:text-red-300" />
+        <div className="flex items-center gap-3">
+          <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-red-500/12 text-red-300 ring-1 ring-inset ring-red-500/20 transition-all duration-300 group-hover:bg-red-500/16">
+            <Plus className="h-5 w-5" />
+          </div>
+          <div>
+            <span className="block text-sm font-semibold text-white">{t('admin.addNewExcavator')}</span>
+            <span className="mt-1 block text-xs text-gray-400">{t('admin.addNewExcavatorDesc')}</span>
+          </div>
         </div>
-        <div className="text-left">
-          <span className="text-sm font-semibold block">{t('admin.addNewExcavator')}</span>
-          <span className="text-xs text-gray-500 group-hover:text-gray-400">{t('admin.addNewExcavatorDesc')}</span>
-        </div>
+        <span className="hidden text-sm text-gray-500 transition-colors duration-300 group-hover:text-gray-300 sm:inline">
+          Nová karta
+        </span>
       </button>
     </>
   )

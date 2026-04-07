@@ -9,8 +9,23 @@ import {
   getOrderCompletionText
 } from '@/app/email-templates';
 
-// Initialize Resend with API key from environment variable
-const resend = new Resend(process.env.RESEND_API_KEY || 're_hyX2nnNG_LrFbxyQQVwftkMnsmCPSJJJE');
+function getResendClient() {
+  const apiKey = process.env.RESEND_API_KEY;
+
+  if (!apiKey) {
+    throw new Error('Missing RESEND_API_KEY environment variable');
+  }
+
+  return new Resend(apiKey);
+}
+
+function getFromAddress() {
+  return process.env.RESEND_FROM_EMAIL || 'Marpro <noreply@marpro-stav.cz>';
+}
+
+function getAdminFromAddress() {
+  return process.env.RESEND_ADMIN_FROM_EMAIL || 'Marpro Orders <orders@marpro-stav.cz>';
+}
 
 interface SendOrderConfirmationParams {
   customerEmail: string;
@@ -37,6 +52,7 @@ interface SendOrderConfirmationParams {
  */
 export async function sendOrderConfirmationEmail(params: SendOrderConfirmationParams) {
   try {
+    const resend = getResendClient();
     const emailData = {
       firstName: params.firstName,
       lastName: params.lastName,
@@ -61,7 +77,7 @@ export async function sendOrderConfirmationEmail(params: SendOrderConfirmationPa
     console.log(`Sending confirmation email to: ${params.customerEmail}`);
 
     const result = await resend.emails.send({
-      from: 'Marpro <noreply@marpro-stav.cz>',
+      from: getFromAddress(),
       to: params.customerEmail,
       subject: subject,
       html: htmlContent,
@@ -90,6 +106,7 @@ export async function sendOrderConfirmationEmail(params: SendOrderConfirmationPa
  */
 export async function sendAdminNotificationEmail(params: SendOrderConfirmationParams) {
   try {
+    const resend = getResendClient();
     const adminEmail = process.env.ADMIN_EMAIL || 'marprostav@outlook.cz';
 
     const htmlContent = `
@@ -127,7 +144,7 @@ export async function sendAdminNotificationEmail(params: SendOrderConfirmationPa
     `;
 
     const result = await resend.emails.send({
-      from: 'Marpro Orders <orders@marpro-stav.cz>',
+      from: getAdminFromAddress(),
       to: adminEmail,
       subject: `Nová objednávka - ${params.serviceType}`,
       html: htmlContent,
@@ -155,6 +172,7 @@ export async function sendAdminNotificationEmail(params: SendOrderConfirmationPa
  */
 export async function sendOrderCompletionEmail(params: SendOrderConfirmationParams) {
   try {
+    const resend = getResendClient();
     const emailData = {
       firstName: params.firstName,
       lastName: params.lastName,
@@ -179,7 +197,7 @@ export async function sendOrderCompletionEmail(params: SendOrderConfirmationPara
     console.log(`Sending completion email to: ${params.customerEmail}`);
 
     const result = await resend.emails.send({
-      from: 'Marpro <noreply@marpro-stav.cz>',
+      from: getFromAddress(),
       to: params.customerEmail,
       subject: subject,
       html: htmlContent,
