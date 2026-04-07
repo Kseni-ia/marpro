@@ -27,7 +27,7 @@ export default function ReferencesGrid({
         </div>
       ) : references.length > 0 ? (
         <div className="grid grid-cols-1 gap-4 sm:gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5">
-          {references.map((reference) => (
+          {references.map((reference, index) => (
             <div
               key={reference.id}
               className="group overflow-hidden rounded-xl border border-red-900/30 bg-gradient-to-br from-red-900/20 via-gray-800/30 to-red-800/20 backdrop-blur-sm transition-all duration-300 hover:scale-[1.02] hover:border-red-600/50 hover:shadow-lg hover:shadow-red-600/20"
@@ -44,6 +44,7 @@ export default function ReferencesGrid({
                       width={800}
                       height={600}
                       sizes="(min-width: 1536px) 20vw, (min-width: 1280px) 25vw, (min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw"
+                      priority={index < 4}
                       unoptimized={isCloudinaryImageUrl(reference.imageUrls[0])}
                       className="h-full w-full object-cover"
                       onError={(event) => {

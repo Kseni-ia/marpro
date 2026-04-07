@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import InstallationPageClient from './InstallationPageClient'
+import { getPublicActiveReferences } from '@/lib/constructionsPublic'
 import { buildPageMetadata } from '@/lib/seo'
 
 export const metadata: Metadata = buildPageMetadata({
@@ -9,6 +10,8 @@ export const metadata: Metadata = buildPageMetadata({
   path: '/Installation',
 })
 
-export default function InstallationPage() {
-  return <InstallationPageClient />
+export default async function InstallationPage() {
+  const initialReferences = await getPublicActiveReferences()
+
+  return <InstallationPageClient initialReferences={initialReferences} />
 }

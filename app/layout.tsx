@@ -25,6 +25,10 @@ export default function RootLayout({
 }) {
   return (
     <html lang="cs">
+      <head>
+        <link rel="dns-prefetch" href="//res.cloudinary.com" />
+        <link rel="preconnect" href="https://res.cloudinary.com" crossOrigin="" />
+      </head>
       <body className={`${inter.className} bg-gray-dark-bg`}>
         <script
           type="application/ld+json"

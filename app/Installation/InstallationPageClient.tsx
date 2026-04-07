@@ -13,28 +13,48 @@ import InstallationHero from './components/InstallationHero'
 import ReferencesGrid from './components/ReferencesGrid'
 import ReferenceGalleryModal from './components/ReferenceGalleryModal'
 
-export default function InstallationPageClient() {
+type InstallationPageClientProps = {
+  initialReferences?: Reference[]
+}
+
+export default function InstallationPageClient({
+  initialReferences = [],
+}: InstallationPageClientProps) {
   const { language } = useLanguage()
   const copy = getInstallationCopy(language)
   const [showOrderForm, setShowOrderForm] = useState(false)
-  const [references, setReferences] = useState<Reference[]>([])
-  const [loading, setLoading] = useState(true)
+  const [references, setReferences] = useState<Reference[]>(initialReferences)
+  const [loading, setLoading] = useState(initialReferences.length === 0)
   const [selectedReference, setSelectedReference] = useState<Reference | null>(null)
 
   useEffect(() => {
+    if (initialReferences.length > 0) {
+      return
+    }
+
+    let isCancelled = false
+
     const fetchReferences = async () => {
       try {
         const data = await getAllReferences()
-        setReferences(data.filter((reference) => reference.isActive))
+        if (!isCancelled) {
+          setReferences(data.filter((reference) => reference.isActive))
+        }
       } catch (error) {
         console.error('Error fetching references:', error)
       } finally {
-        setLoading(false)
+        if (!isCancelled) {
+          setLoading(false)
+        }
       }
     }
 
     fetchReferences()
-  }, [])
+
+    return () => {
+      isCancelled = true
+    }
+  }, [initialReferences])
 
   return (
     <>
