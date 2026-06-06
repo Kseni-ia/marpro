@@ -34,10 +34,10 @@ const Excavators: React.FC = () => {
       <TopNavigation />
 
       <BlurUpBackground
-        placeholderSrc="/loadE_Small.jpeg"
-        fullSrc="/exscavators F.mp4"
+        placeholderSrc="/excavators_small.jpeg"
+        fullSrc="/excavators_bg.jpeg"
         overlayOpacity="bg-black/80"
-        isVideo={true}
+        isVideo={false}
       />
 
       <div className="relative min-h-screen z-10 pt-16">

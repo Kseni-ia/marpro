@@ -33,10 +33,10 @@ const Containers: React.FC = () => {
       <TopNavigation />
 
       <BlurUpBackground
-        placeholderSrc="/loadK_Small.jpeg"
-        fullSrc="/containers_F.mp4"
+        placeholderSrc="/containers_small.jpeg"
+        fullSrc="/containers_bg.jpeg"
         overlayOpacity="bg-black/70"
-        isVideo={true}
+        isVideo={false}
       />
 
       <div className="relative min-h-screen z-10 pt-16">
