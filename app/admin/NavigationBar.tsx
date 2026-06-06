@@ -1,8 +1,8 @@
 'use client'
 
 import React, { useState, Fragment, useRef, useEffect } from 'react'
-import { useRouter } from 'next/navigation'
-import { Calendar, LogOut, Home, ChevronRight, ChevronLeft, Package, Truck, FileText, Hammer, Menu, X, Tractor, DollarSign } from 'lucide-react'
+import { useRouter, usePathname } from 'next/navigation'
+import { Calendar, LogOut, Home, ChevronRight, ChevronLeft, Truck, FileText, Hammer, Menu, X, Tractor, DollarSign } from 'lucide-react'
 import { useLanguage } from '@/contexts/LanguageContext'
 
 interface NavigationBarProps {
@@ -12,6 +12,7 @@ interface NavigationBarProps {
 
 export default function NavigationBar({ onScheduleClick, onLogout }: NavigationBarProps) {
   const router = useRouter()
+  const pathname = usePathname()
   const { t } = useLanguage()
   const [isOpen, setIsOpen] = useState(false)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
@@ -30,13 +31,26 @@ export default function NavigationBar({ onScheduleClick, onLogout }: NavigationB
     }
   }, [isOpen])
 
+  const getButtonClass = (path: string, compact: boolean) => {
+    const active = pathname === path
+    const base = `flex items-center transition-all duration-300 rounded-xl ${
+      compact ? 'w-10 h-10 justify-center mx-auto' : 'w-full h-12 justify-start gap-3 px-4'
+    }`
+    if (active) {
+      return `${base} text-red-400 bg-red-500/10 border border-red-500/20 shadow-[0_0_15px_rgba(239,68,68,0.1)]`
+    }
+    return `${base} text-gray-400 hover:text-white hover:bg-white/[0.04] border border-transparent`
+  }
+
   return (
     <Fragment>
       {/* Desktop/Tablet: Left Sidebar */}
       <div
         ref={sidebarRef}
-        className={`hidden md:flex fixed left-4 top-20 bottom-4 bg-black/95 backdrop-blur-md border border-red-900/30 rounded-2xl flex-col py-4 z-50 transition-all duration-300 ${isOpen ? 'w-56' : 'w-16'
-          }`}>
+        className={`hidden md:flex fixed left-4 top-20 bottom-4 bg-[#080c16]/95 backdrop-blur-xl border border-white/10 rounded-2xl flex-col py-4 z-50 transition-all duration-300 ${
+          isOpen ? 'w-56' : 'w-16'
+        }`}
+      >
         {/* Toggle Button */}
         <button
           type="button"
@@ -45,22 +59,20 @@ export default function NavigationBar({ onScheduleClick, onLogout }: NavigationB
             e.stopPropagation()
             setIsOpen(!isOpen)
           }}
-          className="w-10 h-10 rounded-lg bg-red-950/40 text-white hover:bg-red-900/60 hover:text-white hover:border-red-600 flex items-center justify-center mb-6 transition-all duration-300 border-2 border-red-900/50 mx-auto"
+          className="w-10 h-10 rounded-xl bg-white/[0.04] text-gray-400 hover:text-white hover:bg-white/[0.08] flex items-center justify-center mb-6 transition-all duration-300 border border-white/10 mx-auto"
           title={isOpen ? 'Close menu' : 'Open menu'}
         >
           {isOpen ? <ChevronLeft className="w-5 h-5" /> : <ChevronRight className="w-5 h-5" />}
         </button>
 
         {/* Divider */}
-        <div className={`h-px bg-red-900/30 mb-6 transition-all duration-300 mx-auto ${isOpen ? 'w-48' : 'w-12'
-          }`} />
+        <div className={`h-px bg-white/10 mb-6 transition-all duration-300 mx-auto ${isOpen ? 'w-48' : 'w-12'}`} />
 
         {/* Home Button */}
         <div className="w-full px-3 mb-4">
           <button
             onClick={() => router.push('/admin/dashboard')}
-            className={`rounded-xl bg-red-950/40 text-white hover:bg-red-900/60 hover:text-white hover:border-red-600 flex items-center transition-all duration-300 border-2 border-red-900/50 ${isOpen ? 'w-full justify-start gap-3 px-4 h-12' : 'w-10 h-10 justify-center mx-auto'
-              }`}
+            className={getButtonClass('/admin/dashboard', !isOpen)}
             title={t('admin.home')}
           >
             <Home className="w-5 h-5 flex-shrink-0" />
@@ -72,8 +84,9 @@ export default function NavigationBar({ onScheduleClick, onLogout }: NavigationB
         <div className="w-full px-3 mb-4">
           <button
             onClick={onScheduleClick}
-            className={`rounded-xl bg-red-950/40 text-white hover:bg-red-900/60 hover:text-white hover:border-red-600 flex items-center transition-all duration-300 border-2 border-red-900/50 ${isOpen ? 'w-full justify-start gap-3 px-4 h-12' : 'w-10 h-10 justify-center mx-auto'
-              }`}
+            className={`flex items-center transition-all duration-300 rounded-xl text-gray-400 hover:text-white hover:bg-white/[0.04] border border-transparent ${
+              isOpen ? 'w-full justify-start gap-3 px-4 h-12' : 'w-10 h-10 justify-center mx-auto'
+            }`}
             title={t('admin.schedule')}
           >
             <Calendar className="w-5 h-5 flex-shrink-0" />
@@ -85,8 +98,7 @@ export default function NavigationBar({ onScheduleClick, onLogout }: NavigationB
         <div className="w-full px-3 mb-4">
           <button
             onClick={() => router.push('/admin/newContainers')}
-            className={`rounded-xl bg-red-950/40 text-white hover:bg-red-900/60 hover:text-white hover:border-red-600 flex items-center transition-all duration-300 border-2 border-red-900/50 ${isOpen ? 'w-full justify-start gap-3 px-4 h-12' : 'w-10 h-10 justify-center mx-auto'
-              }`}
+            className={getButtonClass('/admin/newContainers', !isOpen)}
             title={t('admin.newContainers')}
           >
             <Truck className="w-5 h-5 flex-shrink-0" />
@@ -98,8 +110,7 @@ export default function NavigationBar({ onScheduleClick, onLogout }: NavigationB
         <div className="w-full px-3 mb-4">
           <button
             onClick={() => router.push('/admin/newExcavators')}
-            className={`rounded-xl bg-red-950/40 text-white hover:bg-red-900/60 hover:text-white hover:border-red-600 flex items-center transition-all duration-300 border-2 border-red-900/50 ${isOpen ? 'w-full justify-start gap-3 px-4 h-12' : 'w-10 h-10 justify-center mx-auto'
-              }`}
+            className={getButtonClass('/admin/newExcavators', !isOpen)}
             title={t('admin.newExcavators')}
           >
             <Tractor className="w-5 h-5 flex-shrink-0" />
@@ -111,8 +122,7 @@ export default function NavigationBar({ onScheduleClick, onLogout }: NavigationB
         <div className="w-full px-3 mb-4">
           <button
             onClick={() => router.push('/admin/newConstructions')}
-            className={`rounded-xl bg-red-950/40 text-white hover:bg-red-900/60 hover:text-white hover:border-red-600 flex items-center transition-all duration-300 border-2 border-red-900/50 ${isOpen ? 'w-full justify-start gap-3 px-4 h-12' : 'w-10 h-10 justify-center mx-auto'
-              }`}
+            className={getButtonClass('/admin/newConstructions', !isOpen)}
             title="Správa staveb"
           >
             <Hammer className="w-5 h-5 flex-shrink-0" />
@@ -124,8 +134,7 @@ export default function NavigationBar({ onScheduleClick, onLogout }: NavigationB
         <div className="w-full px-3 mb-4">
           <button
             onClick={() => router.push('/admin/workApplications')}
-            className={`rounded-xl bg-red-950/40 text-white hover:bg-red-900/60 hover:text-white hover:border-red-600 flex items-center transition-all duration-300 border-2 border-red-900/50 ${isOpen ? 'w-full justify-start gap-3 px-4 h-12' : 'w-10 h-10 justify-center mx-auto'
-              }`}
+            className={getButtonClass('/admin/workApplications', !isOpen)}
             title={t('admin.workApplications')}
           >
             <FileText className="w-5 h-5 flex-shrink-0" />
@@ -136,8 +145,7 @@ export default function NavigationBar({ onScheduleClick, onLogout }: NavigationB
         <div className="w-full px-3 mb-4">
           <button
             onClick={() => router.push('/admin/cenik')}
-            className={`rounded-xl bg-red-950/40 text-white hover:bg-red-900/60 hover:text-white hover:border-red-600 flex items-center transition-all duration-300 border-2 border-red-900/50 ${isOpen ? 'w-full justify-start gap-3 px-4 h-12' : 'w-10 h-10 justify-center mx-auto'
-              }`}
+            className={getButtonClass('/admin/cenik', !isOpen)}
             title="Ceník služeb"
           >
             <DollarSign className="w-5 h-5 flex-shrink-0" />
@@ -149,15 +157,15 @@ export default function NavigationBar({ onScheduleClick, onLogout }: NavigationB
         <div className="flex-1" />
 
         {/* Divider */}
-        <div className={`h-px bg-red-900/30 mb-4 transition-all duration-300 mx-auto ${isOpen ? 'w-48' : 'w-12'
-          }`} />
+        <div className={`h-px bg-white/10 mb-4 transition-all duration-300 mx-auto ${isOpen ? 'w-48' : 'w-12'}`} />
 
         {/* Logout Button */}
         <div className="w-full px-3 mb-2">
           <button
             onClick={onLogout}
-            className={`rounded-xl bg-red-950/40 text-white hover:bg-red-600/40 hover:text-white hover:border-red-500 flex items-center transition-all duration-300 border-2 border-red-900/50 ${isOpen ? 'w-full justify-start gap-3 px-4 h-12' : 'w-10 h-10 justify-center mx-auto'
-              }`}
+            className={`flex items-center transition-all duration-300 rounded-xl text-gray-400 hover:text-red-400 hover:bg-red-500/10 border border-transparent ${
+              isOpen ? 'w-full justify-start gap-3 px-4 h-12' : 'w-10 h-10 justify-center mx-auto'
+            }`}
             title={t('admin.logout')}
           >
             <LogOut className="w-5 h-5 flex-shrink-0" />
@@ -167,12 +175,16 @@ export default function NavigationBar({ onScheduleClick, onLogout }: NavigationB
       </div>
 
       {/* Mobile: Bottom Navigation Bar */}
-      <div className="md:hidden fixed bottom-0 left-0 right-0 bg-black/95 backdrop-blur-md border-t border-red-900/30 z-50">
+      <div className="md:hidden fixed bottom-0 left-0 right-0 bg-[#080c16]/95 backdrop-blur-md border-t border-white/10 z-50">
         <div className="flex items-center justify-around px-4 py-3">
           {/* Dashboard Button */}
           <button
             onClick={() => router.push('/admin/dashboard')}
-            className="w-12 h-12 rounded-xl bg-red-950/40 text-white hover:bg-red-900/60 hover:text-white hover:border-red-600 flex items-center justify-center transition-all duration-300 border-2 border-red-900/50"
+            className={`w-12 h-12 rounded-xl flex items-center justify-center transition-all duration-300 ${
+              pathname === '/admin/dashboard'
+                ? 'text-red-400 bg-red-500/10 border border-red-500/20 shadow-[0_0_15px_rgba(239,68,68,0.1)]'
+                : 'text-gray-400 hover:text-white hover:bg-white/[0.04] border border-transparent'
+            }`}
             title={t('admin.home')}
           >
             <Home className="w-5 h-5" />
@@ -181,7 +193,7 @@ export default function NavigationBar({ onScheduleClick, onLogout }: NavigationB
           {/* Equipment Schedule Management Button */}
           <button
             onClick={onScheduleClick}
-            className="w-12 h-12 rounded-xl bg-red-950/40 text-white hover:bg-red-900/60 hover:text-white hover:border-red-600 flex items-center justify-center transition-all duration-300 border-2 border-red-900/50"
+            className="w-12 h-12 rounded-xl text-gray-400 hover:text-white hover:bg-white/[0.04] border border-transparent flex items-center justify-center transition-all duration-300"
             title={t('admin.schedule')}
           >
             <Calendar className="w-5 h-5" />
@@ -190,7 +202,11 @@ export default function NavigationBar({ onScheduleClick, onLogout }: NavigationB
           {/* Menu Button - Opens Right Side Navigation */}
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="w-12 h-12 rounded-xl bg-red-950/40 text-white hover:bg-red-900/60 hover:text-white hover:border-red-600 flex items-center justify-center transition-all duration-300 border-2 border-red-900/50"
+            className={`w-12 h-12 rounded-xl flex items-center justify-center transition-all duration-300 ${
+              mobileMenuOpen
+                ? 'text-red-400 bg-red-500/10 border border-red-500/20'
+                : 'text-gray-400 hover:text-white hover:bg-white/[0.04] border border-transparent'
+            }`}
             title="Menu"
           >
             <Menu className="w-5 h-5" />
@@ -203,18 +219,18 @@ export default function NavigationBar({ onScheduleClick, onLogout }: NavigationB
         <div className="md:hidden fixed inset-0 z-[60]">
           {/* Backdrop */}
           <div
-            className="absolute inset-0 bg-black/50 backdrop-blur-sm"
+            className="absolute inset-0 bg-black/60 backdrop-blur-sm"
             onClick={() => setMobileMenuOpen(false)}
           />
 
           {/* Right Side Menu */}
-          <div className="absolute right-0 top-0 bottom-0 w-64 bg-black/95 backdrop-blur-md border-l border-red-900/30 flex flex-col">
+          <div className="absolute right-0 top-0 bottom-0 w-64 bg-[#080c16]/95 backdrop-blur-md border-l border-white/10 flex flex-col">
             {/* Header */}
-            <div className="flex items-center justify-between p-4 border-b border-red-900/30">
+            <div className="flex items-center justify-between p-4 border-b border-white/10">
               <h2 className="text-white font-semibold">Menu</h2>
               <button
                 onClick={() => setMobileMenuOpen(false)}
-                className="w-8 h-8 rounded-lg bg-red-950/40 text-white hover:bg-red-900/60 flex items-center justify-center transition-all duration-300"
+                className="w-8 h-8 rounded-xl bg-white/[0.04] text-gray-400 hover:text-white hover:bg-white/[0.08] flex items-center justify-center transition-all duration-300"
               >
                 <X className="w-4 h-4" />
               </button>
@@ -228,7 +244,11 @@ export default function NavigationBar({ onScheduleClick, onLogout }: NavigationB
                   router.push('/admin/newContainers')
                   setMobileMenuOpen(false)
                 }}
-                className="w-full rounded-xl bg-red-950/40 text-white hover:bg-red-900/60 hover:text-white hover:border-red-600 flex items-center gap-3 px-4 h-12 transition-all duration-300 border-2 border-red-900/50"
+                className={`w-full rounded-xl flex items-center gap-3 px-4 h-12 transition-all duration-300 ${
+                  pathname === '/admin/newContainers'
+                    ? 'text-red-400 bg-red-500/10 border border-red-500/20 shadow-[0_0_15px_rgba(239,68,68,0.1)]'
+                    : 'text-gray-400 hover:text-white hover:bg-white/[0.04] border border-transparent'
+                }`}
               >
                 <Truck className="w-5 h-5 flex-shrink-0" />
                 <span className="text-sm font-medium">{t('admin.newContainers')}</span>
@@ -240,7 +260,11 @@ export default function NavigationBar({ onScheduleClick, onLogout }: NavigationB
                   router.push('/admin/newExcavators')
                   setMobileMenuOpen(false)
                 }}
-                className="w-full rounded-xl bg-red-950/40 text-white hover:bg-red-900/60 hover:text-white hover:border-red-600 flex items-center gap-3 px-4 h-12 transition-all duration-300 border-2 border-red-900/50"
+                className={`w-full rounded-xl flex items-center gap-3 px-4 h-12 transition-all duration-300 ${
+                  pathname === '/admin/newExcavators'
+                    ? 'text-red-400 bg-red-500/10 border border-red-500/20 shadow-[0_0_15px_rgba(239,68,68,0.1)]'
+                    : 'text-gray-400 hover:text-white hover:bg-white/[0.04] border border-transparent'
+                }`}
               >
                 <Tractor className="w-5 h-5 flex-shrink-0" />
                 <span className="text-sm font-medium">{t('admin.newExcavators')}</span>
@@ -252,7 +276,11 @@ export default function NavigationBar({ onScheduleClick, onLogout }: NavigationB
                   router.push('/admin/newConstructions')
                   setMobileMenuOpen(false)
                 }}
-                className="w-full rounded-xl bg-red-950/40 text-white hover:bg-red-900/60 hover:text-white hover:border-red-600 flex items-center gap-3 px-4 h-12 transition-all duration-300 border-2 border-red-900/50"
+                className={`w-full rounded-xl flex items-center gap-3 px-4 h-12 transition-all duration-300 ${
+                  pathname === '/admin/newConstructions'
+                    ? 'text-red-400 bg-red-500/10 border border-red-500/20 shadow-[0_0_15px_rgba(239,68,68,0.1)]'
+                    : 'text-gray-400 hover:text-white hover:bg-white/[0.04] border border-transparent'
+                }`}
               >
                 <Hammer className="w-5 h-5 flex-shrink-0" />
                 <span className="text-sm font-medium">Stavby</span>
@@ -264,7 +292,11 @@ export default function NavigationBar({ onScheduleClick, onLogout }: NavigationB
                   router.push('/admin/workApplications')
                   setMobileMenuOpen(false)
                 }}
-                className="w-full rounded-xl bg-red-950/40 text-white hover:bg-red-900/60 hover:text-white hover:border-red-600 flex items-center gap-3 px-4 h-12 transition-all duration-300 border-2 border-red-900/50"
+                className={`w-full rounded-xl flex items-center gap-3 px-4 h-12 transition-all duration-300 ${
+                  pathname === '/admin/workApplications'
+                    ? 'text-red-400 bg-red-500/10 border border-red-500/20 shadow-[0_0_15px_rgba(239,68,68,0.1)]'
+                    : 'text-gray-400 hover:text-white hover:bg-white/[0.04] border border-transparent'
+                }`}
               >
                 <FileText className="w-5 h-5 flex-shrink-0" />
                 <span className="text-sm font-medium">{t('admin.workApplications')}</span>
@@ -275,7 +307,11 @@ export default function NavigationBar({ onScheduleClick, onLogout }: NavigationB
                   router.push('/admin/cenik')
                   setMobileMenuOpen(false)
                 }}
-                className="w-full rounded-xl bg-red-950/40 text-white hover:bg-red-900/60 hover:text-white hover:border-red-600 flex items-center gap-3 px-4 h-12 transition-all duration-300 border-2 border-red-900/50"
+                className={`w-full rounded-xl flex items-center gap-3 px-4 h-12 transition-all duration-300 ${
+                  pathname === '/admin/cenik'
+                    ? 'text-red-400 bg-red-500/10 border border-red-500/20 shadow-[0_0_15px_rgba(239,68,68,0.1)]'
+                    : 'text-gray-400 hover:text-white hover:bg-white/[0.04] border border-transparent'
+                }`}
               >
                 <DollarSign className="w-5 h-5 flex-shrink-0" />
                 <span className="text-sm font-medium">Ceník služeb</span>
@@ -283,13 +319,13 @@ export default function NavigationBar({ onScheduleClick, onLogout }: NavigationB
             </div>
 
             {/* Logout Button */}
-            <div className="p-4 border-t border-red-900/30">
+            <div className="p-4 border-t border-white/10">
               <button
                 onClick={() => {
                   onLogout()
                   setMobileMenuOpen(false)
                 }}
-                className="w-full rounded-xl bg-red-950/40 text-white hover:bg-red-600/40 hover:text-white hover:border-red-500 flex items-center gap-3 px-4 h-12 transition-all duration-300 border-2 border-red-900/50"
+                className="w-full rounded-xl text-gray-400 hover:text-red-400 hover:bg-red-500/10 flex items-center gap-3 px-4 h-12 transition-all duration-300 border border-transparent"
               >
                 <LogOut className="w-5 h-5 flex-shrink-0" />
                 <span className="text-sm font-medium">{t('admin.logout')}</span>

@@ -5,6 +5,7 @@ import { Edit2, X } from 'lucide-react'
 import Image from 'next/image'
 import { Excavator, updateExcavator } from '@/lib/excavators'
 import { getExcavatorAccent } from '@/lib/excavatorAccent'
+import { EXCAVATOR_IMAGE_OPTIONS, DEFAULT_ADMIN_EXCAVATOR_IMAGE, resolveExcavatorImage } from '@/lib/excavatorImages'
 
 interface ExcavatorDetailsModalProps {
   excavator: Excavator
@@ -12,11 +13,7 @@ interface ExcavatorDetailsModalProps {
   onUpdate: () => void
 }
 
-const EXCAVATOR_IMAGES = [
-  { path: '/TB145.svg', name: 'TB145', type: 'mini' },
-  { path: '/TB290-1.svg', name: 'TB290-1', type: 'standard' },
-  { path: '/TB290-2.svg.svg', name: 'TB290-2', type: 'large' }
-]
+// EXCAVATOR_IMAGES array deleted (moved to lib/excavatorImages.ts)
 
 export default function ExcavatorDetailsModal({ excavator, onClose, onUpdate }: ExcavatorDetailsModalProps) {
   const [editingField, setEditingField] = useState<string | null>(null)
@@ -29,7 +26,7 @@ export default function ExcavatorDetailsModal({ excavator, onClose, onUpdate }: 
     weight: excavator.specs.weight,
     bucketCapacity: excavator.specs.bucketCapacity,
     maxReach: excavator.specs.maxReach,
-    svgPath: excavator.svgPath || '/TB145.svg',
+    svgPath: excavator.svgPath || DEFAULT_ADMIN_EXCAVATOR_IMAGE,
     isActive: excavator.isActive,
   })
 
@@ -86,15 +83,15 @@ export default function ExcavatorDetailsModal({ excavator, onClose, onUpdate }: 
       weight: excavator.specs.weight,
       bucketCapacity: excavator.specs.bucketCapacity,
       maxReach: excavator.specs.maxReach,
-      svgPath: excavator.svgPath || '/TB145.svg',
+      svgPath: excavator.svgPath || DEFAULT_ADMIN_EXCAVATOR_IMAGE,
       isActive: excavator.isActive,
     })
     setEditingField(null)
   }
 
   const accent = getExcavatorAccent(formData.type)
-  const currentImage = formData.svgPath || '/TB145.svg'
-  const currentImageLabel = EXCAVATOR_IMAGES.find((image) => image.path === currentImage)?.name || 'TB145'
+  const currentImage = formData.svgPath || DEFAULT_ADMIN_EXCAVATOR_IMAGE
+  const currentImageLabel = EXCAVATOR_IMAGE_OPTIONS.find((image) => image.path === currentImage)?.name || 'TB145'
   const panelClass = 'rounded-[22px] border border-white/8 bg-white/[0.035] p-4 transition-all duration-300'
   const editablePanelClass = `${panelClass} group relative cursor-pointer hover:border-red-500/25 hover:bg-white/[0.05]`
   const primaryButtonClass = 'rounded-xl bg-red-500 px-4 py-2 text-sm font-semibold text-white transition-all duration-300 hover:bg-red-400 disabled:cursor-not-allowed disabled:opacity-60'
@@ -264,7 +261,7 @@ export default function ExcavatorDetailsModal({ excavator, onClose, onUpdate }: 
             {editingField === 'svgPath' ? (
               <div className="space-y-4" onClick={(e) => e.stopPropagation()}>
                 <div className="grid grid-cols-1 gap-2.5 md:grid-cols-3">
-                  {EXCAVATOR_IMAGES.map((image) => {
+                  {EXCAVATOR_IMAGE_OPTIONS.map((image) => {
                     const imageAccent = getExcavatorAccent(image.type)
                     const isSelected = formData.svgPath === image.path
 
@@ -295,7 +292,7 @@ export default function ExcavatorDetailsModal({ excavator, onClose, onUpdate }: 
             ) : (
               <div className="grid grid-cols-1 items-center gap-4 md:grid-cols-[150px_1fr]">
                 <div className="flex h-28 items-center justify-center rounded-[20px] border p-3" style={{ borderColor: accent.border, background: `linear-gradient(145deg, rgba(11,18,32,0.84) 0%, ${accent.tint} 100%)` }}>
-                  <Image src={currentImage} alt={`${excavator.model} excavator`} width={142} height={80} className="h-full w-full object-contain" />
+                  <Image src={resolveExcavatorImage(currentImage)} alt={`${excavator.model} excavator`} width={142} height={80} className="h-full w-full object-contain" />
                 </div>
                 <div>
                   <p className="text-base font-semibold text-white">{currentImageLabel}</p>

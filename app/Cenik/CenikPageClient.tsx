@@ -29,10 +29,10 @@ export default function CenikPageClient() {
       <TopNavigation />
 
       <BlurUpBackground
-        placeholderSrc="/loadC_Small.jpeg"
-        fullSrc="/F4.mp4"
-        overlayOpacity="bg-black/80"
-        isVideo={true}
+        placeholderSrc="/pricing_small.jpeg"
+        fullSrc="/pricing_bg.jpeg"
+        overlayOpacity="bg-black/70"
+        isVideo={false}
       />
 
       <div className="relative z-10 flex min-h-screen flex-col pt-16">

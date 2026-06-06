@@ -4,6 +4,7 @@ import React from 'react'
 import Image from 'next/image'
 import { useLanguage } from '@/contexts/LanguageContext'
 import { getExcavatorAccent } from '@/lib/excavatorAccent'
+import { resolveExcavatorImage } from '@/lib/excavatorImages'
 
 type ExcavatorCardProps = {
   model: string
@@ -68,7 +69,7 @@ const ExcavatorCard: React.FC<ExcavatorCardProps> = ({ model, type, description,
           }}
         >
           <Image 
-            src={imageUrl || svgPath} 
+            src={imageUrl || resolveExcavatorImage(svgPath)} 
             alt={`${model} excavator`} 
             fill
             sizes="(min-width: 1536px) 280px, (min-width: 1280px) 22vw, (min-width: 1024px) 30vw, (min-width: 640px) 45vw, 90vw"

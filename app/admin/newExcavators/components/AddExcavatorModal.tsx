@@ -7,17 +7,14 @@ import { useLanguage } from '@/contexts/LanguageContext'
 import { addExcavator } from '@/lib/excavators'
 import { EXCAVATOR_PRESET_DESCRIPTIONS } from '@/lib/excavatorPresets'
 import { getExcavatorAccent } from '@/lib/excavatorAccent'
+import { EXCAVATOR_IMAGE_OPTIONS, DEFAULT_ADMIN_EXCAVATOR_IMAGE } from '@/lib/excavatorImages'
 
 interface AddExcavatorModalProps {
   onClose: () => void
   onSuccess: () => void
 }
 
-const EXCAVATOR_IMAGES = [
-  { path: '/TB145.svg', name: 'TB145', type: 'mini' },
-  { path: '/TB290-1.svg', name: 'TB290-1', type: 'standard' },
-  { path: '/TB290-2.svg.svg', name: 'TB290-2', type: 'large' },
-]
+// EXCAVATOR_IMAGES array deleted (moved to lib/excavatorImages.ts)
 
 export default function AddExcavatorModal({ onClose, onSuccess }: AddExcavatorModalProps) {
   const { t } = useLanguage()
@@ -30,7 +27,7 @@ export default function AddExcavatorModal({ onClose, onSuccess }: AddExcavatorMo
     weight: '',
     bucketCapacity: '',
     maxReach: '',
-    svgPath: '/TB145.svg',
+    svgPath: DEFAULT_ADMIN_EXCAVATOR_IMAGE,
     isActive: true,
   })
   const [descriptionMode, setDescriptionMode] = useState<'preset' | 'custom'>('preset')
@@ -74,7 +71,7 @@ export default function AddExcavatorModal({ onClose, onSuccess }: AddExcavatorMo
     setFormData((prev) => ({ ...prev, [name]: value }))
   }
 
-  const selectedImageConfig = EXCAVATOR_IMAGES.find((image) => image.path === formData.svgPath) || EXCAVATOR_IMAGES[0]
+  const selectedImageConfig = EXCAVATOR_IMAGE_OPTIONS.find((image) => image.path === formData.svgPath) || EXCAVATOR_IMAGE_OPTIONS[0]
   const accent = getExcavatorAccent(formData.type || selectedImageConfig.type)
   const inputClass = 'w-full rounded-xl border border-white/10 bg-[#0b1220]/80 px-3.5 py-2.5 text-sm text-white outline-none transition-all duration-300 placeholder:text-gray-500 focus:border-red-500/40 focus:bg-[#0b1220]'
   const sectionClass = 'rounded-[22px] border border-white/8 bg-white/[0.035] p-4'
@@ -158,7 +155,7 @@ export default function AddExcavatorModal({ onClose, onSuccess }: AddExcavatorMo
           <div className={sectionClass}>
             <label className="mb-3 block text-[11px] font-semibold uppercase tracking-[0.18em] text-gray-500">{t('admin.excavatorImage')} *</label>
             <div className="grid grid-cols-1 gap-2.5 md:grid-cols-3">
-              {EXCAVATOR_IMAGES.map((image) => {
+              {EXCAVATOR_IMAGE_OPTIONS.map((image) => {
                 const imageAccent = getExcavatorAccent(image.type)
                 const isSelected = formData.svgPath === image.path
 

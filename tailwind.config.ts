@@ -117,25 +117,25 @@ const config: Config = {
         }
       },
       backgroundImage: {
-        'gradient-main-dark': 'linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 25%, #1f1f1f 50%, #2d2d2d 75%, #242424 100%)',
-        'gradient-card-dark': 'linear-gradient(135deg, #2d2d2d 0%, #333333 100%)',
-        'gradient-card-hover-dark': 'linear-gradient(135deg, #333333, #3a3a3a)',
-        'gradient-button-dark': 'linear-gradient(135deg, #3a3a3a, #404040)',
-        'gradient-maintenance-dark': 'linear-gradient(135deg, rgba(45,45,45,0.95) 0%, rgba(51,51,51,0.95) 100%)',
-        'gradient-shine-dark': 'linear-gradient(90deg, transparent, rgba(100, 100, 100, 0.2), transparent)',
-        'gradient-radial-dark': 'radial-gradient(circle, rgba(100,100,100,0.1) 0%, transparent 70%)',
-        'gradient-radial-hover-dark': 'radial-gradient(circle, rgba(100,100,100,0.15) 0%, transparent 60%)'
+        'gradient-main-dark': 'linear-gradient(135deg, #070b14 0%, #0c1220 50%, #070b14 100%)',
+        'gradient-card-dark': 'linear-gradient(135deg, #111827 0%, #0f172a 100%)',
+        'gradient-card-hover-dark': 'linear-gradient(135deg, #1e293b, #0f172a)',
+        'gradient-button-dark': 'linear-gradient(135deg, #1f2937, #111827)',
+        'gradient-maintenance-dark': 'linear-gradient(135deg, rgba(15,23,42,0.95) 0%, rgba(17,24,39,0.95) 100%)',
+        'gradient-shine-dark': 'linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.05), transparent)',
+        'gradient-radial-dark': 'radial-gradient(circle, rgba(255,255,255,0.02) 0%, transparent 70%)',
+        'gradient-radial-hover-dark': 'radial-gradient(circle, rgba(255,255,255,0.04) 0%, transparent 60%)'
       },
       colors: {
         gray: {
           dark: {
-            bg: '#1a1a1a',
-            card: '#2d2d2d',
-            border: '#404040',
-            text: '#e0e0e0',
-            textSecondary: '#b0b0b0',
-            textMuted: '#888888',
-            accent: '#363636'
+            bg: '#070b14',
+            card: '#0f172a',
+            border: '#1e293b',
+            text: '#f8fafc',
+            textSecondary: '#94a3b8',
+            textMuted: '#64748b',
+            accent: '#0f172a'
           }
         },
         red: {

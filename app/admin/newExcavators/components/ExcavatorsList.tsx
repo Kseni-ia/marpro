@@ -8,6 +8,7 @@ import AddExcavatorModal from './AddExcavatorModal'
 import ExcavatorDetailsModal from './ExcavatorDetailsModal'
 import Image from 'next/image'
 import { getExcavatorAccent } from '@/lib/excavatorAccent'
+import { resolveExcavatorImage } from '@/lib/excavatorImages'
 
 export default function ExcavatorsList() {
   const { t } = useLanguage()
@@ -164,7 +165,7 @@ export default function ExcavatorsList() {
                 }}
               >
                 <Image
-                  src={excavator.svgPath || '/TB145.svg'}
+                  src={resolveExcavatorImage(excavator.svgPath)}
                   alt={`${excavator.model} excavator`}
                   width={200}
                   height={96}
