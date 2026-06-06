@@ -61,10 +61,10 @@ export default function InstallationPageClient({
       <TopNavigation />
 
       <BlurUpBackground
-        placeholderSrc="/loadC_Small.jpeg"
-        fullSrc="/constructions F.mp4"
+        placeholderSrc="/plumbing_small.jpeg"
+        fullSrc="/plumbing_bg.jpeg"
         overlayOpacity="bg-black/70"
-        isVideo={true}
+        isVideo={false}
       />
 
       <div className="relative z-10 min-h-screen pt-16">
