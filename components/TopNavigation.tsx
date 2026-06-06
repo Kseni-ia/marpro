@@ -1,17 +1,18 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
-import { useRouter } from 'next/navigation'
+import { useRouter, usePathname } from 'next/navigation'
 import Image from 'next/image'
 import { useLanguage } from '@/contexts/LanguageContext'
 import { useModal } from '@/contexts/ModalContext'
 import { getInstallationCopy } from '@/lib/installationCopy'
 import { getPriceListCopy } from '@/lib/priceListCopy'
 import WorkApplicationForm from './WorkApplicationForm'
-import { Menu, X } from 'lucide-react'
+import { Menu, X, Home, Mail, Truck, Hammer, Wrench, Coins, Handshake } from 'lucide-react'
 
 export default function TopNavigation() {
   const router = useRouter()
+  const pathname = usePathname()
   const { t, language } = useLanguage()
   const { isModalOpen } = useModal()
   const installationCopy = getInstallationCopy(language)
@@ -159,50 +160,86 @@ export default function TopNavigation() {
           {mobileMenuOpen && (
             <div 
               id="mobile-menu"
-              className={`md:hidden absolute top-16 right-4 bg-gradient-to-br from-gray-900/95 to-gray-800/95 backdrop-blur-xl border-2 border-gray-700/50 rounded-xl shadow-[0_8px_32px_rgba(0,0,0,0.4)] min-w-[220px] overflow-hidden transition-all duration-300 ${isModalOpen ? 'z-1000' : 'z-50'}`}
+              className={`md:hidden absolute top-16 right-4 bg-[#0c1322]/95 backdrop-blur-xl border border-white/10 rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.5)] min-w-[240px] overflow-hidden transition-all duration-300 ${isModalOpen ? 'z-1000' : 'z-50'}`}
             >
-              <div className="flex flex-col py-3">
+              <div className="flex flex-col py-2.5">
                 <button 
                   onClick={() => navigateToSection('/')}
-                  className="text-gray-300 hover:text-white hover:bg-gradient-to-r hover:from-red-600/20 hover:to-red-500/10 transition-all duration-300 font-medium py-3.5 px-5 text-left border-b border-gray-700/30 hover:border-red-500/30"
+                  className={`flex items-center gap-3 font-semibold py-3.5 px-5 text-left transition-all duration-300 border-b border-white/[0.03] ${
+                    pathname === '/'
+                      ? 'text-red-400 bg-gradient-to-r from-red-500/12 via-red-500/4 to-transparent border-l-2 border-l-red-500/80 pl-4.5'
+                      : 'text-gray-300 hover:text-white hover:bg-white/[0.03] pl-5'
+                  }`}
                 >
-                  {language === 'cs' ? 'Hlavní' : language === 'ru' ? 'Главная' : 'Main'}
+                  <Home className="w-4.5 h-4.5 opacity-80" />
+                  <span>{language === 'cs' ? 'Hlavní' : language === 'ru' ? 'Главная' : 'Main'}</span>
                 </button>
                 <button 
                   onClick={handleContact}
-                  className="text-gray-300 hover:text-white hover:bg-gradient-to-r hover:from-red-600/20 hover:to-red-500/10 transition-all duration-300 font-medium py-3.5 px-5 text-left border-b border-gray-700/30 hover:border-red-500/30"
+                  className={`flex items-center gap-3 font-semibold py-3.5 px-5 text-left transition-all duration-300 border-b border-white/[0.03] ${
+                    // Contact is hash based
+                    typeof window !== 'undefined' && window.location.hash === '#contact'
+                      ? 'text-red-400 bg-gradient-to-r from-red-500/12 via-red-500/4 to-transparent border-l-2 border-l-red-500/80 pl-4.5'
+                      : 'text-gray-300 hover:text-white hover:bg-white/[0.03] pl-5'
+                  }`}
                 >
-                  {language === 'cs' ? 'Kontakt' : language === 'ru' ? 'Контакт' : 'Contact Us'}
+                  <Mail className="w-4.5 h-4.5 opacity-80" />
+                  <span>{language === 'cs' ? 'Kontakt' : language === 'ru' ? 'Контакт' : 'Contact Us'}</span>
                 </button>
                 <button 
                   onClick={() => navigateToSection('/Container')}
-                  className="text-gray-300 hover:text-white hover:bg-gradient-to-r hover:from-red-600/20 hover:to-red-500/10 transition-all duration-300 font-medium py-3.5 px-5 text-left border-b border-gray-700/30 hover:border-red-500/30"
+                  className={`flex items-center gap-3 font-semibold py-3.5 px-5 text-left transition-all duration-300 border-b border-white/[0.03] ${
+                    pathname === '/Container'
+                      ? 'text-red-400 bg-gradient-to-r from-red-500/12 via-red-500/4 to-transparent border-l-2 border-l-red-500/80 pl-4.5'
+                      : 'text-gray-300 hover:text-white hover:bg-white/[0.03] pl-5'
+                  }`}
                 >
-                  {t('nav.containers')}
+                  <Truck className="w-4.5 h-4.5 opacity-80" />
+                  <span>{t('nav.containers')}</span>
                 </button>
                 <button 
                   onClick={() => navigateToSection('/Excavator')}
-                  className="text-gray-300 hover:text-white hover:bg-gradient-to-r hover:from-red-600/20 hover:to-red-500/10 transition-all duration-300 font-medium py-3.5 px-5 text-left border-b border-gray-700/30 hover:border-red-500/30"
+                  className={`flex items-center gap-3 font-semibold py-3.5 px-5 text-left transition-all duration-300 border-b border-white/[0.03] ${
+                    pathname === '/Excavator'
+                      ? 'text-red-400 bg-gradient-to-r from-red-500/12 via-red-500/4 to-transparent border-l-2 border-l-red-500/80 pl-4.5'
+                      : 'text-gray-300 hover:text-white hover:bg-white/[0.03] pl-5'
+                  }`}
                 >
-                  {t('nav.excavators')}
+                  <Hammer className="w-4.5 h-4.5 opacity-80" />
+                  <span>{t('nav.excavators')}</span>
                 </button>
                 <button 
                   onClick={() => navigateToSection('/Installation')}
-                  className="text-gray-300 hover:text-white hover:bg-gradient-to-r hover:from-red-600/20 hover:to-red-500/10 transition-all duration-300 font-medium py-3.5 px-5 text-left border-b border-gray-700/30 hover:border-red-500/30"
+                  className={`flex items-center gap-3 font-semibold py-3.5 px-5 text-left transition-all duration-300 border-b border-white/[0.03] ${
+                    pathname === '/Installation'
+                      ? 'text-red-400 bg-gradient-to-r from-red-500/12 via-red-500/4 to-transparent border-l-2 border-l-red-500/80 pl-4.5'
+                      : 'text-gray-300 hover:text-white hover:bg-white/[0.03] pl-5'
+                  }`}
                 >
-                  {installationCopy.title}
+                  <Wrench className="w-4.5 h-4.5 opacity-80" />
+                  <span>{installationCopy.title}</span>
                 </button>
                 <button 
                   onClick={() => navigateToSection('/Cenik')}
-                  className="text-gray-300 hover:text-white hover:bg-gradient-to-r hover:from-red-600/20 hover:to-red-500/10 transition-all duration-300 font-medium py-3.5 px-5 text-left border-b border-gray-700/30 hover:border-red-500/30"
+                  className={`flex items-center gap-3 font-semibold py-3.5 px-5 text-left transition-all duration-300 border-b border-white/[0.03] ${
+                    pathname === '/Cenik'
+                      ? 'text-red-400 bg-gradient-to-r from-red-500/12 via-red-500/4 to-transparent border-l-2 border-l-red-500/80 pl-4.5'
+                      : 'text-gray-300 hover:text-white hover:bg-white/[0.03] pl-5'
+                  }`}
                 >
-                  {priceListCopy.navLabel}
+                  <Coins className="w-4.5 h-4.5 opacity-80" />
+                  <span>{priceListCopy.navLabel}</span>
                 </button>
                 <button 
                   onClick={() => { setMobileMenuOpen(false); handleWorkWithUs(); }}
-                  className="text-gray-300 hover:text-white hover:bg-gradient-to-r hover:from-red-600/20 hover:to-red-500/10 transition-all duration-300 font-medium py-3.5 px-5 text-left"
+                  className={`flex items-center gap-3 font-semibold py-3.5 px-5 text-left transition-all duration-300 ${
+                    showWorkForm
+                      ? 'text-red-400 bg-gradient-to-r from-red-500/12 via-red-500/4 to-transparent border-l-2 border-l-red-500/80 pl-4.5'
+                      : 'text-gray-300 hover:text-white hover:bg-white/[0.03] pl-5'
+                  }`}
                 >
-                  {language === 'cs' ? 'Spolupráce' : language === 'ru' ? 'Сотрудничество' : 'Work With Us'}
+                  <Handshake className="w-4.5 h-4.5 opacity-80" />
+                  <span>{language === 'cs' ? 'Spolupráce' : language === 'ru' ? 'Сотрудничество' : 'Work With Us'}</span>
                 </button>
               </div>
             </div>

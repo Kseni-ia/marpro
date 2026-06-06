@@ -17,10 +17,42 @@ type Section = 'home' | 'containers' | 'excavators' | 'installations'
 
 export default function HomePageClient() {
   const [activeSection, setActiveSection] = useState<Section>('home')
+  const [hoveredSection, setHoveredSection] = useState<Section>('home')
   const { t, language } = useLanguage()
   const { isModalOpen } = useModal()
   const router = useRouter()
   const installationCopy = getInstallationCopy(language)
+
+  const getBackgroundConfig = () => {
+    switch (hoveredSection) {
+      case 'containers':
+        return {
+          placeholderSrc: '/containers_small.jpeg',
+          fullSrc: '/containers_bg.jpeg',
+          isVideo: false,
+        }
+      case 'excavators':
+        return {
+          placeholderSrc: '/excavators_small.jpeg',
+          fullSrc: '/excavators_bg.jpeg',
+          isVideo: false,
+        }
+      case 'installations':
+        return {
+          placeholderSrc: '/plumbing_small.jpeg',
+          fullSrc: '/plumbing_bg.jpeg',
+          isVideo: false,
+        }
+      default:
+        return {
+          placeholderSrc: '/home_default_small.jpeg',
+          fullSrc: '/home_default_bg.jpeg',
+          isVideo: false,
+        }
+    }
+  }
+
+  const bgConfig = getBackgroundConfig()
 
   const navigateToSection = (path: string) => {
     router.push(path)
@@ -46,6 +78,8 @@ export default function HomePageClient() {
                 id="containers"
                 className="w-full max-w-xs bg-gradient-card-dark border-2 border-gray-dark-border rounded-[15px] p-5 cursor-pointer transition-all duration-[400ms] shadow-[0_10px_40px_rgba(220,38,38,0.4)] relative overflow-hidden group hover:-translate-y-2.5 hover:scale-[1.02] hover:shadow-[0_20px_40px_rgba(220,38,38,0.6)] hover:bg-gradient-card-hover-dark hover:border-gray-dark-border"
                 onClick={() => navigateToSection('/Container')}
+                onMouseEnter={() => setHoveredSection('containers')}
+                onMouseLeave={() => setHoveredSection('home')}
               >
                 <h3 className="text-gray-dark-text text-xl mb-3 font-bold uppercase tracking-[1px]">
                   {t('nav.containers')}
@@ -59,6 +93,8 @@ export default function HomePageClient() {
                 id="excavators"
                 className="w-full max-w-xs bg-gradient-card-dark border-2 border-gray-dark-border rounded-[15px] p-5 cursor-pointer transition-all duration-[400ms] shadow-[0_10px_40px_rgba(220,38,38,0.4)] relative overflow-hidden group hover:-translate-y-2.5 hover:scale-[1.02] hover:shadow-[0_20px_40px_rgba(220,38,38,0.6)] hover:bg-gradient-card-hover-dark hover:border-gray-dark-border"
                 onClick={() => navigateToSection('/Excavator')}
+                onMouseEnter={() => setHoveredSection('excavators')}
+                onMouseLeave={() => setHoveredSection('home')}
               >
                 <h3 className="text-gray-dark-text text-xl mb-3 font-bold uppercase tracking-[1px]">
                   {t('nav.excavators')}
@@ -72,6 +108,8 @@ export default function HomePageClient() {
                 id="installations"
                 className="w-full max-w-xs bg-gradient-card-dark border-2 border-gray-dark-border rounded-[15px] p-5 cursor-pointer transition-all duration-[400ms] shadow-[0_10px_40px_rgba(220,38,38,0.4)] relative overflow-hidden group hover:-translate-y-2.5 hover:scale-[1.02] hover:shadow-[0_20px_40px_rgba(220,38,38,0.6)] hover:bg-gradient-card-hover-dark hover:border-gray-dark-border"
                 onClick={() => navigateToSection('/Installation')}
+                onMouseEnter={() => setHoveredSection('installations')}
+                onMouseLeave={() => setHoveredSection('home')}
               >
                 <h3 className="text-gray-dark-text text-xl mb-3 font-bold uppercase tracking-[1px]">
                   {installationCopy.title}
@@ -87,6 +125,8 @@ export default function HomePageClient() {
                 id="containers"
                 className="bg-gradient-card-dark border-2 border-gray-dark-border rounded-[20px] cursor-pointer transition-all duration-[400ms] shadow-[0_10px_30px_rgba(0,0,0,0.3)] hover:shadow-[0_20px_40px_rgba(220,38,38,0.6)] relative overflow-hidden group hover:-translate-y-2.5 hover:scale-[1.02] hover:bg-gradient-card-hover-dark hover:border-gray-dark-border text-center w-[320px] h-[160px] flex flex-col justify-center items-center px-6 py-6"
                 onClick={() => navigateToSection('/Container')}
+                onMouseEnter={() => setHoveredSection('containers')}
+                onMouseLeave={() => setHoveredSection('home')}
               >
                 <h3 className="text-gray-dark-text text-2xl font-bold uppercase tracking-[2px] mb-3 leading-tight">
                   {t('nav.containers').toUpperCase()}
@@ -100,6 +140,8 @@ export default function HomePageClient() {
                 id="excavators"
                 className="bg-gradient-card-dark border-2 border-gray-dark-border rounded-[20px] cursor-pointer transition-all duration-[400ms] shadow-[0_10px_30px_rgba(0,0,0,0.3)] hover:shadow-[0_20px_40px_rgba(220,38,38,0.6)] relative overflow-hidden group hover:-translate-y-2.5 hover:scale-[1.02] hover:bg-gradient-card-hover-dark hover:border-gray-dark-border text-center w-[320px] h-[160px] flex flex-col justify-center items-center px-6 py-6"
                 onClick={() => navigateToSection('/Excavator')}
+                onMouseEnter={() => setHoveredSection('excavators')}
+                onMouseLeave={() => setHoveredSection('home')}
               >
                 <h3 className="text-gray-dark-text text-2xl font-bold uppercase tracking-[2px] mb-3 leading-tight">
                   {t('nav.excavators').toUpperCase()}
@@ -113,6 +155,8 @@ export default function HomePageClient() {
                 id="installations"
                 className="bg-gradient-card-dark border-2 border-gray-dark-border rounded-[20px] cursor-pointer transition-all duration-[400ms] shadow-[0_10px_30px_rgba(0,0,0,0.3)] hover:shadow-[0_20px_40px_rgba(220,38,38,0.6)] relative overflow-hidden group hover:-translate-y-2.5 hover:scale-[1.02] hover:bg-gradient-card-hover-dark hover:border-gray-dark-border text-center w-[320px] h-[160px] flex flex-col justify-center items-center px-6 py-6"
                 onClick={() => navigateToSection('/Installation')}
+                onMouseEnter={() => setHoveredSection('installations')}
+                onMouseLeave={() => setHoveredSection('home')}
               >
                 <h3 className="text-gray-dark-text text-2xl font-bold uppercase tracking-[2px] mb-3 leading-tight">
                   {installationCopy.title.toUpperCase()}
@@ -133,11 +177,19 @@ export default function HomePageClient() {
 
       {activeSection === 'home' && (
         <BlurUpBackground
-          placeholderSrc="/loadC_Small.jpeg"
-          fullSrc="/F4.mp4"
+          placeholderSrc={bgConfig.placeholderSrc}
+          fullSrc={bgConfig.fullSrc}
           overlayOpacity="bg-black/70"
+          isVideo={bgConfig.isVideo}
         />
       )}
+
+      {/* Preload background assets for seamless hover transitions */}
+      <div className="hidden">
+        <img src="/containers_bg.jpeg" alt="" />
+        <img src="/excavators_bg.jpeg" alt="" />
+        <img src="/plumbing_bg.jpeg" alt="" />
+      </div>
 
       <div className="relative min-h-screen z-10 flex flex-col">
         <main className="flex-1 flex justify-center items-center text-center pt-48 sm:pt-48 md:pt-48">
