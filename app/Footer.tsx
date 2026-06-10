@@ -5,6 +5,7 @@ import { useLanguage } from '@/contexts/LanguageContext'
 
 export default function Footer() {
   const { t } = useLanguage()
+  const currentYear = new Date().getFullYear()
 
   // Social media links - add your actual URLs here
   const socialLinks = {
@@ -19,7 +20,7 @@ export default function Footer() {
       city: 'Praha 10 - Strašnice',
       street: 'Kolovratská 58/1',
       zip: '100 00',
-      country: 'Česká republika'
+      country: 'Česká Republika'
     }
   ]
 
@@ -41,6 +42,10 @@ export default function Footer() {
                   <p>{address.street}</p>
                   <p>{address.zip}</p>
                   <p>{address.country}</p>
+                  <div className="mt-3 space-y-1">
+                    <p>IČO: 08959439</p>
+                    <p>DIČ (DPH): CZ08959439</p>
+                  </div>
                 </div>
               ))}
             </div>
@@ -123,7 +128,7 @@ export default function Footer() {
         <div className="border-t border-gray-dark-border/30 pt-6">
           <div className="flex flex-col sm:flex-row justify-between items-center space-y-2 sm:space-y-0">
             <p className="text-gray-dark-textSecondary text-xs">
-              © 2025 MARPRO S.R.O.
+              © {currentYear} MARPRO S.R.O.
             </p>
           </div>
         </div>
