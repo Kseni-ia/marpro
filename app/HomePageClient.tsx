@@ -69,6 +69,15 @@ export default function HomePageClient() {
       default:
         return (
           <div className="text-center ">
+            {/* Crawlable brand heading — visually hidden, read by Google & screen readers */}
+            <h1 className="sr-only">
+              TZB MARPRO — Kontejnery, bagry a stavební práce v Praze
+            </h1>
+            <p className="sr-only">
+              TZB MARPRO (MARPRO s.r.o.) je stavební firma v Praze. Nabízíme
+              pronájem kontejnerů, práce bagrem, stavební práce a instalatérské
+              a topenářské služby v Praze a okolí.
+            </p>
             <AnimatedLogo />
             <p className="text-base sm:text-lg md:text-xl text-gray-dark-textSecondary mb-4 mt-6 sm:mt-8">
               {t('nav.home')}

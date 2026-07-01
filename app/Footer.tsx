@@ -33,7 +33,7 @@ export default function Footer() {
           {/* Company Info & Addresses */}
           <div className="space-y-4 text-center md:text-left">
             <h3 className="text-red-500 text-lg font-bold uppercase tracking-wider mb-4">
-              MARPRO S.R.O.
+              TZB MARPRO — MARPRO S.R.O.
             </h3>
             <div className="space-y-3">
               {addresses.map((address, index) => (

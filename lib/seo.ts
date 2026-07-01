@@ -1,12 +1,12 @@
 import type { Metadata } from 'next'
 
 export const siteConfig = {
-  name: 'MARPRO',
+  name: 'TZB MARPRO',
   legalName: 'MARPRO s.r.o.',
   url: 'https://tzb-marpro.cz',
-  defaultTitle: 'Kontejnery, bagry a stavebni prace v Praze',
+  defaultTitle: 'TZB MARPRO | Kontejnery, bagry a stavební práce v Praze',
   description:
-    'MARPRO s.r.o. zajistuje pristaveni kontejneru, pronajem bagru a stavebni a instalacni prace v Praze a okoli.',
+    'TZB MARPRO (MARPRO s.r.o.) zajišťuje přistavení kontejnerů, pronájem bagrů a stavební a instalační práce v Praze a okolí.',
   email: 'marprostav@outlook.cz',
   phone: '+420607428667',
   logoPath: '/logoDF.svg',
@@ -36,12 +36,16 @@ export const defaultMetadata: Metadata = {
     canonical: '/',
   },
   keywords: [
+    'TZB MARPRO',
+    'TZB-MARPRO',
+    'tzb-marpro',
+    'tzb-marpro.cz',
+    'MARPRO',
+    'MARPRO s.r.o.',
     'kontejnery Praha',
     'pronajem bagru Praha',
     'stavebni prace Praha',
     'instalacni prace Praha',
-    'MARPRO',
-    'tzb-marpro.cz',
   ],
   openGraph: {
     type: 'website',
@@ -99,6 +103,7 @@ export const organizationStructuredData = {
   '@type': 'Organization',
   '@id': `${siteConfig.url}/#organization`,
   name: siteConfig.legalName,
+  alternateName: ['TZB MARPRO', 'TZB-MARPRO', 'tzb-marpro', 'MARPRO'],
   url: siteConfig.url,
   logo: `${siteConfig.url}${siteConfig.logoPath}`,
   email: siteConfig.email,
@@ -115,6 +120,7 @@ export const websiteStructuredData = {
   '@id': `${siteConfig.url}/#website`,
   url: siteConfig.url,
   name: siteConfig.name,
+  alternateName: ['TZB-MARPRO', 'tzb-marpro', 'MARPRO s.r.o.'],
   inLanguage: 'cs-CZ',
   publisher: {
     '@id': `${siteConfig.url}/#organization`,

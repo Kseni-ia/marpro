@@ -34,7 +34,10 @@ const AnimatedLogo: React.FC = () => {
           }`}
           viewBox="0 0 400 80"
           xmlns=""
+          role="img"
+          aria-label="TZB MARPRO"
         >
+          <title>TZB MARPRO</title>
           <style>{`
             .logo-letter {
               stroke: #ffffff;
