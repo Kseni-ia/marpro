@@ -12,6 +12,7 @@ import { useLanguage } from '@/contexts/LanguageContext'
 import { useModal } from '@/contexts/ModalContext'
 import { getInstallationCopy } from '@/lib/installationCopy'
 import { useRouter } from 'next/navigation'
+import { Truck, Hammer, Wrench } from 'lucide-react'
 
 type Section = 'home' | 'containers' | 'excavators' | 'installations'
 
@@ -82,95 +83,119 @@ export default function HomePageClient() {
             <p className="text-base sm:text-lg md:text-xl text-gray-dark-textSecondary mb-4 mt-6 sm:mt-8">
               {t('nav.home')}
             </p>
-            <div className="grid grid-cols-1 gap-6 justify-items-center max-w-full mx-auto px-2 md:hidden">
+            <div className="grid grid-cols-1 gap-5 justify-items-center max-w-[340px] w-full mx-auto px-4 md:hidden">
               <div
                 id="containers"
-                className="w-full max-w-xs bg-gradient-card-dark border-2 border-gray-dark-border rounded-[15px] p-5 cursor-pointer transition-all duration-[400ms] shadow-[0_10px_40px_rgba(220,38,38,0.4)] relative overflow-hidden group hover:-translate-y-2.5 hover:scale-[1.02] hover:shadow-[0_20px_40px_rgba(220,38,38,0.6)] hover:bg-gradient-card-hover-dark hover:border-gray-dark-border"
+                className="w-full relative overflow-hidden group p-4 rounded-[20px] cursor-pointer transition-all duration-300 backdrop-blur-md bg-gray-dark-card/60 border border-gray-dark-border/60 hover:border-red-500/40 hover:bg-gray-dark-card/85 hover:-translate-y-1 hover:scale-[1.02] shadow-[0_8px_32px_0_rgba(0,0,0,0.37)] hover:shadow-[0_0_20px_rgba(239,68,68,0.25)] card-shine flex items-center space-x-4"
                 onClick={() => navigateToSection('/Container')}
                 onMouseEnter={() => setHoveredSection('containers')}
                 onMouseLeave={() => setHoveredSection('home')}
               >
-                <h3 className="text-gray-dark-text text-xl mb-3 font-bold uppercase tracking-[1px]">
-                  {t('nav.containers')}
-                </h3>
-                <p className="text-gray-dark-textSecondary text-sm">
-                  {t('containers.explore')}
-                </p>
+                <div className="w-12 h-12 rounded-full bg-red-500/10 border border-red-500/20 flex items-center justify-center text-red-400 group-hover:bg-red-500/20 group-hover:border-red-500/40 group-hover:text-red-300 transition-all duration-300 flex-shrink-0 shadow-[0_0_15px_rgba(239,68,68,0.1)]">
+                  <Truck className="w-5.5 h-5.5 transform group-hover:scale-110 transition-transform duration-300" />
+                </div>
+                <div className="text-left">
+                  <h3 className="text-gray-dark-text text-lg font-bold uppercase tracking-[1px] mb-1 group-hover:text-red-400 transition-colors duration-300">
+                    {t('nav.containers')}
+                  </h3>
+                  <p className="text-gray-dark-textSecondary text-xs leading-normal group-hover:text-gray-200 transition-colors duration-300">
+                    {t('containers.explore')}
+                  </p>
+                </div>
               </div>
 
               <div
                 id="excavators"
-                className="w-full max-w-xs bg-gradient-card-dark border-2 border-gray-dark-border rounded-[15px] p-5 cursor-pointer transition-all duration-[400ms] shadow-[0_10px_40px_rgba(220,38,38,0.4)] relative overflow-hidden group hover:-translate-y-2.5 hover:scale-[1.02] hover:shadow-[0_20px_40px_rgba(220,38,38,0.6)] hover:bg-gradient-card-hover-dark hover:border-gray-dark-border"
+                className="w-full relative overflow-hidden group p-4 rounded-[20px] cursor-pointer transition-all duration-300 backdrop-blur-md bg-gray-dark-card/60 border border-gray-dark-border/60 hover:border-red-500/40 hover:bg-gray-dark-card/85 hover:-translate-y-1 hover:scale-[1.02] shadow-[0_8px_32px_0_rgba(0,0,0,0.37)] hover:shadow-[0_0_20px_rgba(239,68,68,0.25)] card-shine flex items-center space-x-4"
                 onClick={() => navigateToSection('/Excavator')}
                 onMouseEnter={() => setHoveredSection('excavators')}
                 onMouseLeave={() => setHoveredSection('home')}
               >
-                <h3 className="text-gray-dark-text text-xl mb-3 font-bold uppercase tracking-[1px]">
-                  {t('nav.excavators')}
-                </h3>
-                <p className="text-gray-dark-textSecondary text-sm">
-                  {t('excavators.discover')}
-                </p>
+                <div className="w-12 h-12 rounded-full bg-red-500/10 border border-red-500/20 flex items-center justify-center text-red-400 group-hover:bg-red-500/20 group-hover:border-red-500/40 group-hover:text-red-300 transition-all duration-300 flex-shrink-0 shadow-[0_0_15px_rgba(239,68,68,0.1)]">
+                  <Hammer className="w-5.5 h-5.5 transform group-hover:scale-110 transition-transform duration-300" />
+                </div>
+                <div className="text-left">
+                  <h3 className="text-gray-dark-text text-lg font-bold uppercase tracking-[1px] mb-1 group-hover:text-red-400 transition-colors duration-300">
+                    {t('nav.excavators')}
+                  </h3>
+                  <p className="text-gray-dark-textSecondary text-xs leading-normal group-hover:text-gray-200 transition-colors duration-300">
+                    {t('excavators.discover')}
+                  </p>
+                </div>
               </div>
 
               <div
                 id="installations"
-                className="w-full max-w-xs bg-gradient-card-dark border-2 border-gray-dark-border rounded-[15px] p-5 cursor-pointer transition-all duration-[400ms] shadow-[0_10px_40px_rgba(220,38,38,0.4)] relative overflow-hidden group hover:-translate-y-2.5 hover:scale-[1.02] hover:shadow-[0_20px_40px_rgba(220,38,38,0.6)] hover:bg-gradient-card-hover-dark hover:border-gray-dark-border"
+                className="w-full relative overflow-hidden group p-4 rounded-[20px] cursor-pointer transition-all duration-300 backdrop-blur-md bg-gray-dark-card/60 border border-gray-dark-border/60 hover:border-red-500/40 hover:bg-gray-dark-card/85 hover:-translate-y-1 hover:scale-[1.02] shadow-[0_8px_32px_0_rgba(0,0,0,0.37)] hover:shadow-[0_0_20px_rgba(239,68,68,0.25)] card-shine flex items-center space-x-4"
                 onClick={() => navigateToSection('/Installation')}
                 onMouseEnter={() => setHoveredSection('installations')}
                 onMouseLeave={() => setHoveredSection('home')}
               >
-                <h3 className="text-gray-dark-text text-xl mb-3 font-bold uppercase tracking-[1px]">
-                  {installationCopy.title}
-                </h3>
-                <p className="text-gray-dark-textSecondary text-sm">
-                  {installationCopy.cardDescription}
-                </p>
+                <div className="w-12 h-12 rounded-full bg-red-500/10 border border-red-500/20 flex items-center justify-center text-red-400 group-hover:bg-red-500/20 group-hover:border-red-500/40 group-hover:text-red-300 transition-all duration-300 flex-shrink-0 shadow-[0_0_15px_rgba(239,68,68,0.1)]">
+                  <Wrench className="w-5.5 h-5.5 transform group-hover:scale-110 transition-transform duration-300" />
+                </div>
+                <div className="text-left">
+                  <h3 className="text-gray-dark-text text-lg font-bold uppercase tracking-[1px] mb-1 group-hover:text-red-400 transition-colors duration-300">
+                    {installationCopy.title}
+                  </h3>
+                  <p className="text-gray-dark-textSecondary text-xs leading-normal group-hover:text-gray-200 transition-colors duration-300">
+                    {installationCopy.cardDescription}
+                  </p>
+                </div>
               </div>
             </div>
 
             <div className="hidden md:grid md:grid-cols-3 gap-8 lg:gap-10 justify-items-center max-w-[1800px] mx-auto">
               <div
                 id="containers"
-                className="bg-gradient-card-dark border-2 border-gray-dark-border rounded-[20px] cursor-pointer transition-all duration-[400ms] shadow-[0_10px_30px_rgba(0,0,0,0.3)] hover:shadow-[0_20px_40px_rgba(220,38,38,0.6)] relative overflow-hidden group hover:-translate-y-2.5 hover:scale-[1.02] hover:bg-gradient-card-hover-dark hover:border-gray-dark-border text-center w-[320px] h-[160px] flex flex-col justify-center items-center px-6 py-6"
+                className="relative overflow-hidden group w-[320px] h-[190px] flex flex-col justify-center items-center px-6 py-5 rounded-[24px] cursor-pointer transition-all duration-300 backdrop-blur-md bg-gray-dark-card/60 border border-gray-dark-border/60 hover:border-red-500/40 hover:bg-gray-dark-card/85 hover:-translate-y-2 hover:scale-[1.03] shadow-[0_8px_32px_0_rgba(0,0,0,0.37)] hover:shadow-[0_0_25px_rgba(239,68,68,0.25)] card-shine text-center"
                 onClick={() => navigateToSection('/Container')}
                 onMouseEnter={() => setHoveredSection('containers')}
                 onMouseLeave={() => setHoveredSection('home')}
               >
-                <h3 className="text-gray-dark-text text-2xl font-bold uppercase tracking-[2px] mb-3 leading-tight">
+                <div className="w-12 h-12 rounded-full bg-red-500/10 border border-red-500/20 flex items-center justify-center text-red-400 group-hover:bg-red-500/20 group-hover:border-red-500/40 group-hover:text-red-300 transition-all duration-300 mb-3 shadow-[0_0_15px_rgba(239,68,68,0.1)] group-hover:shadow-[0_0_20px_rgba(239,68,68,0.2)]">
+                  <Truck className="w-6 h-6 transform group-hover:scale-110 transition-transform duration-300" />
+                </div>
+                <h3 className="text-gray-dark-text text-xl font-bold uppercase tracking-[2px] mb-2 leading-tight group-hover:text-red-400 transition-colors duration-300">
                   {t('nav.containers').toUpperCase()}
                 </h3>
-                <p className="text-gray-dark-textSecondary text-sm leading-tight">
+                <p className="text-gray-dark-textSecondary text-sm leading-normal max-w-[260px] group-hover:text-gray-200 transition-colors duration-300">
                   {t('containers.explore')}
                 </p>
               </div>
 
               <div
                 id="excavators"
-                className="bg-gradient-card-dark border-2 border-gray-dark-border rounded-[20px] cursor-pointer transition-all duration-[400ms] shadow-[0_10px_30px_rgba(0,0,0,0.3)] hover:shadow-[0_20px_40px_rgba(220,38,38,0.6)] relative overflow-hidden group hover:-translate-y-2.5 hover:scale-[1.02] hover:bg-gradient-card-hover-dark hover:border-gray-dark-border text-center w-[320px] h-[160px] flex flex-col justify-center items-center px-6 py-6"
+                className="relative overflow-hidden group w-[320px] h-[190px] flex flex-col justify-center items-center px-6 py-5 rounded-[24px] cursor-pointer transition-all duration-300 backdrop-blur-md bg-gray-dark-card/60 border border-gray-dark-border/60 hover:border-red-500/40 hover:bg-gray-dark-card/85 hover:-translate-y-2 hover:scale-[1.03] shadow-[0_8px_32px_0_rgba(0,0,0,0.37)] hover:shadow-[0_0_25px_rgba(239,68,68,0.25)] card-shine text-center"
                 onClick={() => navigateToSection('/Excavator')}
                 onMouseEnter={() => setHoveredSection('excavators')}
                 onMouseLeave={() => setHoveredSection('home')}
               >
-                <h3 className="text-gray-dark-text text-2xl font-bold uppercase tracking-[2px] mb-3 leading-tight">
+                <div className="w-12 h-12 rounded-full bg-red-500/10 border border-red-500/20 flex items-center justify-center text-red-400 group-hover:bg-red-500/20 group-hover:border-red-500/40 group-hover:text-red-300 transition-all duration-300 mb-3 shadow-[0_0_15px_rgba(239,68,68,0.1)] group-hover:shadow-[0_0_20px_rgba(239,68,68,0.2)]">
+                  <Hammer className="w-6 h-6 transform group-hover:scale-110 transition-transform duration-300" />
+                </div>
+                <h3 className="text-gray-dark-text text-xl font-bold uppercase tracking-[2px] mb-2 leading-tight group-hover:text-red-400 transition-colors duration-300">
                   {t('nav.excavators').toUpperCase()}
                 </h3>
-                <p className="text-gray-dark-textSecondary text-sm leading-tight">
+                <p className="text-gray-dark-textSecondary text-sm leading-normal max-w-[260px] group-hover:text-gray-200 transition-colors duration-300">
                   {t('excavators.discover')}
                 </p>
               </div>
 
               <div
                 id="installations"
-                className="bg-gradient-card-dark border-2 border-gray-dark-border rounded-[20px] cursor-pointer transition-all duration-[400ms] shadow-[0_10px_30px_rgba(0,0,0,0.3)] hover:shadow-[0_20px_40px_rgba(220,38,38,0.6)] relative overflow-hidden group hover:-translate-y-2.5 hover:scale-[1.02] hover:bg-gradient-card-hover-dark hover:border-gray-dark-border text-center w-[320px] h-[160px] flex flex-col justify-center items-center px-6 py-6"
+                className="relative overflow-hidden group w-[320px] h-[190px] flex flex-col justify-center items-center px-6 py-5 rounded-[24px] cursor-pointer transition-all duration-300 backdrop-blur-md bg-gray-dark-card/60 border border-gray-dark-border/60 hover:border-red-500/40 hover:bg-gray-dark-card/85 hover:-translate-y-2 hover:scale-[1.03] shadow-[0_8px_32px_0_rgba(0,0,0,0.37)] hover:shadow-[0_0_25px_rgba(239,68,68,0.25)] card-shine text-center"
                 onClick={() => navigateToSection('/Installation')}
                 onMouseEnter={() => setHoveredSection('installations')}
                 onMouseLeave={() => setHoveredSection('home')}
               >
-                <h3 className="text-gray-dark-text text-2xl font-bold uppercase tracking-[2px] mb-3 leading-tight">
+                <div className="w-12 h-12 rounded-full bg-red-500/10 border border-red-500/20 flex items-center justify-center text-red-400 group-hover:bg-red-500/20 group-hover:border-red-500/40 group-hover:text-red-300 transition-all duration-300 mb-3 shadow-[0_0_15px_rgba(239,68,68,0.1)] group-hover:shadow-[0_0_20px_rgba(239,68,68,0.2)]">
+                  <Wrench className="w-6 h-6 transform group-hover:scale-110 transition-transform duration-300" />
+                </div>
+                <h3 className="text-gray-dark-text text-xl font-bold uppercase tracking-[2px] mb-2 leading-tight group-hover:text-red-400 transition-colors duration-300">
                   {installationCopy.title.toUpperCase()}
                 </h3>
-                <p className="text-gray-dark-textSecondary text-sm leading-tight">
+                <p className="text-gray-dark-textSecondary text-sm leading-normal max-w-[260px] group-hover:text-gray-200 transition-colors duration-300">
                   {installationCopy.cardDescription}
                 </p>
               </div>
@@ -201,7 +226,7 @@ export default function HomePageClient() {
       </div>
 
       <div className="relative min-h-screen z-10 flex flex-col">
-        <main className="flex-1 flex justify-center items-center text-center pt-48 sm:pt-48 md:pt-48">
+        <main className="flex-1 flex justify-center items-center text-center pt-20 sm:pt-28 md:pt-48">
           {renderSection()}
         </main>
 
