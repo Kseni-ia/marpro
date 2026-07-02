@@ -8,15 +8,21 @@ import AnimatedLogo from '@/components/AnimatedLogo'
 import BlurUpBackground from '@/components/BlurUpBackground'
 import Footer from '@/app/Footer'
 import TopNavigation from '@/components/TopNavigation'
+import ReferencesTeaser from '@/components/ReferencesTeaser'
 import { useLanguage } from '@/contexts/LanguageContext'
 import { useModal } from '@/contexts/ModalContext'
 import { getInstallationCopy } from '@/lib/installationCopy'
+import { Reference } from '@/lib/constructions'
 import { useRouter } from 'next/navigation'
 import { Truck, Hammer, Wrench } from 'lucide-react'
 
 type Section = 'home' | 'containers' | 'excavators' | 'installations'
 
-export default function HomePageClient() {
+type HomePageClientProps = {
+  references?: Reference[]
+}
+
+export default function HomePageClient({ references = [] }: HomePageClientProps) {
   const [activeSection, setActiveSection] = useState<Section>('home')
   const [hoveredSection, setHoveredSection] = useState<Section>('home')
   const { t, language } = useLanguage()
@@ -200,6 +206,8 @@ export default function HomePageClient() {
                 </p>
               </div>
             </div>
+
+            <ReferencesTeaser references={references} />
           </div>
         )
     }

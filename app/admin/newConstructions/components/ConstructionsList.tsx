@@ -2,12 +2,12 @@
 
 import React, { useState, useEffect } from 'react'
 import { getAllReferences, toggleReferenceStatus, deleteReference, Reference, REFERENCE_CATEGORIES, ReferenceCategory } from '@/lib/constructions'
-import { Edit, Eye, EyeOff, Plus, Trash2 } from 'lucide-react'
+import { Edit, Eye, EyeOff, Play, Plus, Trash2 } from 'lucide-react'
 import { useLanguage } from '@/contexts/LanguageContext'
 import AddReferenceModal from './AddReferenceModal'
 import ReferenceDetailsModal from './ReferenceDetailsModal'
 import Image from 'next/image'
-import { getReferenceImageUrl } from '@/lib/referenceImageUrl'
+import { getReferenceImageUrl, getReferenceVideoPosterUrl, isVideoUrl } from '@/lib/referenceImageUrl'
 
 export default function ConstructionsList() {
   const { t } = useLanguage()
@@ -128,12 +128,12 @@ export default function ConstructionsList() {
               {(reference.imageUrls && reference.imageUrls.length > 0) ? (
                 <div className="grid grid-cols-2 gap-1 aspect-video">
                   {reference.imageUrls.slice(0, 4).map((url, index) => (
-                    <div 
-                      key={index} 
+                    <div
+                      key={index}
                       className={`${reference.imageUrls.length === 1 ? 'col-span-2 row-span-2' : reference.imageUrls.length === 2 ? 'col-span-1 row-span-2' : ''} relative bg-gray-700/50 rounded-lg overflow-hidden`}
                     >
                       <Image
-                        src={getReferenceImageUrl(url, 'admin')}
+                        src={isVideoUrl(url) ? getReferenceVideoPosterUrl(url, 'admin') : getReferenceImageUrl(url, 'admin')}
                         alt={`${reference.title} ${index + 1}`}
                         width={200}
                         height={150}
@@ -142,6 +142,13 @@ export default function ConstructionsList() {
                           e.currentTarget.src = '/placeholder-image.svg'
                         }}
                       />
+                      {isVideoUrl(url) && !(reference.imageUrls.length > 4 && index === 3) && (
+                        <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
+                          <span className="flex h-8 w-8 items-center justify-center rounded-full bg-black/55 text-white ring-1 ring-white/30">
+                            <Play className="h-4 w-4 translate-x-[1px] fill-white" />
+                          </span>
+                        </div>
+                      )}
                       {reference.imageUrls.length > 4 && index === 3 && (
                         <div className="absolute inset-0 bg-black/60 flex items-center justify-center">
                           <span className="text-white font-bold text-lg">

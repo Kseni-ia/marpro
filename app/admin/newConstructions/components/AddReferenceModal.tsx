@@ -1,11 +1,12 @@
 'use client'
 
 import React, { useEffect, useState } from 'react'
-import { Upload, X, Trash2 } from 'lucide-react'
+import { X } from 'lucide-react'
 import { createReference, REFERENCE_CATEGORIES, ReferenceCategory } from '@/lib/constructions'
-import { uploadMultipleImages, validateMultipleImages } from '@/lib/imageUpload'
+import { uploadMultipleMedia, validateMultipleMedia } from '@/lib/imageUpload'
 import { clearReferenceDraft, loadReferenceDraft, saveReferenceDraft } from '@/lib/referenceDraft'
 import ImagePreviewLightbox from './ImagePreviewLightbox'
+import MediaUploader from './MediaUploader'
 
 interface AddReferenceModalProps {
   onClose: () => void
@@ -57,7 +58,7 @@ export default function AddReferenceModal({ onClose, onSuccess }: AddReferenceMo
   })
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
-  const [uploadProgress, setUploadProgress] = useState(0)
+  const [uploadProgress, setUploadProgress] = useState<Record<number, number> | null>(null)
   const [imageFiles, setImageFiles] = useState<File[]>([])
   const [imagePreviews, setImagePreviews] = useState<string[]>([])
   const [selectedPreview, setSelectedPreview] = useState<string | null>(null)
@@ -79,11 +80,8 @@ export default function AddReferenceModal({ onClose, onSuccess }: AddReferenceMo
     saveReferenceDraft(formData)
   }, [formData])
 
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = e.target.files
-    if (!files) return
-
-    const validation = validateMultipleImages(files)
+  const handleAddFiles = (files: FileList) => {
+    const validation = validateMultipleMedia(files)
     if (!validation.isValid) {
       setError(validation.error || 'Neplatné soubory')
       return
@@ -91,7 +89,7 @@ export default function AddReferenceModal({ onClose, onSuccess }: AddReferenceMo
 
     const totalImages = formData.imageUrls.length + imageFiles.length + files.length
     if (totalImages > 10) {
-      setError(`Celkový počet fotografií nesmí přesáhnout 10. Aktuálně máte ${formData.imageUrls.length + imageFiles.length}, přidáváte ${files.length}`)
+      setError(`Celkový počet souborů nesmí přesáhnout 10. Aktuálně máte ${formData.imageUrls.length + imageFiles.length}, přidáváte ${files.length}`)
       return
     }
 
@@ -125,9 +123,10 @@ export default function AddReferenceModal({ onClose, onSuccess }: AddReferenceMo
       let imageUrls = formData.imageUrls
 
       if (imageFiles.length > 0) {
-        setUploadProgress(10)
-        const uploadedUrls = await uploadMultipleImages(imageFiles, 'references')
-        setUploadProgress(100)
+        setUploadProgress(Object.fromEntries(imageFiles.map((_, index) => [index, 0])))
+        const uploadedUrls = await uploadMultipleMedia(imageFiles, 'references', (index, percent) => {
+          setUploadProgress((prev) => (prev ? { ...prev, [index]: percent } : prev))
+        })
         imageUrls = [...imageUrls, ...uploadedUrls]
       }
 
@@ -143,7 +142,7 @@ export default function AddReferenceModal({ onClose, onSuccess }: AddReferenceMo
       setError('Nepodařilo se vytvořit referenci')
     } finally {
       setLoading(false)
-      setUploadProgress(0)
+      setUploadProgress(null)
       imagePreviews.forEach((url) => URL.revokeObjectURL(url))
     }
   }
@@ -274,79 +273,23 @@ export default function AddReferenceModal({ onClose, onSuccess }: AddReferenceMo
           </div>
 
           <div className={sectionClass}>
-            <div className="mb-2 flex items-center justify-between gap-3">
-              <label className="block text-[11px] font-semibold uppercase tracking-[0.18em] text-gray-500">
-                Fotografie ({imageFiles.length + formData.imageUrls.length}/10)
-              </label>
-              <span className="text-xs text-gray-500">JPEG, PNG, GIF, WebP</span>
-            </div>
-
-            <label className="flex cursor-pointer items-center gap-3 rounded-xl border border-white/10 bg-white/[0.03] px-4 py-3 transition-all duration-300 hover:bg-white/[0.05]">
-              <span
-                className="flex h-9 w-9 items-center justify-center rounded-lg"
-                style={{ backgroundColor: accent.tintStrong, color: accent.text }}
-              >
-                <Upload className="h-4 w-4" />
-              </span>
-              <div className="min-w-0 flex-1">
-                <span className="block truncate text-sm font-medium text-white">
-                  {imageFiles.length > 0 ? `${imageFiles.length} souborů připraveno` : 'Vybrat fotografie'}
-                </span>
-                <span className="block text-xs text-gray-500">
-                  Max 10 fotografií, 10 MB na soubor
-                </span>
-              </div>
-              <input
-                type="file"
-                accept="image/jpeg,image/jpg,image/png,image/gif,image/webp"
-                multiple
-                onChange={handleImageChange}
-                disabled={imageFiles.length + formData.imageUrls.length >= 10}
-                className="hidden"
-              />
-            </label>
-
-            <p className="mt-2 text-xs leading-5 text-gray-500">
-              Po nahrání Cloudinary automaticky vylepší fotografii a přidá logo watermark.
-            </p>
+            <MediaUploader
+              files={imageFiles}
+              previews={imagePreviews}
+              existingUrls={formData.imageUrls}
+              accent={accent}
+              uploadProgress={uploadProgress}
+              onAddFiles={handleAddFiles}
+              onRemoveFile={removeImage}
+              onRemoveExisting={(index) =>
+                setFormData((prev) => ({
+                  ...prev,
+                  imageUrls: prev.imageUrls.filter((_, i) => i !== index),
+                }))
+              }
+              onPreviewClick={setSelectedPreview}
+            />
           </div>
-
-          {imagePreviews.length > 0 && (
-            <div className={sectionClass}>
-              <label className="mb-3 block text-[11px] font-semibold uppercase tracking-[0.18em] text-gray-500">Náhled fotografií</label>
-              <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-3 lg:grid-cols-4">
-                {imagePreviews.map((preview, index) => (
-                  <div
-                    key={index}
-                    className="group relative overflow-hidden rounded-[18px] border border-white/10 bg-white/[0.03] cursor-zoom-in"
-                    onClick={() => setSelectedPreview(preview)}
-                  >
-                    <img src={preview} alt={`Náhled ${index + 1}`} className="h-24 w-full object-cover" />
-                    <button
-                      type="button"
-                      onClick={(event) => {
-                        event.stopPropagation()
-                        removeImage(index)
-                      }}
-                      className="absolute right-2 top-2 flex h-7 w-7 items-center justify-center rounded-full bg-black/65 text-white opacity-0 transition-opacity group-hover:opacity-100"
-                      title="Odstranit fotografii"
-                    >
-                      <Trash2 className="h-3.5 w-3.5" />
-                    </button>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {uploadProgress > 0 && uploadProgress < 100 && (
-            <div className="overflow-hidden rounded-full bg-white/8">
-              <div
-                className="h-2 rounded-full transition-all duration-300"
-                style={{ width: `${uploadProgress}%`, backgroundColor: accent.primary }}
-              />
-            </div>
-          )}
 
           <div className={sectionClass}>
             <label className="flex items-center gap-3">
@@ -375,7 +318,7 @@ export default function AddReferenceModal({ onClose, onSuccess }: AddReferenceMo
               className="rounded-xl px-5 py-2.5 text-sm font-semibold text-[#0b1220] transition-all duration-300 disabled:cursor-not-allowed disabled:opacity-60"
               style={{ backgroundColor: accent.primary }}
             >
-              {loading ? 'Vytváří se...' : 'Vytvořit'}
+              {uploadProgress ? 'Nahrává se…' : loading ? 'Vytváří se…' : 'Vytvořit'}
             </button>
           </div>
         </form>

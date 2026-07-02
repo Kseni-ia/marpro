@@ -1,10 +1,10 @@
 'use client'
 
 import React, { useState } from 'react'
-import { X, Trash2 } from 'lucide-react'
+import { X } from 'lucide-react'
 import { updateReference, deleteReference, Reference, REFERENCE_CATEGORIES, ReferenceCategory } from '@/lib/constructions'
-import { uploadMultipleImages, validateMultipleImages } from '@/lib/imageUpload'
-import { getReferenceImageUrl } from '@/lib/referenceImageUrl'
+import { uploadMultipleMedia, validateMultipleMedia } from '@/lib/imageUpload'
+import MediaUploader from './MediaUploader'
 
 interface ReferenceDetailsModalProps {
   reference: Reference
@@ -22,24 +22,21 @@ export default function ReferenceDetailsModal({ reference, onClose, onUpdate }: 
   })
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
-  const [uploadProgress, setUploadProgress] = useState(0)
+  const [uploadProgress, setUploadProgress] = useState<Record<number, number> | null>(null)
   const [newImageFiles, setNewImageFiles] = useState<File[]>([])
   const [newImagePreviews, setNewImagePreviews] = useState<string[]>([])
 
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = e.target.files
-    if (!files) return
-
-    const validation = validateMultipleImages(files)
+  const handleAddFiles = (files: FileList) => {
+    const validation = validateMultipleMedia(files)
     if (!validation.isValid) {
       setError(validation.error || 'Neplatné soubory')
       return
     }
 
-    // Check total images limit (existing + new)
+    // Check total media limit (existing + new)
     const totalImages = formData.imageUrls.length + newImageFiles.length + files.length
     if (totalImages > 10) {
-      setError(`Celkový počet fotografií nesmí přesáhnout 10. Aktuálně máte ${formData.imageUrls.length + newImageFiles.length}, přidáváte ${files.length}`)
+      setError(`Celkový počet souborů nesmí přesáhnout 10. Aktuálně máte ${formData.imageUrls.length + newImageFiles.length}, přidáváte ${files.length}`)
       return
     }
 
@@ -76,11 +73,12 @@ export default function ReferenceDetailsModal({ reference, onClose, onUpdate }: 
     try {
       let imageUrls = formData.imageUrls
 
-      // Upload new images if any are selected
+      // Upload new media if any are selected
       if (newImageFiles.length > 0) {
-        setUploadProgress(10)
-        const uploadedUrls = await uploadMultipleImages(newImageFiles, 'references')
-        setUploadProgress(100)
+        setUploadProgress(Object.fromEntries(newImageFiles.map((_, index) => [index, 0])))
+        const uploadedUrls = await uploadMultipleMedia(newImageFiles, 'references', (index, percent) => {
+          setUploadProgress((prev) => (prev ? { ...prev, [index]: percent } : prev))
+        })
         imageUrls = [...imageUrls, ...uploadedUrls]
       }
 
@@ -96,7 +94,7 @@ export default function ReferenceDetailsModal({ reference, onClose, onUpdate }: 
       setError('Nepodařilo se aktualizovat referenci')
     } finally {
       setLoading(false)
-      setUploadProgress(0)
+      setUploadProgress(null)
       // Clean up blob URLs
       newImagePreviews.forEach(url => URL.revokeObjectURL(url))
     }
@@ -192,91 +190,15 @@ export default function ReferenceDetailsModal({ reference, onClose, onUpdate }: 
             </select>
           </div>
 
-          <div>
-            <label className="block text-sm font-medium text-gray-300 mb-1">
-              Existující fotografie ({formData.imageUrls.length}/10)
-            </label>
-            {formData.imageUrls.length > 0 ? (
-              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
-                {formData.imageUrls.map((url, index) => (
-                  <div key={index} className="relative group">
-                    <img 
-                      src={getReferenceImageUrl(url, 'admin')}
-                      alt={`Fotografie ${index + 1}`}
-                      className="w-full h-24 object-cover rounded-lg border border-gray-600"
-                      onError={(e) => {
-                        e.currentTarget.src = '/placeholder-image.svg'
-                      }}
-                    />
-                    <button
-                      type="button"
-                      onClick={() => removeExistingImage(index)}
-                      className="absolute top-1 right-1 bg-red-600 hover:bg-red-700 text-white p-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
-                      title="Odstranit fotografii"
-                    >
-                      <Trash2 className="w-3 h-3" />
-                    </button>
-                  </div>
-                ))}
-              </div>
-            ) : (
-              <p className="text-gray-500 text-sm">Žádné existující fotografie</p>
-            )}
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-300 mb-1">
-              Přidat nové fotografie ({newImageFiles.length}/10)
-            </label>
-            <input
-              type="file"
-              accept="image/jpeg,image/jpg,image/png,image/gif,image/webp"
-              multiple
-              onChange={handleImageChange}
-              disabled={formData.imageUrls.length + newImageFiles.length >= 10}
-              className="w-full px-3 py-2 bg-gray-700/50 border border-gray-600 rounded-lg text-gray-300 file:mr-4 file:py-1 file:px-3 file:rounded file:border-0 file:text-sm file:font-medium file:bg-red-600 file:text-white hover:file:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed"
-            />
-            <p className="text-xs text-gray-500 mt-1">
-              Povolené formáty: JPEG, PNG, GIF, WebP (max 10 MB na soubor, max 10 fotografií celkem). Nové fotografie budou po nahrání automaticky vylepšeny a opatřeny watermarkem.
-            </p>
-          </div>
-
-          {/* New Image Previews */}
-          {newImagePreviews.length > 0 && (
-            <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">
-                Náhled nových fotografií
-              </label>
-              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
-                {newImagePreviews.map((preview, index) => (
-                  <div key={index} className="relative group">
-                    <img 
-                      src={preview} 
-                      alt={`Nová fotografie ${index + 1}`}
-                      className="w-full h-24 object-cover rounded-lg border border-gray-600"
-                    />
-                    <button
-                      type="button"
-                      onClick={() => removeNewImage(index)}
-                      className="absolute top-1 right-1 bg-red-600 hover:bg-red-700 text-white p-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
-                      title="Odstranit fotografii"
-                    >
-                      <Trash2 className="w-3 h-3" />
-                    </button>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {uploadProgress > 0 && uploadProgress < 100 && (
-            <div className="w-full bg-gray-700 rounded-full h-2">
-              <div 
-                className="bg-red-600 h-2 rounded-full transition-all duration-300"
-                style={{ width: `${uploadProgress}%` }}
-              ></div>
-            </div>
-          )}
+          <MediaUploader
+            files={newImageFiles}
+            previews={newImagePreviews}
+            existingUrls={formData.imageUrls}
+            uploadProgress={uploadProgress}
+            onAddFiles={handleAddFiles}
+            onRemoveFile={removeNewImage}
+            onRemoveExisting={removeExistingImage}
+          />
 
           <div className="flex items-center">
             <input
@@ -311,7 +233,7 @@ export default function ReferenceDetailsModal({ reference, onClose, onUpdate }: 
               disabled={loading}
               className="flex-1 px-4 py-2 bg-red-600 hover:bg-red-700 disabled:bg-red-800 disabled:opacity-50 text-white font-medium rounded-lg transition-colors"
             >
-              {loading ? 'Ukládá se...' : 'Uložit'}
+              {uploadProgress ? 'Nahrává se…' : loading ? 'Ukládá se…' : 'Uložit'}
             </button>
           </div>
         </form>

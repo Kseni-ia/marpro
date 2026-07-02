@@ -1,4 +1,5 @@
 const CLOUDINARY_UPLOAD_SEGMENT = '/image/upload/'
+const CLOUDINARY_VIDEO_SEGMENT = '/video/upload/'
 const VERSION_SEGMENT_PATTERN = /^v\d+\//
 const DEFAULT_WATERMARK_GRAVITY = 'south_east'
 const DEFAULT_WATERMARK_OFFSET = 24
@@ -56,6 +57,19 @@ export const isCloudinaryImageUrl = (sourceUrl?: string | null): sourceUrl is st
       sourceUrl.includes(CLOUDINARY_UPLOAD_SEGMENT)
   )
 
+export const isCloudinaryVideoUrl = (sourceUrl?: string | null): sourceUrl is string =>
+  Boolean(
+    sourceUrl &&
+      sourceUrl.includes('res.cloudinary.com') &&
+      sourceUrl.includes(CLOUDINARY_VIDEO_SEGMENT)
+  )
+
+// A media entry is a video if the URL is a Cloudinary video, or (fallback) ends
+// in a known video extension — covers any non-Cloudinary URLs that may exist.
+export const isVideoUrl = (sourceUrl?: string | null): sourceUrl is string =>
+  isCloudinaryVideoUrl(sourceUrl) ||
+  Boolean(sourceUrl && /\.(mp4|webm|mov|m4v)(\?|$)/i.test(sourceUrl))
+
 const buildReferenceTransformations = (variant: ReferenceImageVariant) => {
   const baseTransformations = [
     ...REFERENCE_VARIANT_TRANSFORMATIONS[variant],
@@ -102,6 +116,45 @@ export const getReferenceImageUrl = (
   }
 
   const transformedUrl = `${prefix}${CLOUDINARY_UPLOAD_SEGMENT}${buildReferenceTransformations(variant)}/${normalizedPath}`
+
+  return queryString ? `${transformedUrl}?${queryString}` : transformedUrl
+}
+
+/**
+ * Video is served straight from Cloudinary (no transformation) to avoid the
+ * extra per-transformation credit cost that video transcoding incurs.
+ */
+export const getReferenceVideoUrl = (sourceUrl?: string | null): string =>
+  sourceUrl || DEFAULT_REFERENCE_FALLBACK
+
+/**
+ * Generate a still-frame poster (JPG) from a Cloudinary video, reusing the same
+ * crop/watermark transforms as images. This is a cheap image transformation and
+ * lets us show a thumbnail without loading the video.
+ */
+export const getReferenceVideoPosterUrl = (
+  sourceUrl?: string | null,
+  variant: ReferenceImageVariant = 'grid'
+): string => {
+  if (!isCloudinaryVideoUrl(sourceUrl)) {
+    return DEFAULT_REFERENCE_FALLBACK
+  }
+
+  const [prefix, suffix] = sourceUrl.split(CLOUDINARY_VIDEO_SEGMENT)
+  if (!suffix) {
+    return DEFAULT_REFERENCE_FALLBACK
+  }
+
+  const [pathPart, queryString] = suffix.split('?')
+  const normalizedPath = pathPart.replace(/^\/+/, '')
+
+  if (!VERSION_SEGMENT_PATTERN.test(normalizedPath)) {
+    return DEFAULT_REFERENCE_FALLBACK
+  }
+
+  // Swap the video extension for .jpg so Cloudinary returns a poster frame.
+  const posterPath = normalizedPath.replace(/\.[^/.]+$/, '.jpg')
+  const transformedUrl = `${prefix}${CLOUDINARY_VIDEO_SEGMENT}${buildReferenceTransformations(variant)}/${posterPath}`
 
   return queryString ? `${transformedUrl}?${queryString}` : transformedUrl
 }

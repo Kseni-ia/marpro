@@ -8,7 +8,7 @@ import { useModal } from '@/contexts/ModalContext'
 import { getInstallationCopy } from '@/lib/installationCopy'
 import { getPriceListCopy } from '@/lib/priceListCopy'
 import WorkApplicationForm from './WorkApplicationForm'
-import { Menu, X, Home, Mail, Truck, Hammer, Wrench, Coins, Handshake } from 'lucide-react'
+import { Menu, X, Home, Mail, Truck, Hammer, Wrench, Coins, Handshake, Images } from 'lucide-react'
 
 export default function TopNavigation() {
   const router = useRouter()
@@ -20,14 +20,15 @@ export default function TopNavigation() {
   const [showWorkForm, setShowWorkForm] = useState(false)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
-  // Handle hash scrolling on component mount
+  // Handle hash scrolling on component mount (e.g. #contact, #reference)
   useEffect(() => {
-    if (window.location.hash === '#contact') {
+    const hash = window.location.hash
+    if (hash) {
       // Small delay to ensure the page is fully rendered
       setTimeout(() => {
-        const contactElement = document.getElementById('contact')
-        if (contactElement) {
-          contactElement.scrollIntoView({ behavior: 'smooth' })
+        const targetElement = document.getElementById(hash.slice(1))
+        if (targetElement) {
+          targetElement.scrollIntoView({ behavior: 'smooth' })
         }
       }, 100)
     }
@@ -78,6 +79,21 @@ export default function TopNavigation() {
     }
   }
 
+  const referencesLabel = language === 'cs' ? 'Reference' : language === 'ru' ? 'Портфолио' : 'References'
+
+  const handleReferences = () => {
+    setMobileMenuOpen(false) // Close menu
+    // References live on the Installation page; navigate there, then scroll to them.
+    if (window.location.pathname !== '/Installation') {
+      router.push('/Installation#reference')
+    } else {
+      const referenceElement = document.getElementById('reference')
+      if (referenceElement) {
+        referenceElement.scrollIntoView({ behavior: 'smooth' })
+      }
+    }
+  }
+
   return (
     <>
       {/* Top Navigation Bar */}
@@ -123,13 +139,19 @@ export default function TopNavigation() {
               >
                 {t('nav.excavators')}
               </button>
-              <button 
+              <button
                 onClick={() => navigateToSection('/Installation')}
                 className="text-gray-dark-textSecondary/90 hover:text-red-400 transition-all duration-300 font-medium hover:scale-105 hover:drop-shadow-[0_0_10px_rgba(220,38,38,0.3)]"
               >
                 {installationCopy.title}
               </button>
-              <button 
+              <button
+                onClick={handleReferences}
+                className="text-gray-dark-textSecondary/90 hover:text-red-400 transition-all duration-300 font-medium hover:scale-105 hover:drop-shadow-[0_0_10px_rgba(220,38,38,0.3)]"
+              >
+                {referencesLabel}
+              </button>
+              <button
                 onClick={() => navigateToSection('/Cenik')}
                 className="text-gray-dark-textSecondary/90 hover:text-red-400 transition-all duration-300 font-medium hover:scale-105 hover:drop-shadow-[0_0_10px_rgba(220,38,38,0.3)]"
               >
@@ -219,7 +241,18 @@ export default function TopNavigation() {
                   <Wrench className="w-4.5 h-4.5 opacity-80" />
                   <span>{installationCopy.title}</span>
                 </button>
-                <button 
+                <button
+                  onClick={handleReferences}
+                  className={`flex items-center gap-3 font-semibold py-3.5 px-5 text-left transition-all duration-300 border-b border-white/[0.03] ${
+                    pathname === '/Installation' && typeof window !== 'undefined' && window.location.hash === '#reference'
+                      ? 'text-red-400 bg-gradient-to-r from-red-500/12 via-red-500/4 to-transparent border-l-2 border-l-red-500/80 pl-4.5'
+                      : 'text-gray-300 hover:text-white hover:bg-white/[0.03] pl-5'
+                  }`}
+                >
+                  <Images className="w-4.5 h-4.5 opacity-80" />
+                  <span>{referencesLabel}</span>
+                </button>
+                <button
                   onClick={() => navigateToSection('/Cenik')}
                   className={`flex items-center gap-3 font-semibold py-3.5 px-5 text-left transition-all duration-300 border-b border-white/[0.03] ${
                     pathname === '/Cenik'

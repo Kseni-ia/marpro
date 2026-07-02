@@ -15,7 +15,7 @@ export interface Reference {
   id: string
   title: string
   description: string
-  imageUrls: string[] // Array of image URLs (up to 10)
+  imageUrls: string[] // Array of media URLs — images and/or videos (up to 10)
   category: ReferenceCategory // Category of the reference
   isActive: boolean
   createdAt: any

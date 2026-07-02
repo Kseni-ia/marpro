@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import HomePageClient from './HomePageClient'
+import { getPublicActiveReferences } from '@/lib/constructionsPublic'
 import { buildPageMetadata } from '@/lib/seo'
 
 export const metadata: Metadata = {
@@ -13,6 +14,8 @@ export const metadata: Metadata = {
   title: { absolute: 'TZB MARPRO | Kontejnery, bagry a stavební práce v Praze' },
 }
 
-export default function Home() {
-  return <HomePageClient />
+export default async function Home() {
+  const references = await getPublicActiveReferences()
+
+  return <HomePageClient references={references} />
 }

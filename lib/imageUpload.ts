@@ -10,11 +10,16 @@ interface CloudinarySignaturePayload {
 }
 
 const MAX_IMAGE_SIZE_BYTES = 10 * 1024 * 1024
+const MAX_VIDEO_SIZE_BYTES = 100 * 1024 * 1024
+const MAX_MEDIA_FILES = 10
 const TARGET_UPLOAD_SIZE_BYTES = 2 * 1024 * 1024
 const MAX_IMAGE_DIMENSION = 2200
 const ALLOWED_IMAGE_TYPES = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp']
+const ALLOWED_VIDEO_TYPES = ['video/mp4', 'video/webm', 'video/quicktime', 'video/x-m4v']
 const RESIZABLE_IMAGE_TYPES = new Set(['image/jpeg', 'image/jpg', 'image/png', 'image/webp'])
 const IMAGE_QUALITY_STEPS = [0.82, 0.74, 0.66, 0.58]
+
+export const isVideoFile = (file: File): boolean => file.type.startsWith('video/')
 
 const getSignaturePayload = async (folder: string): Promise<CloudinarySignaturePayload> => {
   const response = await fetch('/api/cloudinary/reference-signature', {
@@ -137,14 +142,21 @@ const prepareImageForUpload = async (file: File): Promise<File> => {
   }
 }
 
-export const uploadImage = async (file: File, folder: string = 'references'): Promise<string> => {
+export const uploadMedia = async (
+  file: File,
+  folder: string = 'references',
+  onProgress?: (percent: number) => void
+): Promise<string> => {
   try {
-    const validation = validateImageFile(file)
+    const validation = validateMediaFile(file)
     if (!validation.isValid) {
-      throw new Error(validation.error || 'Invalid image file')
+      throw new Error(validation.error || 'Invalid media file')
     }
 
-    const preparedFile = await prepareImageForUpload(file)
+    const isVideo = isVideoFile(file)
+    // Videos are uploaded as-is; only images go through client-side optimization.
+    const preparedFile = isVideo ? file : await prepareImageForUpload(file)
+    const resourceType = isVideo ? 'video' : 'image'
     const signaturePayload = await getSignaturePayload(folder)
     const formData = new FormData()
 
@@ -157,82 +169,121 @@ export const uploadImage = async (file: File, folder: string = 'references'): Pr
     formData.append('unique_filename', signaturePayload.uniqueFilename)
     formData.append('use_filename', signaturePayload.useFilename)
 
-    const response = await fetch(
-      `https://api.cloudinary.com/v1_1/${signaturePayload.cloudName}/image/upload`,
-      {
-        method: 'POST',
-        body: formData
+    // XMLHttpRequest instead of fetch so we can report real upload progress.
+    return await new Promise<string>((resolve, reject) => {
+      const xhr = new XMLHttpRequest()
+      xhr.open(
+        'POST',
+        `https://api.cloudinary.com/v1_1/${signaturePayload.cloudName}/${resourceType}/upload`
+      )
+
+      xhr.upload.onprogress = (event) => {
+        if (event.lengthComputable && onProgress) {
+          onProgress(Math.round((event.loaded / event.total) * 100))
+        }
       }
-    )
 
-    const data = await response.json()
+      xhr.onload = () => {
+        try {
+          const data = JSON.parse(xhr.responseText)
 
-    if (!response.ok) {
-      throw new Error(data?.error?.message || data?.error || 'Cloudinary upload failed')
-    }
+          if (xhr.status >= 200 && xhr.status < 300 && data.secure_url) {
+            onProgress?.(100)
+            resolve(data.secure_url as string)
+            return
+          }
 
-    if (!data.secure_url) {
-      throw new Error('Cloudinary did not return an image URL')
-    }
+          reject(new Error(data?.error?.message || data?.error || 'Cloudinary upload failed'))
+        } catch {
+          reject(new Error('Cloudinary upload failed'))
+        }
+      }
 
-    return data.secure_url as string
+      xhr.onerror = () => reject(new Error('Network error during upload'))
+      xhr.send(formData)
+    })
   } catch (error) {
-    console.error('Error uploading image:', error)
+    console.error('Error uploading media:', error)
     throw new Error(
-      error instanceof Error ? error.message : 'Failed to upload image'
+      error instanceof Error ? error.message : 'Failed to upload media'
     )
   }
 }
 
-export const uploadMultipleImages = async (files: File[], folder: string = 'references'): Promise<string[]> => {
-  const uploadPromises = files.map(file => uploadImage(file, folder))
+export const uploadMultipleMedia = async (
+  files: File[],
+  folder: string = 'references',
+  onProgress?: (index: number, percent: number) => void
+): Promise<string[]> => {
+  const uploadPromises = files.map((file, index) =>
+    uploadMedia(file, folder, (percent) => onProgress?.(index, percent))
+  )
   return Promise.all(uploadPromises)
 }
 
-export function validateImageFile(file: File): { isValid: boolean; error?: string } {
-  // Check file type
+export function validateMediaFile(file: File): { isValid: boolean; error?: string } {
+  if (isVideoFile(file)) {
+    if (!ALLOWED_VIDEO_TYPES.includes(file.type)) {
+      return {
+        isValid: false,
+        error: 'Nepodporovaný formát videa. Povolené formáty: MP4, WebM, MOV.'
+      }
+    }
+
+    if (file.size > MAX_VIDEO_SIZE_BYTES) {
+      return {
+        isValid: false,
+        error: 'Video je příliš velké. Maximální velikost videa je 100 MB.'
+      }
+    }
+
+    return { isValid: true }
+  }
+
   if (!ALLOWED_IMAGE_TYPES.includes(file.type)) {
     return {
       isValid: false,
-      error: 'Nepodporovaný formát souboru. Povolené formáty: JPEG, PNG, GIF, WebP.'
+      error: 'Nepodporovaný formát souboru. Povolené formáty: JPEG, PNG, GIF, WebP nebo video MP4, WebM, MOV.'
     }
   }
 
-  // Check file size (10MB limit)
   if (file.size > MAX_IMAGE_SIZE_BYTES) {
     return {
       isValid: false,
-      error: 'Soubor je příliš velký. Maximální velikost souboru je 10 MB.'
+      error: 'Soubor je příliš velký. Maximální velikost fotografie je 10 MB.'
     }
   }
 
   return { isValid: true }
 }
 
-export const validateMultipleImages = (files: FileList): { isValid: boolean; error?: string } => {
-  // Check maximum number of files (10)
-  if (files.length > 10) {
+export const validateMultipleMedia = (files: FileList): { isValid: boolean; error?: string } => {
+  if (files.length > MAX_MEDIA_FILES) {
     return {
       isValid: false,
-      error: 'Maximální počet fotografií je 10'
+      error: `Maximální počet souborů je ${MAX_MEDIA_FILES}`
     }
   }
-  
+
   if (files.length === 0) {
     return {
       isValid: false,
-      error: 'Prosím vyberte alespoň jednu fotografii'
+      error: 'Prosím vyberte alespoň jeden soubor'
     }
   }
-  
-  // Check each file
+
   for (let i = 0; i < files.length; i++) {
-    const file = files[i]
-    const validation = validateImageFile(file)
+    const validation = validateMediaFile(files[i])
     if (!validation.isValid) {
       return validation
     }
   }
-  
+
   return { isValid: true }
 }
+
+// Backwards-compatible aliases (media = images + videos).
+export const uploadImage = uploadMedia
+export const uploadMultipleImages = uploadMultipleMedia
+export const validateImageFile = validateMediaFile
+export const validateMultipleImages = validateMultipleMedia

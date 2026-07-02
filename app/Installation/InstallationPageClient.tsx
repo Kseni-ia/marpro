@@ -1,12 +1,13 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import BlurUpBackground from '@/components/BlurUpBackground'
 import TopNavigation from '@/components/TopNavigation'
 import Footer from '@/app/Footer'
 import OrderForm from '@/components/OrderForm'
 import WorkWithUs from '@/app/Installation/work/WorkWithUs'
 import { getAllReferences, Reference } from '@/lib/constructions'
+import { isVideoUrl } from '@/lib/referenceImageUrl'
 import { useLanguage } from '@/contexts/LanguageContext'
 import { getInstallationCopy } from '@/lib/installationCopy'
 import InstallationHero from './components/InstallationHero'
@@ -26,6 +27,31 @@ export default function InstallationPageClient({
   const [references, setReferences] = useState<Reference[]>(initialReferences)
   const [loading, setLoading] = useState(initialReferences.length === 0)
   const [selectedReference, setSelectedReference] = useState<Reference | null>(null)
+
+  // Each reference is split into a photos-only and a videos-only view so the two
+  // media types can live in separate sections. A reference with both appears in
+  // both sections, filtered to the relevant media.
+  const photoReferences = useMemo(
+    () =>
+      references
+        .map((reference) => ({
+          ...reference,
+          imageUrls: reference.imageUrls.filter((url) => !isVideoUrl(url)),
+        }))
+        .filter((reference) => reference.imageUrls.length > 0),
+    [references]
+  )
+
+  const videoReferences = useMemo(
+    () =>
+      references
+        .map((reference) => ({
+          ...reference,
+          imageUrls: reference.imageUrls.filter((url) => isVideoUrl(url)),
+        }))
+        .filter((reference) => reference.imageUrls.length > 0),
+    [references]
+  )
 
   useEffect(() => {
     if (initialReferences.length > 0) {
@@ -71,11 +97,37 @@ export default function InstallationPageClient({
         <div className="relative z-10 min-h-screen animate-fade-in px-3 py-3 sm:p-6 md:p-8">
           <InstallationHero />
 
-          <ReferencesGrid
-            loading={loading}
-            references={references}
-            onSelect={setSelectedReference}
-          />
+          <div id="reference" className="scroll-mt-24" />
+
+          {loading ? (
+            <div className="mx-auto mb-8 flex max-w-[1800px] items-center justify-center py-20 sm:mb-12">
+              <div className="text-lg text-gray-dark-textSecondary">Načítání referencí...</div>
+            </div>
+          ) : references.length === 0 ? (
+            <div className="mx-auto mb-8 flex max-w-[1800px] items-center justify-center rounded-lg border-2 border-dashed border-gray-dark-border/50 py-20 sm:mb-12">
+              <div className="text-center">
+                <div className="mb-4 text-lg text-gray-dark-textSecondary">
+                  Žádné reference k zobrazení
+                </div>
+                <div className="text-sm text-gray-dark-textSecondary/60">
+                  Reference budou přidány administrátorem
+                </div>
+              </div>
+            </div>
+          ) : (
+            <>
+              <ReferencesGrid
+                title="Reference"
+                references={photoReferences}
+                onSelect={setSelectedReference}
+              />
+              <ReferencesGrid
+                title="Videa"
+                references={videoReferences}
+                onSelect={setSelectedReference}
+              />
+            </>
+          )}
 
           <div className="mt-6 text-center sm:mt-8">
             <button

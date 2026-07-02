@@ -1,10 +1,17 @@
 'use client'
 
 import { useEffect, useRef, useState } from 'react'
+import { createPortal } from 'react-dom'
 import Image from 'next/image'
 import { ChevronLeft, ChevronRight, X } from 'lucide-react'
 import { Reference } from '@/lib/constructions'
-import { getReferenceImageUrl, isCloudinaryImageUrl } from '@/lib/referenceImageUrl'
+import {
+  getReferenceImageUrl,
+  getReferenceVideoPosterUrl,
+  getReferenceVideoUrl,
+  isCloudinaryImageUrl,
+  isVideoUrl,
+} from '@/lib/referenceImageUrl'
 
 const MIN_ZOOM = 1
 const MAX_ZOOM = 3
@@ -46,6 +53,13 @@ export default function ReferenceGalleryModal({
   const hasMultipleImages = imageCount > 1
   const SWIPE_THRESHOLD = 50
   const currentImageUrl = reference.imageUrls?.[currentImageIndex]
+
+  const currentIsVideo = isVideoUrl(currentImageUrl)
+  const [mounted, setMounted] = useState(false)
+
+  useEffect(() => {
+    setMounted(true)
+  }, [])
 
   const clampZoom = (zoom: number) => Math.min(MAX_ZOOM, Math.max(MIN_ZOOM, zoom))
 
@@ -134,13 +148,13 @@ export default function ReferenceGalleryModal({
     }
   }, [imageOffset.x, imageOffset.y, imageZoom])
 
-  if (!reference.imageUrls || reference.imageUrls.length === 0) {
+  if (!reference.imageUrls || reference.imageUrls.length === 0 || !mounted) {
     return null
   }
 
-  return (
+  return createPortal(
     <div
-      className="fixed inset-0 z-[9999] bg-black"
+      className="fixed inset-0 z-[100000] bg-black"
       onClick={() => {
         onClose()
         resetImageTransform()
@@ -153,7 +167,7 @@ export default function ReferenceGalleryModal({
             onClose()
             resetImageTransform()
           }}
-          className="absolute right-4 top-4 z-20 rounded-full bg-black/60 p-2 text-white transition-colors hover:bg-black/80"
+          className="absolute right-3 top-3 z-40 flex h-11 w-11 items-center justify-center rounded-full bg-black/70 text-white ring-1 ring-white/25 backdrop-blur-sm transition-colors hover:bg-black/90"
           title="Zavřít"
         >
           <X className="h-6 w-6" />
@@ -184,6 +198,7 @@ export default function ReferenceGalleryModal({
           </>
         )}
 
+        {!currentIsVideo && (
         <div
           className="absolute left-4 top-4 z-20 flex items-center gap-2"
           onMouseDown={(event) => event.stopPropagation()}
@@ -214,10 +229,15 @@ export default function ReferenceGalleryModal({
             +
           </button>
         </div>
+        )}
 
         <div
           className="relative flex h-full w-full items-center justify-center overflow-hidden"
           onWheel={(event) => {
+            if (currentIsVideo) {
+              return
+            }
+
             event.preventDefault()
 
             if (event.deltaY < 0) {
@@ -253,6 +273,20 @@ export default function ReferenceGalleryModal({
             onMouseDown={(event) => event.stopPropagation()}
             onClick={(event) => event.stopPropagation()}
           >
+            {currentIsVideo ? (
+              <video
+                key={currentImageUrl}
+                src={getReferenceVideoUrl(currentImageUrl)}
+                poster={getReferenceVideoPosterUrl(currentImageUrl, 'gallery')}
+                controls
+                autoPlay
+                playsInline
+                controlsList="nodownload"
+                onContextMenu={(event) => event.preventDefault()}
+                className="max-h-[76dvh] w-auto max-w-[92vw] select-none rounded-xl object-contain shadow-[0_24px_80px_rgba(0,0,0,0.6)] md:max-h-[82dvh] md:max-w-[70vw] lg:max-w-[880px]"
+                onClick={(event) => event.stopPropagation()}
+              />
+            ) : (
             <Image
               src={getReferenceImageUrl(currentImageUrl, 'gallery')}
               alt={`${reference.title} ${currentImageIndex + 1}`}
@@ -326,6 +360,7 @@ export default function ReferenceGalleryModal({
                 event.currentTarget.src = '/placeholder-image.svg'
               }}
             />
+            )}
           </div>
         </div>
 
@@ -356,6 +391,7 @@ export default function ReferenceGalleryModal({
           </div>
         )}
       </div>
-    </div>
+    </div>,
+    document.body
   )
 }
