@@ -10,7 +10,7 @@ import LoadingManager from '@/components/LoadingManager'
 import GoogleAnalytics from '@/components/GoogleAnalytics'
 import {
   defaultMetadata,
-  organizationStructuredData,
+  localBusinessStructuredData,
   websiteStructuredData,
 } from '@/lib/seo'
 
@@ -33,7 +33,7 @@ export default function RootLayout({
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
-            __html: JSON.stringify(organizationStructuredData),
+            __html: JSON.stringify(localBusinessStructuredData),
           }}
         />
         <script
