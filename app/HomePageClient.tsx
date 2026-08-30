@@ -13,7 +13,7 @@ import { useLanguage } from '@/contexts/LanguageContext'
 import { useModal } from '@/contexts/ModalContext'
 import { getInstallationCopy } from '@/lib/installationCopy'
 import { Reference } from '@/lib/constructions'
-import { useRouter } from 'next/navigation'
+import Link from 'next/link'
 import { Truck, Hammer, Wrench } from 'lucide-react'
 
 type Section = 'home' | 'containers' | 'excavators' | 'installations'
@@ -27,7 +27,6 @@ export default function HomePageClient({ references = [] }: HomePageClientProps)
   const [hoveredSection, setHoveredSection] = useState<Section>('home')
   const { t, language } = useLanguage()
   const { isModalOpen } = useModal()
-  const router = useRouter()
   const installationCopy = getInstallationCopy(language)
 
   const getBackgroundConfig = () => {
@@ -61,10 +60,6 @@ export default function HomePageClient({ references = [] }: HomePageClientProps)
 
   const bgConfig = getBackgroundConfig()
 
-  const navigateToSection = (path: string) => {
-    router.push(path)
-  }
-
   const renderSection = () => {
     switch (activeSection) {
       case 'containers':
@@ -90,10 +85,10 @@ export default function HomePageClient({ references = [] }: HomePageClientProps)
               {t('nav.home')}
             </p>
             <div className="grid grid-cols-1 gap-5 justify-items-center max-w-[340px] w-full mx-auto px-4 md:hidden">
-              <div
+              <Link
+                href="/Container"
                 id="containers"
                 className="w-full relative overflow-hidden group p-4 rounded-[20px] cursor-pointer transition-all duration-300 backdrop-blur-md bg-gray-dark-card/60 border border-gray-dark-border/60 hover:border-red-500/40 hover:bg-gray-dark-card/85 hover:-translate-y-1 hover:scale-[1.02] shadow-[0_8px_32px_0_rgba(0,0,0,0.37)] hover:shadow-[0_0_20px_rgba(239,68,68,0.25)] card-shine flex items-center space-x-4"
-                onClick={() => navigateToSection('/Container')}
                 onMouseEnter={() => setHoveredSection('containers')}
                 onMouseLeave={() => setHoveredSection('home')}
               >
@@ -108,12 +103,12 @@ export default function HomePageClient({ references = [] }: HomePageClientProps)
                     {t('containers.explore')}
                   </p>
                 </div>
-              </div>
+              </Link>
 
-              <div
+              <Link
+                href="/Excavator"
                 id="excavators"
                 className="w-full relative overflow-hidden group p-4 rounded-[20px] cursor-pointer transition-all duration-300 backdrop-blur-md bg-gray-dark-card/60 border border-gray-dark-border/60 hover:border-red-500/40 hover:bg-gray-dark-card/85 hover:-translate-y-1 hover:scale-[1.02] shadow-[0_8px_32px_0_rgba(0,0,0,0.37)] hover:shadow-[0_0_20px_rgba(239,68,68,0.25)] card-shine flex items-center space-x-4"
-                onClick={() => navigateToSection('/Excavator')}
                 onMouseEnter={() => setHoveredSection('excavators')}
                 onMouseLeave={() => setHoveredSection('home')}
               >
@@ -128,12 +123,12 @@ export default function HomePageClient({ references = [] }: HomePageClientProps)
                     {t('excavators.discover')}
                   </p>
                 </div>
-              </div>
+              </Link>
 
-              <div
+              <Link
+                href="/Installation"
                 id="installations"
                 className="w-full relative overflow-hidden group p-4 rounded-[20px] cursor-pointer transition-all duration-300 backdrop-blur-md bg-gray-dark-card/60 border border-gray-dark-border/60 hover:border-red-500/40 hover:bg-gray-dark-card/85 hover:-translate-y-1 hover:scale-[1.02] shadow-[0_8px_32px_0_rgba(0,0,0,0.37)] hover:shadow-[0_0_20px_rgba(239,68,68,0.25)] card-shine flex items-center space-x-4"
-                onClick={() => navigateToSection('/Installation')}
                 onMouseEnter={() => setHoveredSection('installations')}
                 onMouseLeave={() => setHoveredSection('home')}
               >
@@ -148,14 +143,14 @@ export default function HomePageClient({ references = [] }: HomePageClientProps)
                     {installationCopy.cardDescription}
                   </p>
                 </div>
-              </div>
+              </Link>
             </div>
 
             <div className="hidden md:grid md:grid-cols-3 gap-8 lg:gap-10 justify-items-center max-w-[1800px] mx-auto">
-              <div
+              <Link
+                href="/Container"
                 id="containers"
                 className="relative overflow-hidden group w-[320px] h-[190px] flex flex-col justify-center items-center px-6 py-5 rounded-[24px] cursor-pointer transition-all duration-300 backdrop-blur-md bg-gray-dark-card/60 border border-gray-dark-border/60 hover:border-red-500/40 hover:bg-gray-dark-card/85 hover:-translate-y-2 hover:scale-[1.03] shadow-[0_8px_32px_0_rgba(0,0,0,0.37)] hover:shadow-[0_0_25px_rgba(239,68,68,0.25)] card-shine text-center"
-                onClick={() => navigateToSection('/Container')}
                 onMouseEnter={() => setHoveredSection('containers')}
                 onMouseLeave={() => setHoveredSection('home')}
               >
@@ -168,12 +163,12 @@ export default function HomePageClient({ references = [] }: HomePageClientProps)
                 <p className="text-gray-dark-textSecondary text-sm leading-normal max-w-[260px] group-hover:text-gray-200 transition-colors duration-300">
                   {t('containers.explore')}
                 </p>
-              </div>
+              </Link>
 
-              <div
+              <Link
+                href="/Excavator"
                 id="excavators"
                 className="relative overflow-hidden group w-[320px] h-[190px] flex flex-col justify-center items-center px-6 py-5 rounded-[24px] cursor-pointer transition-all duration-300 backdrop-blur-md bg-gray-dark-card/60 border border-gray-dark-border/60 hover:border-red-500/40 hover:bg-gray-dark-card/85 hover:-translate-y-2 hover:scale-[1.03] shadow-[0_8px_32px_0_rgba(0,0,0,0.37)] hover:shadow-[0_0_25px_rgba(239,68,68,0.25)] card-shine text-center"
-                onClick={() => navigateToSection('/Excavator')}
                 onMouseEnter={() => setHoveredSection('excavators')}
                 onMouseLeave={() => setHoveredSection('home')}
               >
@@ -186,12 +181,12 @@ export default function HomePageClient({ references = [] }: HomePageClientProps)
                 <p className="text-gray-dark-textSecondary text-sm leading-normal max-w-[260px] group-hover:text-gray-200 transition-colors duration-300">
                   {t('excavators.discover')}
                 </p>
-              </div>
+              </Link>
 
-              <div
+              <Link
+                href="/Installation"
                 id="installations"
                 className="relative overflow-hidden group w-[320px] h-[190px] flex flex-col justify-center items-center px-6 py-5 rounded-[24px] cursor-pointer transition-all duration-300 backdrop-blur-md bg-gray-dark-card/60 border border-gray-dark-border/60 hover:border-red-500/40 hover:bg-gray-dark-card/85 hover:-translate-y-2 hover:scale-[1.03] shadow-[0_8px_32px_0_rgba(0,0,0,0.37)] hover:shadow-[0_0_25px_rgba(239,68,68,0.25)] card-shine text-center"
-                onClick={() => navigateToSection('/Installation')}
                 onMouseEnter={() => setHoveredSection('installations')}
                 onMouseLeave={() => setHoveredSection('home')}
               >
@@ -204,7 +199,7 @@ export default function HomePageClient({ references = [] }: HomePageClientProps)
                 <p className="text-gray-dark-textSecondary text-sm leading-normal max-w-[260px] group-hover:text-gray-200 transition-colors duration-300">
                   {installationCopy.cardDescription}
                 </p>
-              </div>
+              </Link>
             </div>
 
             <ReferencesTeaser references={references} />

@@ -1,7 +1,8 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
-import { useRouter, usePathname } from 'next/navigation'
+import { usePathname } from 'next/navigation'
+import Link from 'next/link'
 import Image from 'next/image'
 import { useLanguage } from '@/contexts/LanguageContext'
 import { useModal } from '@/contexts/ModalContext'
@@ -11,7 +12,6 @@ import WorkApplicationForm from './WorkApplicationForm'
 import { Menu, X, Home, Mail, Truck, Hammer, Wrench, Coins, Handshake, Images } from 'lucide-react'
 
 export default function TopNavigation() {
-  const router = useRouter()
   const pathname = usePathname()
   const { t, language } = useLanguage()
   const { isModalOpen } = useModal()
@@ -54,24 +54,17 @@ export default function TopNavigation() {
     }
   }, [mobileMenuOpen])
 
-  const navigateToSection = (path: string) => {
-    router.push(path)
-    setMobileMenuOpen(false) // Close menu after navigation
-  }
+  const closeMobileMenu = () => setMobileMenuOpen(false)
 
   const handleWorkWithUs = () => {
     setShowWorkForm(true)
   }
 
-  const handleContact = () => {
+  const handleContact = (event: React.MouseEvent) => {
     setMobileMenuOpen(false) // Close menu
-    // Navigate to home page first, then scroll to contact section
-    const currentPath = window.location.pathname
-    if (currentPath !== '/') {
-      // If not on home page, navigate to home page with contact hash
-      router.push('/#contact')
-    } else {
-      // If already on home page, scroll to contact section
+    // Already on the home page: skip the navigation and just scroll.
+    if (window.location.pathname === '/') {
+      event.preventDefault()
       const contactElement = document.getElementById('contact')
       if (contactElement) {
         contactElement.scrollIntoView({ behavior: 'smooth' })
@@ -81,12 +74,11 @@ export default function TopNavigation() {
 
   const referencesLabel = language === 'cs' ? 'Reference' : language === 'ru' ? 'Портфолио' : 'References'
 
-  const handleReferences = () => {
+  const handleReferences = (event: React.MouseEvent) => {
     setMobileMenuOpen(false) // Close menu
-    // References live on the Installation page; navigate there, then scroll to them.
-    if (window.location.pathname !== '/Installation') {
-      router.push('/Installation#reference')
-    } else {
+    // References live on the Installation page; if we're already there, scroll.
+    if (window.location.pathname === '/Installation') {
+      event.preventDefault()
       const referenceElement = document.getElementById('reference')
       if (referenceElement) {
         referenceElement.scrollIntoView({ behavior: 'smooth' })
@@ -102,61 +94,64 @@ export default function TopNavigation() {
           <div className="flex justify-center items-center h-16">
             {/* Logo - fits within navigation bar */}
             <div className="absolute left-4 top-4 z-50">
-              <Image 
-                src="/logoDF.svg" 
-                alt="MARPRO" 
-                width={40}
-                height={40}
-                priority
-                className="h-6 w-auto cursor-pointer transition-all duration-300 hover:scale-110 hover:drop-shadow-[0_0_30px_rgba(220,38,38,0.5)] sm:h-7 md:h-8 lg:h-9"
-                onClick={() => navigateToSection('/')}
-              />
+              <Link href="/" onClick={closeMobileMenu} aria-label="TZB MARPRO">
+                <Image 
+                  src="/logoDF.svg" 
+                  alt="MARPRO" 
+                  width={40}
+                  height={40}
+                  priority
+                  className="h-6 w-auto cursor-pointer transition-all duration-300 hover:scale-110 hover:drop-shadow-[0_0_30px_rgba(220,38,38,0.5)] sm:h-7 md:h-8 lg:h-9"
+                />
+              </Link>
             </div>
 
             {/* Navigation Items - centered */}
             <div className="hidden md:flex items-center space-x-8">
-              <button 
-                onClick={() => navigateToSection('/')}
+              <Link 
+                href="/"
                 className="text-gray-dark-textSecondary/90 hover:text-red-400 transition-all duration-300 font-medium hover:scale-105 hover:drop-shadow-[0_0_10px_rgba(220,38,38,0.3)]"
               >
                 {language === 'cs' ? 'Hlavní' : language === 'ru' ? 'Главная' : 'Main'}
-              </button>
-              <button 
+              </Link>
+              <Link 
+                href="/#contact"
                 onClick={handleContact}
                 className="text-gray-dark-textSecondary/90 hover:text-red-400 transition-all duration-300 font-medium hover:scale-105 hover:drop-shadow-[0_0_10px_rgba(220,38,38,0.3)]"
               >
                 {language === 'cs' ? 'Kontakt' : language === 'ru' ? 'Контакт' : 'Contact Us'}
-              </button>
-              <button 
-                onClick={() => navigateToSection('/Container')}
+              </Link>
+              <Link 
+                href="/Container"
                 className="text-gray-dark-textSecondary/90 hover:text-red-400 transition-all duration-300 font-medium hover:scale-105 hover:drop-shadow-[0_0_10px_rgba(220,38,38,0.3)]"
               >
                 {t('nav.containers')}
-              </button>
-              <button 
-                onClick={() => navigateToSection('/Excavator')}
+              </Link>
+              <Link 
+                href="/Excavator"
                 className="text-gray-dark-textSecondary/90 hover:text-red-400 transition-all duration-300 font-medium hover:scale-105 hover:drop-shadow-[0_0_10px_rgba(220,38,38,0.3)]"
               >
                 {t('nav.excavators')}
-              </button>
-              <button
-                onClick={() => navigateToSection('/Installation')}
+              </Link>
+              <Link 
+                href="/Installation"
                 className="text-gray-dark-textSecondary/90 hover:text-red-400 transition-all duration-300 font-medium hover:scale-105 hover:drop-shadow-[0_0_10px_rgba(220,38,38,0.3)]"
               >
                 {installationCopy.title}
-              </button>
-              <button
+              </Link>
+              <Link
+                href="/Installation#reference"
                 onClick={handleReferences}
                 className="text-gray-dark-textSecondary/90 hover:text-red-400 transition-all duration-300 font-medium hover:scale-105 hover:drop-shadow-[0_0_10px_rgba(220,38,38,0.3)]"
               >
                 {referencesLabel}
-              </button>
-              <button
-                onClick={() => navigateToSection('/Cenik')}
+              </Link>
+              <Link 
+                href="/Cenik"
                 className="text-gray-dark-textSecondary/90 hover:text-red-400 transition-all duration-300 font-medium hover:scale-105 hover:drop-shadow-[0_0_10px_rgba(220,38,38,0.3)]"
               >
                 {priceListCopy.navLabel}
-              </button>
+              </Link>
               <button 
                 onClick={handleWorkWithUs}
                 className="text-gray-dark-textSecondary/90 hover:text-red-400 transition-all duration-300 font-medium hover:scale-105 hover:drop-shadow-[0_0_10px_rgba(220,38,38,0.3)]"
@@ -185,8 +180,9 @@ export default function TopNavigation() {
               className={`md:hidden absolute top-16 right-4 bg-[#0c1322]/95 backdrop-blur-xl border border-white/10 rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.5)] min-w-[240px] overflow-hidden transition-all duration-300 ${isModalOpen ? 'z-1000' : 'z-50'}`}
             >
               <div className="flex flex-col py-2.5">
-                <button 
-                  onClick={() => navigateToSection('/')}
+                <Link
+                  href="/"
+                  onClick={closeMobileMenu}
                   className={`flex items-center gap-3 font-semibold py-3.5 px-5 text-left transition-all duration-300 border-b border-white/[0.03] ${
                     pathname === '/'
                       ? 'text-red-400 bg-gradient-to-r from-red-500/12 via-red-500/4 to-transparent border-l-2 border-l-red-500/80 pl-4.5'
@@ -195,8 +191,9 @@ export default function TopNavigation() {
                 >
                   <Home className="w-4.5 h-4.5 opacity-80" />
                   <span>{language === 'cs' ? 'Hlavní' : language === 'ru' ? 'Главная' : 'Main'}</span>
-                </button>
-                <button 
+                </Link>
+                <Link
+                  href="/#contact"
                   onClick={handleContact}
                   className={`flex items-center gap-3 font-semibold py-3.5 px-5 text-left transition-all duration-300 border-b border-white/[0.03] ${
                     // Contact is hash based
@@ -207,9 +204,10 @@ export default function TopNavigation() {
                 >
                   <Mail className="w-4.5 h-4.5 opacity-80" />
                   <span>{language === 'cs' ? 'Kontakt' : language === 'ru' ? 'Контакт' : 'Contact Us'}</span>
-                </button>
-                <button 
-                  onClick={() => navigateToSection('/Container')}
+                </Link>
+                <Link
+                  href="/Container"
+                  onClick={closeMobileMenu}
                   className={`flex items-center gap-3 font-semibold py-3.5 px-5 text-left transition-all duration-300 border-b border-white/[0.03] ${
                     pathname === '/Container'
                       ? 'text-red-400 bg-gradient-to-r from-red-500/12 via-red-500/4 to-transparent border-l-2 border-l-red-500/80 pl-4.5'
@@ -218,9 +216,10 @@ export default function TopNavigation() {
                 >
                   <Truck className="w-4.5 h-4.5 opacity-80" />
                   <span>{t('nav.containers')}</span>
-                </button>
-                <button 
-                  onClick={() => navigateToSection('/Excavator')}
+                </Link>
+                <Link
+                  href="/Excavator"
+                  onClick={closeMobileMenu}
                   className={`flex items-center gap-3 font-semibold py-3.5 px-5 text-left transition-all duration-300 border-b border-white/[0.03] ${
                     pathname === '/Excavator'
                       ? 'text-red-400 bg-gradient-to-r from-red-500/12 via-red-500/4 to-transparent border-l-2 border-l-red-500/80 pl-4.5'
@@ -229,9 +228,10 @@ export default function TopNavigation() {
                 >
                   <Hammer className="w-4.5 h-4.5 opacity-80" />
                   <span>{t('nav.excavators')}</span>
-                </button>
-                <button 
-                  onClick={() => navigateToSection('/Installation')}
+                </Link>
+                <Link
+                  href="/Installation"
+                  onClick={closeMobileMenu}
                   className={`flex items-center gap-3 font-semibold py-3.5 px-5 text-left transition-all duration-300 border-b border-white/[0.03] ${
                     pathname === '/Installation'
                       ? 'text-red-400 bg-gradient-to-r from-red-500/12 via-red-500/4 to-transparent border-l-2 border-l-red-500/80 pl-4.5'
@@ -240,8 +240,9 @@ export default function TopNavigation() {
                 >
                   <Wrench className="w-4.5 h-4.5 opacity-80" />
                   <span>{installationCopy.title}</span>
-                </button>
-                <button
+                </Link>
+                <Link
+                  href="/Installation#reference"
                   onClick={handleReferences}
                   className={`flex items-center gap-3 font-semibold py-3.5 px-5 text-left transition-all duration-300 border-b border-white/[0.03] ${
                     pathname === '/Installation' && typeof window !== 'undefined' && window.location.hash === '#reference'
@@ -251,9 +252,10 @@ export default function TopNavigation() {
                 >
                   <Images className="w-4.5 h-4.5 opacity-80" />
                   <span>{referencesLabel}</span>
-                </button>
-                <button
-                  onClick={() => navigateToSection('/Cenik')}
+                </Link>
+                <Link
+                  href="/Cenik"
+                  onClick={closeMobileMenu}
                   className={`flex items-center gap-3 font-semibold py-3.5 px-5 text-left transition-all duration-300 border-b border-white/[0.03] ${
                     pathname === '/Cenik'
                       ? 'text-red-400 bg-gradient-to-r from-red-500/12 via-red-500/4 to-transparent border-l-2 border-l-red-500/80 pl-4.5'
@@ -262,7 +264,7 @@ export default function TopNavigation() {
                 >
                   <Coins className="w-4.5 h-4.5 opacity-80" />
                   <span>{priceListCopy.navLabel}</span>
-                </button>
+                </Link>
                 <button 
                   onClick={() => { setMobileMenuOpen(false); handleWorkWithUs(); }}
                   className={`flex items-center gap-3 font-semibold py-3.5 px-5 text-left transition-all duration-300 ${

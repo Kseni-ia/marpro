@@ -34,9 +34,19 @@ export const siteConfig = {
   photos: ['/home_default_bg.jpeg', '/containers_bg.jpeg', '/excavators_bg.jpeg'],
   sameAs: ['https://www.tiktok.com/@marpro_s.r.o'],
   areaServed: ['Praha', 'Středočeský kraj'],
-  // TODO: fill in the real opening hours, then this ships in the structured data.
-  // Leave as undefined rather than guessing — wrong hours show up in Google results.
-  openingHours: undefined as OpeningHours[] | undefined,
+  openingHours: [
+    {
+      dayOfWeek: [
+        'Monday',
+        'Tuesday',
+        'Wednesday',
+        'Thursday',
+        'Friday',
+      ],
+      opens: '07:00',
+      closes: '18:00',
+    },
+  ] as OpeningHours[] | undefined,
   // TODO: copy the exact coordinates from the Google Business Profile / Maps pin.
   geo: undefined as GeoCoordinates | undefined,
 } as const
