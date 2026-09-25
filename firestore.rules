@@ -82,6 +82,24 @@ service cloud.firestore {
     // ========================================
     // SETTINGS COLLECTION RULES
     // ========================================
+    // Social links use the same client-managed publishing flow as other admin content.
+    // Restrict writes to the known fields and safe public URLs; disallow deletion.
+    match /settings/socialLinks {
+      function validSocialUrl(value) {
+        return value is string && value.size() <= 2048
+          && (value == '' || value.matches('https?://[^/@ ]+[^ ]*'));
+      }
+      allow read: if true;
+      allow create, update: if request.resource.data.keys().hasAll(['facebook', 'instagram', 'tiktok', 'youtube', 'linkedin'])
+        && request.resource.data.keys().hasOnly(['facebook', 'instagram', 'tiktok', 'youtube', 'linkedin'])
+        && validSocialUrl(request.resource.data.facebook)
+        && validSocialUrl(request.resource.data.instagram)
+        && validSocialUrl(request.resource.data.tiktok)
+        && validSocialUrl(request.resource.data.youtube)
+        && validSocialUrl(request.resource.data.linkedin);
+      allow delete: if false;
+    }
+
     // General application settings
     match /settings/{settingId} {
       allow read: if true;   // Allow reading settings

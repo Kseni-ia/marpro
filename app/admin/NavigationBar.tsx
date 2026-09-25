@@ -2,7 +2,7 @@
 
 import React, { useState, Fragment, useRef, useEffect } from 'react'
 import { useRouter, usePathname } from 'next/navigation'
-import { Calendar, LogOut, Home, ChevronRight, ChevronLeft, Truck, FileText, Hammer, Menu, X, Tractor, DollarSign } from 'lucide-react'
+import { Calendar, LogOut, Home, ChevronRight, ChevronLeft, Truck, FileText, Hammer, Menu, X, Tractor, DollarSign, Settings } from 'lucide-react'
 import { useLanguage } from '@/contexts/LanguageContext'
 
 interface NavigationBarProps {
@@ -47,7 +47,7 @@ export default function NavigationBar({ onScheduleClick, onLogout }: NavigationB
       {/* Desktop/Tablet: Left Sidebar */}
       <div
         ref={sidebarRef}
-        className={`hidden md:flex fixed left-4 top-20 bottom-4 bg-[#080c16]/95 backdrop-blur-xl border border-white/10 rounded-2xl flex-col py-4 z-50 transition-all duration-300 ${
+        className={`hidden md:flex fixed left-4 top-20 bottom-4 bg-[#080c16]/95 backdrop-blur-xl border border-white/10 rounded-2xl flex-col py-4 overflow-y-auto z-50 transition-all duration-300 ${
           isOpen ? 'w-56' : 'w-16'
         }`}
       >
@@ -150,6 +150,13 @@ export default function NavigationBar({ onScheduleClick, onLogout }: NavigationB
           >
             <DollarSign className="w-5 h-5 flex-shrink-0" />
             {isOpen && <span className="text-sm font-medium">Ceník služeb</span>}
+          </button>
+        </div>
+
+        <div className="w-full px-3 mb-4">
+          <button onClick={() => router.push('/admin/settings')} className={getButtonClass('/admin/settings', !isOpen)} title="Nastavení">
+            <Settings className="w-5 h-5 flex-shrink-0" />
+            {isOpen && <span className="text-sm font-medium">Nastavení</span>}
           </button>
         </div>
 
@@ -315,6 +322,10 @@ export default function NavigationBar({ onScheduleClick, onLogout }: NavigationB
               >
                 <DollarSign className="w-5 h-5 flex-shrink-0" />
                 <span className="text-sm font-medium">Ceník služeb</span>
+              </button>
+              <button onClick={() => { router.push('/admin/settings'); setMobileMenuOpen(false) }} className={getButtonClass('/admin/settings', false)}>
+                <Settings className="w-5 h-5 flex-shrink-0" />
+                <span className="text-sm font-medium">Nastavení</span>
               </button>
             </div>
 
