@@ -7,6 +7,7 @@ import { useLanguage } from '@/contexts/LanguageContext'
 import Image from 'next/image'
 import NavigationBar from '@/app/admin/NavigationBar'
 import SocialLinksForm from './SocialLinksForm'
+import PartnersForm from './PartnersForm'
 import EquipmentSchedule from '@/components/EquipmentSchedule'
 
 export default function SettingsPage() {
@@ -61,11 +62,12 @@ export default function SettingsPage() {
               Nastavení webu
             </h1>
             <p className="mt-2 text-sm leading-6 text-gray-dark-textSecondary">
-              Spravujte odkazy na sociální sítě zobrazené na webu.
+              Spravujte odkazy na sociální sítě a partnerské firmy zobrazené na webu.
             </p>
           </div>
 
           <SocialLinksForm />
+          <PartnersForm />
         </div>
       </div>
     </div>

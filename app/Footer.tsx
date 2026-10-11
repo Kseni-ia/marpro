@@ -3,6 +3,7 @@
 import React from 'react'
 import { useLanguage } from '@/contexts/LanguageContext'
 import SocialMediaLinks from '@/components/SocialMediaLinks'
+import PartnerCompanies from '@/components/PartnerCompanies'
 
 export default function Footer() {
   const { t } = useLanguage()
@@ -83,6 +84,7 @@ export default function Footer() {
             <SocialMediaLinks />
           </div>
         </div>
+        <PartnerCompanies />
         <div className="border-t border-gray-dark-border/30 pt-6">
           <div className="flex flex-col sm:flex-row justify-between items-center space-y-2 sm:space-y-0">
             <p className="text-gray-dark-textSecondary text-xs">

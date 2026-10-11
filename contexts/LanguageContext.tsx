@@ -294,6 +294,7 @@ const translations = {
     // Footer
     'footer.contact': 'Contact',
     'footer.followUs': 'Follow Us',
+    'footer.partners': 'We work with',
     'footer.preferredSource': 'Add as preferred source in Google',
     'footer.socialInfo': 'Follow us on social media for the latest information',
     'footer.allRightsReserved': 'All rights reserved',
@@ -598,6 +599,7 @@ const translations = {
     // Footer
     'footer.contact': 'Kontakt',
     'footer.followUs': 'Sledujte nás',
+    'footer.partners': 'Spolupracujeme s',
     'footer.preferredSource': 'Přidat jako preferovaný zdroj v Google',
     'footer.socialInfo': 'Sledujte nás na sociálních sítích pro nejnovější informace',
     'footer.allRightsReserved': 'Všechna práva vyhrazena',
