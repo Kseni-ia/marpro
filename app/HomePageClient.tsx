@@ -4,7 +4,7 @@ import React, { useState } from 'react'
 import Containers from '@/app/Container/ContainerPageClient'
 import Excavators from '@/app/Excavator/ExcavatorPageClient'
 import InstallationPageClient from '@/app/Installation/InstallationPageClient'
-import AnimatedLogo from '@/components/AnimatedLogo'
+import BrandLogoAnimated from '@/components/BrandLogoAnimated'
 import BlurUpBackground from '@/components/BlurUpBackground'
 import Footer from '@/app/Footer'
 import TopNavigation from '@/components/TopNavigation'
@@ -80,7 +80,7 @@ export default function HomePageClient({ references = [] }: HomePageClientProps)
               pronájem kontejnerů, práce bagrem, stavební práce a instalatérské
               a topenářské služby v Praze a okolí.
             </p>
-            <AnimatedLogo />
+            <BrandLogoAnimated />
             <p className="text-base sm:text-lg md:text-xl text-gray-dark-textSecondary mb-4 mt-6 sm:mt-8">
               {t('nav.home')}
             </p>

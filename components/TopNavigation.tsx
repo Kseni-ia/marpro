@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react'
 import { usePathname } from 'next/navigation'
 import Link from 'next/link'
-import Image from 'next/image'
+import { BrandLogoCompact } from './BrandLogo'
 import { useLanguage } from '@/contexts/LanguageContext'
 import { useModal } from '@/contexts/ModalContext'
 import { getInstallationCopy } from '@/lib/installationCopy'
@@ -91,18 +91,17 @@ export default function TopNavigation() {
       {/* Top Navigation Bar */}
       <nav className={`fixed top-0 left-0 right-0 bg-transparent backdrop-blur-sm border-b border-gray-dark-border/20 transition-all duration-300 ${isModalOpen ? 'z-1000' : 'z-50'}`}>
         <div className="max-w-[1800px] mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-center items-center h-16">
+          <div className="flex justify-center items-center h-16 md:pl-14 lg:pl-0">
             {/* Logo - fits within navigation bar */}
-            <div className="absolute left-4 top-4 z-50">
-              <Link href="/" onClick={closeMobileMenu} aria-label="TZB MARPRO">
-                <Image 
-                  src="/logoDF.svg" 
-                  alt="MARPRO" 
-                  width={40}
-                  height={40}
-                  priority
-                  className="h-6 w-auto cursor-pointer transition-all duration-300 hover:scale-110 hover:drop-shadow-[0_0_30px_rgba(220,38,38,0.5)] sm:h-7 md:h-8 lg:h-9"
-                />
+            <div className="absolute left-4 top-2 z-50">
+              <Link
+                href="/"
+                onClick={closeMobileMenu}
+                aria-label="TZB MARPRO"
+                className="block cursor-pointer transition-all duration-300 hover:scale-105 hover:drop-shadow-[0_0_18px_rgba(56,189,248,0.35)]"
+              >
+                {/* wordmark hides between md and xl, where the centred links need the room */}
+                <BrandLogoCompact wordmarkClassName="h-6 w-auto sm:h-7 md:hidden xl:block" />
               </Link>
             </div>
 
